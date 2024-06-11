@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -8,6 +8,15 @@ import { IoMoonOutline } from "react-icons/io5";
 
 const SideBar = () => {
   const [ToggleTheme, setToggleTheme] = useState(false);
+
+  useEffect(() => {
+    if (ToggleTheme === true) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [ToggleTheme]);
+
   return (
     <div className="flex flex-col justify-between h-full dark:bg-black">
       <div className="w-full flex flex-col mt-5">
