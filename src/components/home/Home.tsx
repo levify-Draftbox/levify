@@ -12,7 +12,7 @@ const Home = () => {
           className="min-h-screen max-w-full rounded-lg border"
         >
           <ResizablePanel defaultSize={13}>
-            <div className="flex h-full items-center justify-center p-6">
+            <div className="h-full p-2 ">
               <span className="font-semibold"><SideBar/></span>
             </div>
           </ResizablePanel>
