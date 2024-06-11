@@ -19,7 +19,7 @@ const Home = () => {
           <ResizableHandle />
           <ResizablePanel defaultSize={87}>
             <div className="flex h-full items-center justify-center p-6">
-              <span className="font-semibold">Content</span>
+              <span className="font-semibold">This is home page</span>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
