@@ -4,6 +4,7 @@ import {
     ResizablePanelGroup,
   } from "@/components/ui/resizable"
 import SideBar from "./SideBar"
+import { Outlet } from "react-router-dom"
 
 const Home = () => {
     return (
@@ -13,13 +14,13 @@ const Home = () => {
         >
           <ResizablePanel defaultSize={13}>
             <div className="h-full">
-              <span className="font-semibold dark:bg-[#202020]"><SideBar/></span>
+              <SideBar/>
             </div>
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={87}>
             <div className="flex h-full items-center justify-center p-6">
-              <span className="font-semibold">This is home page</span>
+              <Outlet/>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

@@ -19,11 +19,10 @@ const SideBar = () => {
     }
   }, [ToggleTheme]);
 
- 
   return (
-    <div className="flex flex-col justify-between h-full text-[#5f5e5b] p-2 bg-[#f7f7f5] dark:bg-[#202020] ">
+    <div className="flex flex-col justify-between h-full text-[#5f5e5b] font-semibold p-2 bg-[#f7f7f5] dark:bg-[#202020] ">
       <div className="w-full flex flex-col mt-5">
-        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
+        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
             <IoSearch
               fontSize={20}
@@ -33,7 +32,6 @@ const SideBar = () => {
           </div>
         </div>
 
-        
         <NavLink
           to={"/"}
           className={({ isActive }) => {
@@ -53,7 +51,7 @@ const SideBar = () => {
         </NavLink>
 
         <div>
-          <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838] mt-5">
+          <div className="flex w-full px-3 py-4 h-10 cursor-pointer rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838] mt-5">
             <div className="flex items-center justify-center gap-3">
               <h1 className="text-base text-[#91918e] dark:text-[#a3a3a3]">
                 Pages
@@ -138,7 +136,7 @@ const SideBar = () => {
       <div className="w-full flex flex-col mb-2">
         <div
           onClick={() => setToggleTheme(!ToggleTheme)}
-          className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]"
+          className="flex w-full px-3 py-4 h-10 rounded-md cursor-pointer hover:bg-[#ededeb] dark:hover:bg-[#383838]"
         >
           <div className="flex items-center justify-center gap-3">
             {ToggleTheme ? (
@@ -159,7 +157,7 @@ const SideBar = () => {
             )}
           </div>
         </div>
-        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
+        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
             <IoLogOutOutline
               fontSize={22}
@@ -168,7 +166,7 @@ const SideBar = () => {
             <h1 className=" dark:text-[#a3a3a3]">Logout</h1>
           </div>
         </div>
-        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
+        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
             <IoSettingsOutline
               fontSize={22}
