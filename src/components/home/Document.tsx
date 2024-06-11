@@ -1,8 +1,7 @@
 const Document = () => {
   return (
     <div className='flex justify-center items-center flex-col p-2'>
-        <h1>document</h1>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad, distinctio, minus iure quam aliquam vitae molestias dicta temporibus illum ut ratione nisi dolorem dignissimos dolores quidem alias similique eius placeat.</p>
+        <h1 className="text-2xl">Hello, This is doc!</h1>
     </div>
   )
 }

@@ -1,30 +1,30 @@
 import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
-  } from "@/components/ui/resizable"
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 import SideBar from "./SideBar"
 import Document from "./Document"
 
 const Page = () => {
-    return (
-        <ResizablePanelGroup
-          direction="horizontal"
-          className="min-h-screen max-w-full rounded-lg border"
-        >
-          <ResizablePanel defaultSize={13}>
-            <div className="h-full">
-              <span className="font-semibold dark:bg-[#202020]"><SideBar/></span>
-            </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={87}>
-            <div className="flex h-full items-center justify-center p-6">
-              <span className="font-semibold"><Document/></span>
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      )
+  return (
+    <ResizablePanelGroup
+      direction="horizontal"
+      className="min-h-screen max-w-full rounded-lg border"
+    >
+      <ResizablePanel defaultSize={13}>
+        <div className="h-full">
+          <SideBar />
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel defaultSize={87}>
+        <div className="flex h-full items-center justify-center p-6">
+          <Document />
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  )
 }
 
 export default Page
