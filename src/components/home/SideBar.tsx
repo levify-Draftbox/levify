@@ -5,6 +5,8 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoSunnyOutline } from "react-icons/io5";
 import { IoMoonOutline } from "react-icons/io5";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 
 const SideBar = () => {
   const [ToggleTheme, setToggleTheme] = useState(false);
@@ -17,20 +19,119 @@ const SideBar = () => {
     }
   }, [ToggleTheme]);
 
+ 
   return (
     <div className="flex flex-col justify-between h-full text-[#5f5e5b] p-2 bg-[#f7f7f5] dark:bg-[#202020] ">
       <div className="w-full flex flex-col mt-5">
         <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
-            <IoSearch fontSize={22} className="dark:text-[#a3a3a3]"/>
-            <h1 className="text-lg dark:text-[#a3a3a3]">Search</h1>
+            <IoSearch
+              fontSize={20}
+              className="text-[#91918e] dark:text-[#a3a3a3]"
+            />
+            <h1 className=" dark:text-[#a3a3a3]">Search</h1>
           </div>
         </div>
-        <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
+
+        
+        <NavLink
+          to={"/"}
+          className={({ isActive }) => {
+            return (
+              "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
+              (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
+            );
+          }}
+        >
           <div className="flex items-center justify-center gap-3">
-            <IoHomeOutline fontSize={22} className="dark:text-[#a3a3a3]"/>
-            <h1 className="text-lg dark:text-[#a3a3a3]">Home</h1>
+            <IoHomeOutline
+              fontSize={20}
+              className="text-[#91918e] dark:text-[#a3a3a3]"
+            />
+            <h1 className=" dark:text-[#a3a3a3]">Home</h1>
           </div>
+        </NavLink>
+
+        <div>
+          <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838] mt-5">
+            <div className="flex items-center justify-center gap-3">
+              <h1 className="text-base text-[#91918e] dark:text-[#a3a3a3]">
+                Pages
+              </h1>
+            </div>
+          </div>
+
+          <NavLink
+            className={({ isActive }) => {
+              return (
+                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
+                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
+              );
+            }}
+            to={"/page1"}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <IoDocumentTextOutline
+                fontSize={20}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
+              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
+            </div>
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => {
+              return (
+                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
+                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
+              );
+            }}
+            to={"/page2"}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <IoDocumentTextOutline
+                fontSize={20}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
+              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
+            </div>
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => {
+              return (
+                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
+                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
+              );
+            }}
+            to={"/page3"}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <IoDocumentTextOutline
+                fontSize={20}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
+              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
+            </div>
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => {
+              return (
+                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
+                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
+              );
+            }}
+            to={"/page4"}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <IoDocumentTextOutline
+                fontSize={20}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
+              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
+            </div>
+          </NavLink>
         </div>
       </div>
 
@@ -41,27 +142,39 @@ const SideBar = () => {
         >
           <div className="flex items-center justify-center gap-3">
             {ToggleTheme ? (
-              <IoSunnyOutline fontSize={23} className="dark:text-[#a3a3a3]"/>
+              <IoSunnyOutline
+                fontSize={23}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
             ) : (
-              <IoMoonOutline fontSize={23} className="dark:text-[#a3a3a3]"/>
+              <IoMoonOutline
+                fontSize={23}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
             )}
             {ToggleTheme ? (
-              <h1 className="text-lg dark:text-[#a3a3a3]">Light</h1>
+              <h1 className=" dark:text-[#a3a3a3]">Light</h1>
             ) : (
-              <h1 className="text-lg dark:text-[#a3a3a3]">Dark</h1>
+              <h1 className=" dark:text-[#a3a3a3]">Dark</h1>
             )}
           </div>
         </div>
         <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
-            <IoLogOutOutline fontSize={22} className="dark:text-[#a3a3a3]"/>
-            <h1 className="text-lg dark:text-[#a3a3a3]">Logout</h1>
+            <IoLogOutOutline
+              fontSize={22}
+              className="dark:text-[#a3a3a3] text-[#91918e]"
+            />
+            <h1 className=" dark:text-[#a3a3a3]">Logout</h1>
           </div>
         </div>
         <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
-            <IoSettingsOutline fontSize={22} className="dark:text-[#a3a3a3]"/>
-            <h1 className="text-lg dark:text-[#a3a3a3]">Setting</h1>
+            <IoSettingsOutline
+              fontSize={22}
+              className="dark:text-[#a3a3a3] text-[#91918e]"
+            />
+            <h1 className=" dark:text-[#a3a3a3]">Setting</h1>
           </div>
         </div>
       </div>
