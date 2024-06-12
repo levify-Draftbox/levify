@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -7,17 +7,20 @@ import { IoSunnyOutline } from "react-icons/io5";
 import { IoMoonOutline } from "react-icons/io5";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useTheme } from "./Theme-provider";
 
 const SideBar = () => {
-  const [ToggleTheme, setToggleTheme] = useState(false);
+  const { setTheme } = useTheme()
+  const [toggleTheme, settoggleTheme] = useState(true);
 
-  useEffect(() => {
-    if (ToggleTheme === true) {
-      document.documentElement.classList.add("dark");
+  const handleTheme=()=>{
+    if (toggleTheme) {
+      setTheme("dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      setTheme("light");
     }
-  }, [ToggleTheme]);
+    settoggleTheme(!toggleTheme); // Toggle the theme state
+  }
 
   return (
     <div className="flex flex-col justify-between h-full text-[#5f5e5b] font-semibold p-2 bg-[#f7f7f5] dark:bg-[#202020] ">
@@ -135,28 +138,28 @@ const SideBar = () => {
 
       <div className="w-full flex flex-col mb-2">
         <div
-          onClick={() => setToggleTheme(!ToggleTheme)}
+          onClick={handleTheme}
           className="flex w-full px-3 py-4 h-10 rounded-md cursor-pointer hover:bg-[#ededeb] dark:hover:bg-[#383838]"
         >
           <div className="flex items-center justify-center gap-3">
-            {ToggleTheme ? (
-              <IoSunnyOutline
-                fontSize={23}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-            ) : (
+            {toggleTheme ? (
               <IoMoonOutline
                 fontSize={23}
                 className="text-[#91918e] dark:text-[#a3a3a3]"
               />
-            )}
-            {ToggleTheme ? (
-              <h1 className=" dark:text-[#a3a3a3]">Light</h1>
             ) : (
-              <h1 className=" dark:text-[#a3a3a3]">Dark</h1>
+              <IoSunnyOutline
+                fontSize={23}
+                className="text-[#91918e] dark:text-[#a3a3a3]"
+              />
             )}
+            <h1 className=" dark:text-[#a3a3a3]">
+              {toggleTheme ? "Dark" : "Light"}
+            </h1>
           </div>
         </div>
+
+
         <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
             <IoLogOutOutline

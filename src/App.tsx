@@ -1,19 +1,22 @@
 import "./app.css";
-import Home from "./Layout/Home";
+import Home from "./Layout/Main";
 import { Routes, Route } from "react-router-dom";
 import Page from "./pages/Page";
+import { ThemeProvider } from "./components/Theme-provider";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />}>
-        <Route path="/" element={<h1>Hello Page</h1>} />
-        <Route path="/page1" element={<Page />} />
-        <Route path="/page2" element={<Page />} />
-        <Route path="/page3" element={<Page />} />
-        <Route path="/page4" element={<Page />} />
-      </Route>
-    </Routes>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Routes>
+        <Route path="/" element={<Home />}>
+          <Route path="/" element={<h1>Hello Page</h1>} />
+          <Route path="/page1" element={<Page />} />
+          <Route path="/page2" element={<Page />} />
+          <Route path="/page3" element={<Page />} />
+          <Route path="/page4" element={<Page />} />
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
 }
 

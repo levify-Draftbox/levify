@@ -6,7 +6,7 @@ import {
 import SideBar from "../components/SideBar"
 import { Outlet } from "react-router-dom"
 
-const Home = () => {
+const Main = () => {
     return (
         <ResizablePanelGroup
           direction="horizontal"
@@ -27,4 +27,4 @@ const Home = () => {
       )
 }
 
-export default Home
+export default Main
