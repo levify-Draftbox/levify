@@ -172,7 +172,7 @@ const SideBar = () => {
               fontSize={22}
               className="dark:text-[#a3a3a3] text-[#91918e]"
             />
-            <h1 className=" dark:text-[#a3a3a3]">Setting</h1>
+            <h1 className=" dark:text-[#a3a3a3]">Settings</h1>
           </div>
         </div>
       </div>
