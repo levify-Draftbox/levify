@@ -20,8 +20,20 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full text-[#5f5e5b] font-semibold p-2 bg-[#f7f7f5] dark:bg-[#202020] ">
-      <div className="w-full flex flex-col mt-5">
+    <div className="flex flex-col justify-between h-full text-[#5f5e5b] font-semibold p-2 bg-[#f7f7f5] dark:bg-transparent">
+      <div className="w-full flex flex-col mt-1">
+
+        <div className="flex w-full px-3 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
+          <div className="flex items-center justify-center gap-3">
+            <IoSearch
+              fontSize={20}
+              className="text-[#91918e] dark:text-[#a3a3a3]"
+            />
+            <h1 className=" ">User</h1>
+          </div>
+        </div>
+
+
         <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
             <IoSearch
