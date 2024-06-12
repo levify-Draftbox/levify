@@ -3,7 +3,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
   } from "@/components/ui/resizable"
-import SideBar from "./SideBar"
+import SideBar from "../components/SideBar"
 import { Outlet } from "react-router-dom"
 
 const Home = () => {
