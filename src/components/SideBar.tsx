@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -10,17 +9,15 @@ import { NavLink } from "react-router-dom";
 import { useTheme } from "./Theme-provider";
 
 const SideBar = () => {
-  const { setTheme } = useTheme()
-  const [toggleTheme, settoggleTheme] = useState(true);
+  const { setTheme, theme } = useTheme();
 
-  const handleTheme=()=>{
-    if (toggleTheme) {
-      setTheme("dark");
-    } else {
+  const handleTheme = () => {
+    if (theme === "dark") {
       setTheme("light");
+    } else {
+      setTheme("dark");
     }
-    settoggleTheme(!toggleTheme); // Toggle the theme state
-  }
+  };
 
   return (
     <div className="flex flex-col justify-between h-full text-[#5f5e5b] font-semibold p-2 bg-[#f7f7f5] dark:bg-[#202020] ">
@@ -142,7 +139,7 @@ const SideBar = () => {
           className="flex w-full px-3 py-4 h-10 rounded-md cursor-pointer hover:bg-[#ededeb] dark:hover:bg-[#383838]"
         >
           <div className="flex items-center justify-center gap-3">
-            {toggleTheme ? (
+            {theme === "light" ? (
               <IoMoonOutline
                 fontSize={23}
                 className="text-[#91918e] dark:text-[#a3a3a3]"
@@ -154,11 +151,10 @@ const SideBar = () => {
               />
             )}
             <h1 className=" dark:text-[#a3a3a3]">
-              {toggleTheme ? "Dark" : "Light"}
+              {theme === "light" ? "Dark" : "Light"}
             </h1>
           </div>
         </div>
-
 
         <div className="flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3">
