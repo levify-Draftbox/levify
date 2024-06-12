@@ -4,9 +4,9 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoSunnyOutline } from "react-icons/io5";
 import { IoMoonOutline } from "react-icons/io5";
-import { IoDocumentTextOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "./Theme-provider";
+import Document from "./Document";
 
 const SideBar = () => {
   const { setTheme, theme } = useTheme();
@@ -25,9 +25,7 @@ const SideBar = () => {
         <div className="flex w-full px-3 h-10 rounded-md overflow-hidden hover:bg-[#ededeb] cursor-pointer dark:hover:bg-[#383838]">
           <div className="flex items-center justify-center gap-3 flex-shrink-0">
             <div className="w-5 h-5 rounded-sm bg-white"></div>
-            <p className="dark:text-[#d5d5d5] max-w-40 truncate">
-              user
-            </p>
+            <p className="dark:text-[#d5d5d5] max-w-40 truncate">user</p>
           </div>
         </div>
 
@@ -68,77 +66,10 @@ const SideBar = () => {
             </div>
           </div>
 
-          <NavLink
-            className={({ isActive }) => {
-              return (
-                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
-                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
-              );
-            }}
-            to={"/page1"}
-          >
-            <div className="flex items-center justify-center gap-3">
-              <IoDocumentTextOutline
-                fontSize={20}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
-            </div>
-          </NavLink>
-
-          <NavLink
-            className={({ isActive }) => {
-              return (
-                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
-                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
-              );
-            }}
-            to={"/page2"}
-          >
-            <div className="flex items-center justify-center gap-3">
-              <IoDocumentTextOutline
-                fontSize={20}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
-            </div>
-          </NavLink>
-
-          <NavLink
-            className={({ isActive }) => {
-              return (
-                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
-                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
-              );
-            }}
-            to={"/page3"}
-          >
-            <div className="flex items-center justify-center gap-3">
-              <IoDocumentTextOutline
-                fontSize={20}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
-            </div>
-          </NavLink>
-
-          <NavLink
-            className={({ isActive }) => {
-              return (
-                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
-                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
-              );
-            }}
-            to={"/page4"}
-          >
-            <div className="flex items-center justify-center gap-3">
-              <IoDocumentTextOutline
-                fontSize={20}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-              <h1 className=" dark:text-[#a3a3a3]">Document</h1>
-            </div>
-          </NavLink>
+          <Document name={"document"} route={"/page1"} />
+          <Document name={"document"} route={"/page2"} />
+          <Document name={"document"} route={"/page3"} />
+          <Document name={"document"} route={"/page4"} />
         </div>
       </div>
 
