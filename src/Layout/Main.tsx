@@ -12,7 +12,7 @@ const Main = () => {
           direction="horizontal"
           className="min-h-screen max-w-full rounded-lg border"
         >
-          <ResizablePanel defaultSize={13}>
+          <ResizablePanel minSize={10} defaultSize={13}>
             <div className="h-full">
               <SideBar/>
             </div>

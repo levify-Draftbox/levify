@@ -11,8 +11,8 @@ const Document = ({name,route}:props) => {
     <NavLink
             className={({ isActive }) => {
               return (
-                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[#ededeb] hover:cursor-pointer dark:hover:bg-[#383838] " +
-                (isActive ? "bg-[#ededeb] dark:bg-[#2c2c2c]" : "")
+                "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[rgba(0,0,0,0.1)] hover:cursor-pointer dark:hover:bg-[rgba(255,255,255,0.2)] " +
+                (isActive ? "bg-[rgba(0,0,0,0.1)] dark:bg-[rgba(255,255,255,0.2)]" : "")
               );
             }}
             to={route}
