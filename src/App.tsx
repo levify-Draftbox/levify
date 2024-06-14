@@ -3,11 +3,13 @@ import Home from "./Layout/Main";
 import { Routes, Route } from "react-router-dom";
 import Page from "./pages/Page";
 import { ThemeProvider } from "./components/Theme-provider";
+import Login from "./Auth/Login";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />}>
           <Route path="/" element={<h1>Hello Page</h1>} />
           <Route path="/page1" element={<Page />} />
