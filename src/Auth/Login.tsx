@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { Input } from "@/components/ui/input";
 
 const Login = () => {
   const [varification, setVarification] = useState(false);
@@ -28,11 +29,10 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             <label>
               <p className="text-sm">Email</p>
-              <input
-                type="email"
-                className="w-full border-[1px] border-slate-300 p-2 rounded-md mt-1 focus:border-blue-300 outline-none"
-                placeholder="Enter your email adress..."
-              ></input>
+              <Input
+                className="mt-2"
+                placeholder="Enter your email address.."
+              />
             </label>
 
             <p className="text-sm text-slate-400 mt-2">
@@ -43,11 +43,10 @@ const Login = () => {
               <div className="mt-5">
                 <label>
                   <p className="text-sm">Verification code</p>
-                  <input
-                    type="email"
-                    className="w-full border-[1px] border-slate-300 p-2 rounded-md mt-1 focus:border-blue-300 outline-none"
+                  <Input
+                    className="mt-2"
                     placeholder="Paste Sing Up code"
-                  ></input>
+                  />
                 </label>
                 <p className="text-sm text-slate-400 mt-2">
                   We sent a code to your inbox
@@ -68,9 +67,9 @@ const Login = () => {
             workspace using your email. By continuing, you acknowledge that you
             understand and agree to the
             <p className="text-gray-400 hover:text-blue-500 cursor-pointer inline">
-                Terms & Conditions  
+              Terms & Conditions
             </p>
-             and 
+            and
             <p className="text-gray-400 hover:text-blue-500 cursor-pointer inline">
               Privacy Policy
             </p>
