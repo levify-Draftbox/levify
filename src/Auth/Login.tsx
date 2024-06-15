@@ -20,7 +20,7 @@ const Login = () => {
           </p>
         </div>
         <div className="mt-10">
-          <div className="w-full h-10 border-[1px] rounded-md border-slate-300 flex justify-center items-center gap-2 hover:bg-[rgba(0,0,0,0.06)]">
+          <div className="w-full h-10 border-[1px] rounded-md border-slate-300 flex justify-center items-center gap-2 cursor-pointer dark:hover:bg-[rgba(255,255,255,0.15)] hover:bg-[rgba(0,0,0,0.06)]">
             <FcGoogle size={20} />
             <p className="text-sm font-semibold">Continue With Google</p>
           </div>

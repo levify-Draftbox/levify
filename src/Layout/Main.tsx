@@ -19,8 +19,8 @@ const Main = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={87}>
-            <div className="flex h-full items-center justify-center p-6">
-              <Outlet/>
+            <div className="w-full h-full">
+              <Outlet  />
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
