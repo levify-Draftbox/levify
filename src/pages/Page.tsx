@@ -76,19 +76,19 @@ const Page = () => {
               transition={{ duration: 0.3 }}
               className="absolute right-60 mt-2"
             >
-              <div className="flex gap-0 bg-white text-sm rounded-md">
-                <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.35)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1 w-fit gap-2 items-center">
+              <div className="flex gap-0 bg-white dark:bg-black text-sm rounded-md">
+                <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.6)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1 w-fit gap-2 items-center">
                   <p>Chenge Cover</p>
                 </div>
-                <div className="border-[1px]"></div>
-                <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.35)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1  w-fit gap-2 items-center">
+                <div className="border-[1px] dark:border-[rgba(250,250,250,0.3)]"></div>
+                <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.6)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1  w-fit gap-2 items-center">
                   <p>Reposition</p>
                 </div>
               </div>
             </motion.div>
           )}
 
-          <img className="w-full h-72" src="/unnamed.png" />
+          <img className="w-full h-72 object-cover" src="/unnamed.png" />
         </div>
       )}
 
