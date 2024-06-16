@@ -18,7 +18,7 @@ import { IoChatboxEllipses } from "react-icons/io5";
 
 const Page = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isImgHovered, setIsImgHovered] = useState(false);
+  // const [isImgHovered, setIsImgHovered] = useState(false);
 
   const [Isimage, setIsimage] = useState(false);
   console.log(Isimage);
@@ -66,9 +66,28 @@ const Page = () => {
       {Isimage && (
         <div
           className="w-full h-72"
-          onMouseEnter={() => setIsImgHovered(true)}
-          onMouseLeave={() => setIsImgHovered(false)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
+          {isHovered && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="absolute right-60 mt-2"
+            >
+              <div className="flex gap-0 bg-white text-sm rounded-md">
+                <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.35)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1 w-fit gap-2 items-center">
+                  <p>Chenge Cover</p>
+                </div>
+                <div className="border-[1px]"></div>
+                <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.35)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1  w-fit gap-2 items-center">
+                  <p>Reposition</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           <img className="w-full h-72" src="/unnamed.png" />
         </div>
       )}
