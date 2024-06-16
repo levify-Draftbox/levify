@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 
 const Page = () => {
   return (
@@ -51,8 +52,8 @@ const Page = () => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="flex w-full items-center justify-center h-full ">
-        <h1 className="text-2xl">Hello, This is doc!</h1>
+      <div className="w-[50%] mt-20 h-full ">
+        <Input className=" w-full font-bold h-auto text-4xl placeholder:text-[rgba(0,0,0,0.2)] dark:placeholder:text-[rgba(250,250,250,0.2)] border-none focus:!ring-0" placeholder="Untitled"/>
       </div>
     </div>
   );
