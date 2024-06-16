@@ -11,8 +11,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { IoImage } from "react-icons/io5";
+import { IoChatboxEllipses } from "react-icons/io5";
 
 const Page = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isImgHovered, setIsImgHovered] = useState(false);
+
+  const [Isimage, setIsimage] = useState(false);
+  console.log(Isimage);
+
   return (
     <div className="flex justify-center items-center flex-col h-full">
       <div className="flex justify-between w-full h-11 p-1">
@@ -52,9 +62,59 @@ const Page = () => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="w-[50%] mt-20 h-full ">
-        <Input className=" w-full font-bold h-auto text-4xl placeholder:text-[rgba(0,0,0,0.2)] dark:placeholder:text-[rgba(250,250,250,0.2)] border-none focus:!ring-0" placeholder="Untitled"/>
-      </div>
+
+      {Isimage && (
+        <div
+          className="w-full h-72"
+          onMouseEnter={() => setIsImgHovered(true)}
+          onMouseLeave={() => setIsImgHovered(false)}
+        >
+          <img className="w-full h-72" src="/unnamed.png" />
+        </div>
+      )}
+
+      <motion.div className="w-[50%] h-full">
+        <motion.div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className=" pt-20"
+        >
+          <motion.div className="relative">
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="absolute mt-[-30px]"
+              >
+                <div className="flex gap-0">
+                  {Isimage ? (
+                    ""
+                  ) : (
+                    <div
+                      onClick={() => setIsimage(!Isimage)}
+                      className="flex ml-2 cursor-pointer dark:text-[rgba(250,250,250,0.35)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1 rounded-md w-fit gap-2 items-center"
+                    >
+                      <IoImage />
+                      <p>Add Cover</p>
+                    </div>
+                  )}
+
+                  <div className="flex cursor-pointer dark:text-[rgba(250,250,250,0.35)] text-[rgba(0,0,0,0.4)] hover:bg-[rgba(0,0,0,0.07)] dark:hover:bg-[rgba(250,250,250,0.15)] px-2 py-1 rounded-md w-fit gap-2 items-center">
+                    <IoChatboxEllipses />
+                    <p>Add Comment</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            <Input
+              className="w-full font-bold h-auto text-4xl rounded-none placeholder:text-[rgba(0,0,0,0.2)] dark:placeholder:text-[rgba(250,250,250,0.2)] border-none focus:!ring-0"
+              placeholder="Untitled"
+            />
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
