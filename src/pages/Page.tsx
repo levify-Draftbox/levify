@@ -15,13 +15,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { IoImage } from "react-icons/io5";
 import { IoChatboxEllipses } from "react-icons/io5";
+import Editer from "@/components/Editer";
 
 const Page = () => {
   const [isHovered, setIsHovered] = useState(false);
   // const [isImgHovered, setIsImgHovered] = useState(false);
 
   const [Isimage, setIsimage] = useState(false);
-  console.log(Isimage);
+  // console.log(Isimage);
 
   return (
     <div className="flex justify-center items-center flex-col h-full">
@@ -131,6 +132,9 @@ const Page = () => {
               className="w-full font-bold h-auto text-4xl rounded-none placeholder:text-[rgba(0,0,0,0.2)] dark:placeholder:text-[rgba(250,250,250,0.2)] border-none focus:!ring-0"
               placeholder="Untitled"
             />
+            <div>
+             <Editer/>
+            </div>
           </motion.div>
         </motion.div>
       </motion.div>
