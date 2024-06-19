@@ -21,7 +21,14 @@ const Editer = () => {
         console.log(content);
       },
       tools: {
-        Header,
+        Header: {
+          class: Header,
+          config: {
+            placeholder: "Enter a header",
+            levels: [2, 3, 4],
+            defaultLevel: 3,
+          },
+        },
         List,
         LinkTool,
         RawTool,
