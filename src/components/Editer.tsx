@@ -38,10 +38,9 @@ const Editer = () => {
         header: {
           class: Header,
           config: {
-            placeholder: 'Untitled',
-            // levels: [2, 3, 4],
-            defaultLevel: 1
-          }
+            placeholder: "Untitled",
+            defaultLevel: 1,
+          },
         },
         List,
         LinkTool,
