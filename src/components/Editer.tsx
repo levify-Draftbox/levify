@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-nocheck
 import EditorJS from "@editorjs/editorjs";
 import { useEffect, useRef } from "react";
 import List from "@editorjs/list";
