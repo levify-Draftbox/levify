@@ -1,33 +1,47 @@
 import EditorJS from "@editorjs/editorjs";
 import { useEffect, useRef } from "react";
 import List from "@editorjs/list";
-import Header from "@editorjs/header";
 import LinkTool from "@editorjs/link";
 import RawTool from "@editorjs/raw";
 import ImageTool from "@editorjs/image";
 import Checklist from "@editorjs/checklist";
 import Embed from "@editorjs/embed";
 import Quote from "@editorjs/quote";
+import Header from "@editorjs/header";
 
 const Editer = () => {
+  // const DEFAULT_INITIAL_DATA = {
+  //   time: new Date().getTime(),
+  //   blocks: [
+  //     {
+  //       type: "header",
+  //       data: {
+  //         text: "This is my awesome editor!",
+  //         level: 1,
+  //       },
+  //     },
+  //   ],
+  // };
+
   const ejInstance = useRef();
 
   const initEditor = () => {
     const editor = new EditorJS({
       holder: "editorjs",
       autofocus: true,
+
       onChange: async () => {
         const content = await editor.save();
         console.log(content);
       },
       tools: {
-        Header: {
+        header: {
           class: Header,
           config: {
-            placeholder: "Enter a header",
-            levels: [2, 3, 4],
-            defaultLevel: 3,
-          },
+            placeholder: 'Untitled',
+            // levels: [2, 3, 4],
+            defaultLevel: 1
+          }
         },
         List,
         LinkTool,
@@ -36,6 +50,18 @@ const Editer = () => {
         Checklist,
         Embed,
         Quote,
+      },
+      data: {
+        time: new Date().getTime(),
+        blocks: [
+          {
+            type: "header",
+            data: {
+              // text: "Untitled",
+              level: 1,
+            },
+          },
+        ],
       },
     });
   };
@@ -53,7 +79,7 @@ const Editer = () => {
 
   return (
     <>
-      <div className="" id="editorjs"></div>
+      <div className="heding" id="editorjs"></div>
     </>
   );
 };

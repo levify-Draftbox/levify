@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { IoImage } from "react-icons/io5";
@@ -128,10 +128,10 @@ const Page = () => {
               </motion.div>
             )}
 
-            <Input
+            {/* <Input
               className="w-full font-bold h-auto text-4xl rounded-none placeholder:text-[rgba(0,0,0,0.2)] dark:placeholder:text-[rgba(250,250,250,0.2)] border-none focus:!ring-0"
               placeholder="Untitled"
-            />
+            /> */}
             <div>
              <Editer/>
             </div>
