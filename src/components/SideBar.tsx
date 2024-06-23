@@ -1,4 +1,4 @@
-import { IoSearch } from "react-icons/io5";
+import { IoAdd, IoEllipsisHorizontal, IoSearch } from "react-icons/io5";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -7,9 +7,12 @@ import { IoMoonOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "./Theme-provider";
 import Document from "./Document";
+import { useState } from "react";
 
 const SideBar = () => {
   const { setTheme, theme } = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isSelected, setisSelected] = useState(true);
 
   const handleTheme = () => {
     if (theme === "dark") {
@@ -44,7 +47,9 @@ const SideBar = () => {
           className={({ isActive }) => {
             return (
               "flex w-full px-3 py-4 h-10 rounded-md hover:bg-[rgba(0,0,0,0.06)] hover:cursor-pointer dark:hover:bg-[rgba(255,255,255,0.2)] " +
-              (isActive ? "bg-[rgba(0,0,0,0.05)] dark:bg-[rgba(255,255,255,0.2)]" : "")
+              (isActive
+                ? "bg-[rgba(0,0,0,0.05)] dark:bg-[rgba(255,255,255,0.2)]"
+                : "")
             );
           }}
         >
@@ -58,18 +63,40 @@ const SideBar = () => {
         </NavLink>
 
         <div>
-          <div className="flex w-full px-3 py-4 h-10 cursor-pointer rounded-md hover:bg-[rgba(0,0,0,0.06)] dark:hover:bg-[rgba(255,255,255,0.2)] mt-5">
-            <div className="flex items-center justify-center gap-3">
-              <h1 className="text-base text-[#91918e] dark:text-[#a3a3a3]">
-                Pages
-              </h1>
+          <div
+            className="flex w-full px-3 py-4 h-10 cursor-pointer rounded-md hover:bg-[rgba(0,0,0,0.06)] dark:hover:bg-[rgba(255,255,255,0.2)] mt-5"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => {
+              setisSelected(!isSelected);
+            }}
+          >
+            <div className="flex items-center justify-center w-full gap-3">
+              <div className="flex justify-between w-full">
+                <h1 className="text-base text-[#91918e] dark:text-[#a3a3a3]">
+                  Pages
+                </h1>
+                {isHovered && (
+                  <div className="flex items-center gap-1">
+                    <IoEllipsisHorizontal
+                      title="delete,duplicate and..."
+                      size={18}
+                    />
+                    <IoAdd title="Add page" size={18} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <Document name={"document"} route={"/page1"} />
-          <Document name={"document"} route={"/page2"} />
-          <Document name={"document"} route={"/page3"} />
-          <Document name={"document"} route={"/page4"} />
+          {isSelected && (
+            <div>
+              <Document name={"document"} route={"/page1"} />
+              <Document name={"document"} route={"/page2"} />
+              <Document name={"document"} route={"/page3"} />
+              <Document name={"document"} route={"/page4"} />
+            </div>
+          )}
         </div>
       </div>
 
