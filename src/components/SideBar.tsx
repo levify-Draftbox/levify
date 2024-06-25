@@ -7,6 +7,8 @@ import { Button } from "./ui/button";
 import {
   Archive,
   CalendarBlank,
+  CaretDown,
+  CaretRight,
   FileText,
   PaperPlaneRight,
   Star,
@@ -14,9 +16,11 @@ import {
   Tray,
   WarningOctagon,
 } from "@phosphor-icons/react";
+import { useState } from "react";
 
 const SideBar = () => {
   const { setTheme, theme } = useTheme();
+  const [moreLess, setmoreLess] = useState(false);
 
   const handleTheme = () => {
     if (theme === "dark") {
@@ -27,12 +31,14 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full text-[#707070] p-2 bg-[#f5f5f5] dark:bg-transparent">
+    <div className="flex flex-col justify-between h-full text-[#707070] p-2 bg-[#f5f5f5] dark:bg-transparent selection:select-none">
       <div className="w-full flex flex-col mt-1">
         <div className="flex w-full px-3 h-10 rounded-md overflow-hidden hover:bg-[rgba(0,0,0,0.06)] cursor-pointer dark:hover:bg-[rgba(255,255,255,0.2)]">
           <div className="flex items-center justify-center gap-3 flex-shrink-0">
             <div className="w-10 h-10 rounded-sm bg-[#7c5cff]"></div>
-            <p className="dark:text-[#d5d5d5] max-w-40 text-xl truncate">Rellite Mail</p>
+            <p className="dark:text-[#d5d5d5] max-w-40 text-xl truncate">
+              Rellite Mail
+            </p>
           </div>
         </div>
 
@@ -63,22 +69,45 @@ const SideBar = () => {
             <p className="text-sm">Star</p>
           </Button>
 
-          <Button size={"lg"} variant={"Navlink"} to="/sendlater">
-            <CalendarBlank size={22} />
-            <p className="text-sm">Send later</p>
-          </Button>
-          <Button size={"lg"} variant={"Navlink"} to="/spam">
-            <WarningOctagon size={22} />
-            <p className="text-sm">Spam</p>
-          </Button>
-          <Button size={"lg"} variant={"Navlink"} to="/archive">
-            <Archive size={22} />
-            <p className="text-sm">Archive</p>
-          </Button>
-          <Button size={"lg"} variant={"Navlink"} to="/trash">
-            <TrashSimple size={22} />
-            <p className="text-sm">Trash</p>
-          </Button>
+          <div
+            onClick={() => {
+              setmoreLess(!moreLess);
+            }}
+            className="py-2 px-3 w-full rounded-lg hover:bg-[rgba(0,0,0,0.07)]"
+          >
+            {moreLess ? (
+              <div className="flex items-center gap-2">
+                <CaretRight size={10} />
+                <p className="text-sm">Less</p>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <CaretDown size={10} />
+                <p className="text-sm">More</p>
+              </div>
+            )}
+          </div>
+
+          {moreLess && (
+            <div>
+              <Button size={"lg"} variant={"Navlink"} to="/sendlater">
+                <CalendarBlank size={22} />
+                <p className="text-sm">Send later</p>
+              </Button>
+              <Button size={"lg"} variant={"Navlink"} to="/spam">
+                <WarningOctagon size={22} />
+                <p className="text-sm">Spam</p>
+              </Button>
+              <Button size={"lg"} variant={"Navlink"} to="/archive">
+                <Archive size={22} />
+                <p className="text-sm">Archive</p>
+              </Button>
+              <Button size={"lg"} variant={"Navlink"} to="/trash">
+                <TrashSimple size={22} />
+                <p className="text-sm">Trash</p>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
