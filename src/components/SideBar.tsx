@@ -1,17 +1,13 @@
-import { IoAdd, IoEllipsisHorizontal } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoSunnyOutline } from "react-icons/io5";
 import { IoMoonOutline } from "react-icons/io5";
 import { useTheme } from "./Theme-provider";
-import Document from "./Document";
-import { useState } from "react";
 import { Button } from "./ui/button";
 import {
   Archive,
   CalendarBlank,
   Export,
-  FilePlus,
   Gear,
   MagnifyingGlass,
   PaperPlaneRight,
@@ -22,8 +18,7 @@ import {
 
 const SideBar = () => {
   const { setTheme, theme } = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
-  const [isSelected, setisSelected] = useState(true);
+  
 
   const handleTheme = () => {
     if (theme === "dark") {
@@ -67,15 +62,6 @@ const SideBar = () => {
                 <h1 className="text-base text-[#91918e] dark:text-[#a3a3a3]">
                   MAIL
                 </h1>
-                {isHovered && (
-                  <div className="flex items-center gap-1">
-                    <IoEllipsisHorizontal
-                      title="delete,duplicate and..."
-                      size={18}
-                    />
-                    <IoAdd title="Add page" size={18} />
-                  </div>
-                )}
               </div>
             </div>
           </div>
