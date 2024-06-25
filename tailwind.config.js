@@ -56,6 +56,10 @@ export const theme = {
       active:{
         DEFAULT: "var(--active)",
         foreground:"var(--active-foreground)"
+      },
+      superactive:{
+        DEFAULT: "var(--superactive)",
+        foreground:"var(--superactive-foreground)"
       }
     },
     borderRadius: {

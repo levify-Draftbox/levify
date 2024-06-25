@@ -7,10 +7,9 @@ import { Button } from "./ui/button";
 import {
   Archive,
   CalendarBlank,
-  Export,
-  Gear,
-  MagnifyingGlass,
+  FileText,
   PaperPlaneRight,
+  Star,
   TrashSimple,
   Tray,
   WarningOctagon,
@@ -18,7 +17,6 @@ import {
 
 const SideBar = () => {
   const { setTheme, theme } = useTheme();
-  
 
   const handleTheme = () => {
     if (theme === "dark") {
@@ -33,62 +31,53 @@ const SideBar = () => {
       <div className="w-full flex flex-col mt-1">
         <div className="flex w-full px-3 h-10 rounded-md overflow-hidden hover:bg-[rgba(0,0,0,0.06)] cursor-pointer dark:hover:bg-[rgba(255,255,255,0.2)]">
           <div className="flex items-center justify-center gap-3 flex-shrink-0">
-            <div className="w-5 h-5 rounded-sm bg-white"></div>
-            <p className="dark:text-[#d5d5d5] max-w-40 truncate">user</p>
+            <div className="w-10 h-10 rounded-sm bg-[#7c5cff]"></div>
+            <p className="dark:text-[#d5d5d5] max-w-40 text-xl truncate">Rellite Mail</p>
           </div>
         </div>
 
-        <Button variant={"compose"} size={"lg"}>
-          <Export size={23} />
-          <p className="text-base">Compose</p>
-        </Button>
+        <div className="mt-5">
+          <Button variant={"superActive"} size={"lg"}>
+            <p className="text-base">New Mail</p>
+          </Button>
+        </div>
 
-        <Button variant={"active"} size={"lg"}>
-          <MagnifyingGlass size={23} />
-          <p className="text-base">Search</p>
-        </Button>
-
-        <Button variant={"active"} size={"lg"}>
-          <Gear size={23} />
-          <p className="text-base">Setting</p>
-        </Button>
-
-        <div>
-          <div
-            className="flex w-full px-3 py-4 h-10 cursor-pointer rounded-md mt-5"
-          >
-            <div className="flex items-center justify-center w-full gap-3">
-              <div className="flex justify-between w-full">
-                <h1 className="text-base text-[#91918e] dark:text-[#a3a3a3]">
-                  MAIL
-                </h1>
-              </div>
-            </div>
-          </div>
-
+        <div className="mt-5 flex flex-col gap-1">
           <Button size={"lg"} variant={"Navlink"} to="/inbox">
             <Tray size={23} />
-            <p className="text-base">Inbox</p>
+            <p className="text-sm">Inbox</p>
           </Button>
+
+          <Button size={"lg"} variant={"Navlink"} to="/Draft">
+            <FileText size={23} />
+            <p className="text-sm">Draft</p>
+          </Button>
+
           <Button size={"lg"} variant={"Navlink"} to="/send">
-            <PaperPlaneRight size={23} />
-            <p className="text-base">Send</p>
+            <PaperPlaneRight size={22} />
+            <p className="text-sm">Send</p>
           </Button>
+
+          <Button size={"lg"} variant={"Navlink"} to="/Star">
+            <Star size={22} />
+            <p className="text-sm">Star</p>
+          </Button>
+
           <Button size={"lg"} variant={"Navlink"} to="/sendlater">
-            <CalendarBlank size={23} />
-            <p className="text-base">Send later</p>
+            <CalendarBlank size={22} />
+            <p className="text-sm">Send later</p>
           </Button>
           <Button size={"lg"} variant={"Navlink"} to="/spam">
-            <WarningOctagon size={23} />
-            <p className="text-base">Spam</p>
+            <WarningOctagon size={22} />
+            <p className="text-sm">Spam</p>
           </Button>
           <Button size={"lg"} variant={"Navlink"} to="/archive">
-            <Archive size={23} />
-            <p className="text-base">Archive</p>
+            <Archive size={22} />
+            <p className="text-sm">Archive</p>
           </Button>
           <Button size={"lg"} variant={"Navlink"} to="/trash">
-            <TrashSimple size={23} />
-            <p className="text-base">Trash</p>
+            <TrashSimple size={22} />
+            <p className="text-sm">Trash</p>
           </Button>
         </div>
       </div>

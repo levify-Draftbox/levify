@@ -22,8 +22,8 @@ const button = cva(
         link: "text-primary underline-offset-4 hover:underline",
         active:
           "bg-transparant items-center justify-left gap-2 px-3  w-full text-active-foreground hover:bg-active hover:shadow",
-        compose:
-          "items-center justify-left gap-2 px-3  w-full text-active-foreground bg-active shadow",
+        superActive:
+          "items-center justify-center w-full text-superactive-foreground bg-superactive shadow",
         Navlink:
           "w-full gap-2 px-3 items-center justify-left hover:bg-[rgba(0,0,0,0.06)]",
       },
