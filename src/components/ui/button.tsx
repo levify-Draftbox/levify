@@ -22,13 +22,13 @@ const button = cva(
         active:
           "bg-transparant items-center justify-left gap-2 px-3  w-full text-active-foreground hover:bg-active hover:shadow",
         superActive:
-          "items-center justify-center w-full py-3 text-superactive-foreground bg-superactive shadow",
+          "items-center justify-center w-full py-3 bg-core hover:bg-core-lite shadow text-base !text-[#fff]",
         navlink:
-          "w-full gap-2 px-3 items-center text-normal justify-between hover:bg-[rgba(0,0,0,0.06)]",
+          "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-sidebar-navlink active:bg-sidebar-navlink-active text-base",
         toolbutton:"w-fit px-2 hover:bg-[rgba(0,0,0,0.06)]",
       },
       active: {
-        true: "bg-[rgba(0,0,0,0.06)] text-selected",
+        true: "is-active bg-sidebar-navlink font-semibold text-base-active",
       },
       size: {
         default: "h-9 rounded-md py-2",
@@ -64,6 +64,7 @@ const Button = React.forwardRef<
           return cn(button({ variant, size, className, active: isActive }));
         }}
         to={props.to}
+        end
       >
         {props.children}
       </NavLink>
