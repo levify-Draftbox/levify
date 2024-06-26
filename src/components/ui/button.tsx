@@ -25,16 +25,18 @@ const button = cva(
           "items-center justify-center w-full py-3 text-superactive-foreground bg-superactive shadow",
         navlink:
           "w-full gap-2 px-3 items-center text-normal justify-between hover:bg-[rgba(0,0,0,0.06)]",
+        toolbutton:"w-fit px-2 hover:bg-[rgba(0,0,0,0.06)]",
       },
       active: {
         true: "bg-[rgba(0,0,0,0.06)] text-selected",
       },
       size: {
         default: "h-9 rounded-md py-2",
-        superActive:"py-2 ",
+        superActive:"py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-xl",
         icon: "h-10 w-10",
+        toolsize:"py-1"
       },
     },
     defaultVariants: {
