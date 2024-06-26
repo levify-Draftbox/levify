@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Page from "./Backup/Page";
 import { ThemeProvider } from "./components/Theme-provider";
 import Login from "./Auth/Login";
+import Inbox from "./page/Inbox";
 
 function App() {
   return (
@@ -12,8 +13,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />}>
           <Route path="/" element={<h1>Hello Page</h1>} />
+          <Route path="/inbox" element={<Inbox />} />
           <Route path="/*" element={<Page />} />
-          <Route path="/page2" element={<Page />} />
           <Route path="/page3" element={<Page />} />
           <Route path="/page4" element={<Page />} />
         </Route>
