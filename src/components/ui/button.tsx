@@ -24,7 +24,7 @@ const button = cva(
         superActive:
           "items-center justify-center w-full text-superactive-foreground bg-superactive shadow",
         navlink:
-          "w-full gap-2 px-3 items-center text-normal justify-left hover:bg-[rgba(0,0,0,0.06)]",
+          "w-full gap-2 px-3 items-center text-normal justify-between hover:bg-[rgba(0,0,0,0.06)]",
       },
       active: {
         true: "bg-[rgba(0,0,0,0.06)] text-selected",
