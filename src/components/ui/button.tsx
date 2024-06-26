@@ -22,7 +22,7 @@ const button = cva(
         active:
           "bg-transparant items-center justify-left gap-2 px-3  w-full text-active-foreground hover:bg-active hover:shadow",
         superActive:
-          "items-center justify-center w-full text-superactive-foreground bg-superactive shadow",
+          "items-center justify-center w-full py-3 text-superactive-foreground bg-superactive shadow",
         navlink:
           "w-full gap-2 px-3 items-center text-normal justify-between hover:bg-[rgba(0,0,0,0.06)]",
       },
@@ -31,6 +31,7 @@ const button = cva(
       },
       size: {
         default: "h-9 rounded-md py-2",
+        superActive:"py-2 ",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-xl",
         icon: "h-10 w-10",

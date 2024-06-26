@@ -45,7 +45,7 @@ const SideBar = () => {
         </div>
 
         <div className="mt-3">
-          <Button variant={"superActive"} size={"lg"}>
+          <Button size={"superActive"} variant={"superActive"}>
             <p className="text-base">New Mail</p>
           </Button>
         </div>
@@ -53,7 +53,7 @@ const SideBar = () => {
         <div className="mt-5 flex flex-col gap-1">
           <Button variant={"navlink"} to="/inbox">
             <div className="flex gap-2">
-              <Tray size={21} />
+              <Tray size={18} />
               <p className="text-sm">Inbox</p>
             </div>
             <div>
@@ -71,7 +71,7 @@ const SideBar = () => {
 
           <Button variant={"navlink"} to="/Draft">
             <div className="flex gap-2">
-              <FileText size={21} />
+              <FileText size={18} />
               <p className="text-sm">Draft</p>
             </div>
             <div>
@@ -148,7 +148,7 @@ const SideBar = () => {
             <div className="flex flex-col gap-1">
               <Button variant={"navlink"} to="/sendlater">
                 <div className="flex gap-2">
-                  <CalendarBlank size={21} />
+                  <CalendarBlank size={18} />
                   <p className="text-sm">Send later</p>
                 </div>
                 <div>
@@ -165,7 +165,7 @@ const SideBar = () => {
               </Button>
               <Button variant={"navlink"} to="/spam">
                 <div className="flex gap-2">
-                  <WarningOctagon size={21} />
+                  <WarningOctagon size={18} />
                   <p className="text-sm">Spam</p>
                 </div>
                 <div>
@@ -182,7 +182,7 @@ const SideBar = () => {
               </Button>
               <Button variant={"navlink"} to="/archive">
                 <div className="flex gap-2">
-                  <Archive size={21} />
+                  <Archive size={18} />
                   <p className="text-sm">Archive</p>
                 </div>
                 <div>
@@ -199,7 +199,7 @@ const SideBar = () => {
               </Button>
               <Button variant={"navlink"} to="/trash">
                 <div className="flex gap-2">
-                  <TrashSimple size={21} />
+                  <TrashSimple size={18} />
                   <p className="text-sm">Trash</p>
                 </div>
                 <div>
@@ -227,12 +227,12 @@ const SideBar = () => {
           <div className="flex items-center justify-center gap-3">
             {theme === "light" ? (
               <IoMoonOutline
-                fontSize={21}
+                fontSize={18}
                 className="text-[#91918e] dark:text-[#a3a3a3]"
               />
             ) : (
               <IoSunnyOutline
-                fontSize={21}
+                fontSize={18}
                 className="text-[#91918e] dark:text-[#a3a3a3]"
               />
             )}
