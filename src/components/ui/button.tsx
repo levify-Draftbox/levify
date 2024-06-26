@@ -30,7 +30,7 @@ const button = cva(
         true: "bg-[rgba(0,0,0,0.06)] text-selected",
       },
       size: {
-        default: "h-10 rounded-md py-2",
+        default: "h-9 rounded-md py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-xl",
         icon: "h-10 w-10",

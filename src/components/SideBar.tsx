@@ -57,45 +57,68 @@ const SideBar = () => {
               <p className="text-sm">Inbox</p>
             </div>
             <div>
-              <p>efe</p>
+              <div className=" flex justify-center gap-2 items-center">
+                <ArrowClockwise
+                  size={18}
+                  className="hover:rotate-90 transition-all"
+                />
+                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                  1
+                </p>
+              </div>
             </div>
           </Button>
 
           <Button variant={"navlink"} to="/Draft">
             <div className="flex gap-2">
-            <FileText size={21} />
-            <p className="text-sm">Draft</p>
+              <FileText size={21} />
+              <p className="text-sm">Draft</p>
             </div>
             <div>
               <div className=" flex justify-center gap-2 items-center">
-                <ArrowClockwise size={18} className="hover:rotate-90 transition-all"/>
-                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                <ArrowClockwise
+                  size={18}
+                  className="hover:rotate-90 transition-all"
+                />
+                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                  1
+                </p>
               </div>
             </div>
           </Button>
 
           <Button variant={"navlink"} to="/send">
             <div className="flex gap-2">
-            <PaperPlaneRight size={22} />
-            <p className="text-sm">Send</p>
+              <PaperPlaneRight size={22} />
+              <p className="text-sm">Send</p>
             </div>
             <div>
               <div className=" flex justify-center gap-2 items-center">
-                <ArrowClockwise size={18} className="hover:rotate-90 transition-all"/>
-                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                <ArrowClockwise
+                  size={18}
+                  className="hover:rotate-90 transition-all"
+                />
+                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                  1
+                </p>
               </div>
             </div>
           </Button>
 
           <Button variant={"navlink"} to="/Star">
             <div className="flex gap-2">
-            <Star size={22} />
-            <p className="text-sm">Star</p>
+              <Star size={22} />
+              <p className="text-sm">Star</p>
             </div>
             <div>
               <div className=" flex justify-center gap-2 items-center">
-                <ArrowClockwise size={18} className="hover:rotate-90 transition-all"/>
-                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                <ArrowClockwise
+                  size={18}
+                  className="hover:rotate-90 transition-all"
+                />
+                <p className="text-white text-sm px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                  1
+                </p>
               </div>
             </div>
           </Button>
@@ -124,50 +147,70 @@ const SideBar = () => {
           {moreLess && (
             <div className="flex flex-col gap-1">
               <Button variant={"navlink"} to="/sendlater">
-            <div className="flex gap-2">
-                <CalendarBlank size={21} />
-                <p className="text-sm">Send later</p>
+                <div className="flex gap-2">
+                  <CalendarBlank size={21} />
+                  <p className="text-sm">Send later</p>
                 </div>
                 <div>
                   <div className=" flex justify-center gap-2 items-center">
-                    <ArrowClockwise size={18} className="hover:rotate-90 transition-all"  />
-                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                    <ArrowClockwise
+                      size={18}
+                      className="hover:rotate-90 transition-all"
+                    />
+                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                      1
+                    </p>
                   </div>
                 </div>
               </Button>
               <Button variant={"navlink"} to="/spam">
-            <div className="flex gap-2">
-                <WarningOctagon size={21} />
-                <p className="text-sm">Spam</p>
+                <div className="flex gap-2">
+                  <WarningOctagon size={21} />
+                  <p className="text-sm">Spam</p>
                 </div>
                 <div>
                   <div className=" flex justify-center gap-2 items-center">
-                    <ArrowClockwise size={18} className="hover:rotate-90 transition-all"  />
-                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                    <ArrowClockwise
+                      size={18}
+                      className="hover:rotate-90 transition-all"
+                    />
+                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                      1
+                    </p>
                   </div>
                 </div>
               </Button>
               <Button variant={"navlink"} to="/archive">
-            <div className="flex gap-2">
-                <Archive size={21} />
-                <p className="text-sm">Archive</p>
+                <div className="flex gap-2">
+                  <Archive size={21} />
+                  <p className="text-sm">Archive</p>
                 </div>
                 <div>
                   <div className=" flex justify-center gap-2 items-center">
-                    <ArrowClockwise size={18} className="hover:rotate-90 transition-all"  />
-                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                    <ArrowClockwise
+                      size={18}
+                      className="hover:rotate-90 transition-all"
+                    />
+                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                      1
+                    </p>
                   </div>
                 </div>
               </Button>
               <Button variant={"navlink"} to="/trash">
-            <div className="flex gap-2">
-                <TrashSimple size={21} />
-                <p className="text-sm">Trash</p>
+                <div className="flex gap-2">
+                  <TrashSimple size={21} />
+                  <p className="text-sm">Trash</p>
                 </div>
                 <div>
                   <div className=" flex justify-center gap-2 items-center">
-                    <ArrowClockwise size={18} className="hover:rotate-90 transition-all"  />
-                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-md py-[1px]">1</p>
+                    <ArrowClockwise
+                      size={18}
+                      className="hover:rotate-90 transition-all"
+                    />
+                    <p className="text-white text-sm1 px-[6px] bg-purple-700 rounded-sm py-[1px]">
+                      1
+                    </p>
                   </div>
                 </div>
               </Button>
