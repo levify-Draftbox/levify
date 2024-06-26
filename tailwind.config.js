@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-import tailwindcssAnimate from 'tailwindcss-animate';
-import typography from '@tailwindcss/typography';
+import tailwindcssAnimate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
 export const darkMode = ["class"];
 export const content = [
@@ -53,14 +53,18 @@ export const theme = {
         DEFAULT: "hsl(var(--card))",
         foreground: "hsl(var(--card-foreground))",
       },
-      active:{
+      active: {
         DEFAULT: "var(--active)",
-        foreground:"var(--active-foreground)"
+        foreground: "var(--active-foreground)",
+        selected: "var(--selected)",
       },
-      superactive:{
+      superactive: {
         DEFAULT: "var(--superactive)",
-        foreground:"var(--superactive-foreground)"
-      }
+        foreground: "var(--superactive-foreground)",
+        normal: "var(--normal)",
+
+      },
+      
     },
     borderRadius: {
       lg: "var(--radius)",

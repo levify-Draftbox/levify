@@ -39,10 +39,9 @@
 
     --superactive:#7c5cff;
     --superactive-foreground:rgb(255, 255, 255);
-
-
-    --href:
-
+    
+    --selected:#000000;
+    --normal:#707070;
   }
 
   .dark {

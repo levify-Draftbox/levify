@@ -1,7 +1,7 @@
 import "./app.css";
 import Home from "./Layout/Main";
 import { Routes, Route } from "react-router-dom";
-import Page from "./pages/Page";
+import Page from "./Backup/Page";
 import { ThemeProvider } from "./components/Theme-provider";
 import Login from "./Auth/Login";
 
