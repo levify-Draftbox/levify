@@ -2,7 +2,7 @@ import { Gear, MagnifyingGlass } from "@phosphor-icons/react";
 
 const SearchBar = () => {
   return (
-    <div className="w-full h-[60px] border-b-2">
+    <div  className="w-full h-[60px] border-b-2">
       <div className="flex h-full items-center justify-between px-3 py-[10px]">
         <div className="flex bg-[rgba(0,0,0,0.06)] h-full items-center px-3 rounded-lg">
             <MagnifyingGlass size={18}/>

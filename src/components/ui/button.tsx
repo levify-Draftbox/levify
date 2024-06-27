@@ -26,6 +26,7 @@ const button = cva(
         navlink:
           "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-sidebar-navlink active:bg-sidebar-navlink-active text-base",
         toolbutton:"w-fit px-2 hover:bg-[rgba(0,0,0,0.06)]",
+        star:"hover:text-yellow-500",
       },
       active: {
         true: "is-active bg-sidebar-navlink font-semibold text-base-active",
