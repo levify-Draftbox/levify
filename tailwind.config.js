@@ -68,8 +68,9 @@ export const theme = {
       },
       "sidebar-navlink": {
         DEFAULT: "var(--sidebar-navlink-bg)",
-        active: "var(--sidebar-navlink-bg-active)"
-      }
+        active: "var(--sidebar-navlink-bg-active)",
+      },
+      "inbox-bg": "var(--inbox-bg)",
     },
     borderRadius: {
       lg: "var(--radius)",

@@ -48,6 +48,9 @@
 
     --sidebar-navlink-bg: rgba(0,0,0,0.045);
     --sidebar-navlink-bg-active: rgba(0,0,0,0.07);
+
+
+    --inbox-bg:rgba(0,0,0,0.04);
   }
 
   .dark {
