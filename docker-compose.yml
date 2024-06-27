@@ -6,4 +6,4 @@ services:
       context: .
     ports:
       - "3031:3031"
-    container_name: pages-web
+    container_name: mail-web
