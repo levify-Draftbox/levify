@@ -58,18 +58,13 @@ export const theme = {
         foreground: "var(--active-foreground)",
         selected: "var(--selected)",
       },
-      core: {
-        DEFAULT: "var(--core)",
-        lite: "var(--core-lite)",
+      superactive: {
+        DEFAULT: "var(--superactive)",
+        foreground: "var(--superactive-foreground)",
+        normal: "var(--normal)",
+
       },
-      base: {
-        DEFAULT: "var(--base-forground)",
-        active: "var(--base-forground-active)",
-      },
-      "sidebar-navlink": {
-        DEFAULT: "var(--sidebar-navlink-bg)",
-        active: "var(--sidebar-navlink-bg-active)"
-      }
+      
     },
     borderRadius: {
       lg: "var(--radius)",

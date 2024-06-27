@@ -1,4 +1,5 @@
 import { Gear, MagnifyingGlass } from "@phosphor-icons/react";
+import React from "react";
 
 const SearchBar = () => {
   return (
