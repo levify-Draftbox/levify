@@ -1,14 +1,64 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import axios from "axios";
 
 const Login = () => {
-  const [varification, setVarification] = useState(false);
+  const [verification, setVerification] = useState(false);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const handleLogin = () => {
+    axios
+      .post("http://localhost:3030/login", { email })
+      .then((response) => {
+        console.log(response);
+        const token = response.data.token;
+        localStorage.setItem("authToken", token);
+        if (response.data.success === true) {
+          setVerification(true);
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
+
+  const handleVerification = () => {
+    const token = localStorage.getItem("authToken");
+    axios
+      .post(
+        "http://localhost:3030/veryfy",
+        { otp },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        // Handle successful verification
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setVarification(!varification);
+    if (verification) {
+      handleVerification();
+    } else {
+      handleLogin();
+    }
   };
+
 
   return (
     <div className="flex items-center justify-center flex-col h-screen">
@@ -32,21 +82,30 @@ const Login = () => {
               <Input
                 className="mt-2"
                 placeholder="Enter your email address.."
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
 
             <p className="text-sm text-slate-400 mt-2">
               Use an organization email to easily collaborate with teammates
             </p>
-
-            {varification && (
+            {verification && (
               <div className="mt-5">
                 <label>
                   <p className="text-sm">Verification code</p>
-                  <Input
-                    className="mt-2"
-                    placeholder="Paste Sing Up code"
-                  />
+                  <InputOTP
+                    value={otp}
+                    onChange={(otp) => setOtp(otp)}
+                    maxLength={4}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                    </InputOTPGroup>
+                  </InputOTP>
                 </label>
                 <p className="text-sm text-slate-400 mt-2">
                   We sent a code to your inbox
@@ -66,13 +125,13 @@ const Login = () => {
             Your name and photo are displayed to users who invite you to a
             workspace using your email. By continuing, you acknowledge that you
             understand and agree to the
-            <p className="text-gray-400 hover:text-blue-500 cursor-pointer inline">
+            <span className="text-gray-400 hover:text-blue-500 cursor-pointer inline">
               Terms & Conditions
-            </p>
+            </span>
             and
-            <p className="text-gray-400 hover:text-blue-500 cursor-pointer inline">
+            <span className="text-gray-400 hover:text-blue-500 cursor-pointer inline">
               Privacy Policy
-            </p>
+            </span>
           </p>
         </div>
       </div>
