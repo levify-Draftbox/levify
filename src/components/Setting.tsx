@@ -15,7 +15,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
         <motion.div
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{ stiffness: 200,duration:0.4 }}
+          transition={{ stiffness: 200,duration:0.25}}
         >
           <div className="p-3">
             <div className=" flex justify-between">
