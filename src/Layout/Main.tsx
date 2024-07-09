@@ -34,8 +34,8 @@ const Main = () => {
         <>
           <ResizableHandle />
           <ResizablePanel minSize={10} maxSize={20} defaultSize={13}>
-            <div className="h-full p-3 flex justify-between">
-              <h1>Settings</h1>
+            <div className="p-3 flex justify-between">
+              <h1 className="my-auto">Settings</h1>
               <Button variant={"toolbutton"} size={"toolsize"} className="h-8" onClick={()=> setViewSetting(!viewSetting)}> 
                 <X size={20} />
               </Button>
