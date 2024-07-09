@@ -16,7 +16,7 @@ const SearchBar = ({onSettingToggle}: SearchBarProp ) => {
             placeholder="Search Message"
           />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="cursor-pointer" onClick={() => onSettingToggle()}>
             <Gear size={23} className="cursor-pointer"/>
           </div>

@@ -53,10 +53,14 @@ const ToolBar = () => {
           <SortAscending size={20} />
         </Button>
 
-        <div className="flex items-center gap-5 ml-2 text-[rgba(0,0,0,0.6)]">
-          <CaretLeft size={14} />
+        <div className="flex items-center gap-4 ml-2 text-[rgba(0,0,0,0.6)] dark:text-[rgba(250,250,250,0.8)]">
+          <Button variant={"toolbutton"}>
+            <CaretLeft size={14} />
+          </Button>
           <p>1/1</p>
-          <CaretRight size={14} />
+          <Button variant={"toolbutton"}>
+            <CaretRight size={14} />
+          </Button>
         </div>
       </div>
     </div>

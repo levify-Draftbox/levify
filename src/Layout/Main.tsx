@@ -2,15 +2,16 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable"
-import SideBar from "../components/SideBar"
-import { Outlet } from "react-router-dom"
-import SearchBar from "@/components/SearchBar"
-import { useState } from "react"
+} from "@/components/ui/resizable";
+import SideBar from "../components/SideBar";
+import { Outlet } from "react-router-dom";
+import SearchBar from "@/components/SearchBar";
+import { useState } from "react";
+import { X } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
 
 const Main = () => {
-
-  const [viewSetting, setViewSetting] = useState(false)
+  const [viewSetting, setViewSetting] = useState(false);
 
   return (
     <ResizablePanelGroup
@@ -29,19 +30,21 @@ const Main = () => {
           <Outlet />
         </div>
       </ResizablePanel>
-      {
-        viewSetting &&
+      {viewSetting && (
         <>
           <ResizableHandle />
           <ResizablePanel minSize={10} maxSize={20} defaultSize={13}>
-            <div className="h-full">
-              Hello
+            <div className="h-full p-3 flex justify-between">
+              <h1>Settings</h1>
+              <Button variant={"toolbutton"} size={"toolsize"} className="h-8" onClick={()=> setViewSetting(!viewSetting)}> 
+                <X size={20} />
+              </Button>
             </div>
           </ResizablePanel>
         </>
-      }
+      )}
     </ResizablePanelGroup>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;

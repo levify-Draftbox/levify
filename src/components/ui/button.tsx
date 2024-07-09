@@ -25,10 +25,10 @@ const button = cva(
           "items-center justify-center w-full py-3 bg-core hover:bg-core-lite shadow text-base !text-[#fff]",
         navlink:
           "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-sidebar-navlink active:bg-sidebar-navlink-active text-base",
-        toolbutton:"w-fit px-2 hover:bg-[rgba(0,0,0,0.06)]",
+        toolbutton:"w-fit px-2 flex items-center hover:bg-[rgba(0,0,0,0.06)] dark:hover:bg-[rgba(250,250,250,0.19)]",
         star:"hover:text-yellow-500",
       },
-      active: {
+      active: { 
         true: "is-active bg-sidebar-navlink font-semibold text-base-active",
       },
       size: {
