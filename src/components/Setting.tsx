@@ -2,6 +2,7 @@ import { X } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { ResizableHandle, ResizablePanel } from "./ui/resizable";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -39,8 +40,11 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
     </>
   );
 };
-
 const SettingSidebar = () => {
+  const [toggleLayout, settoggleLayout] = useState(false);
+  const [toggleDensity, settoggleDensity] = useState(false);
+  const [togglecomposer, settogglecomposer] = useState(false);
+
   return (
     <div>
       <Button variant={"superActive"} className="my-2">
@@ -49,24 +53,60 @@ const SettingSidebar = () => {
       <Button variant={"whiteButton"} className="mt-2">
         Get the Rellite Mail app
       </Button>
-      <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow">
+      <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-4">
-          <div className="flex justify-between cursor-pointer">
+          <div
+            className="flex justify-between cursor-pointer"
+            onClick={() => settoggleLayout(!toggleLayout)}
+          >
             <p>Layout</p>
-            <p>row</p>
+            <p className="text-core text-sm capitalize">row</p>
           </div>
-          <div className="flex justify-between cursor-pointer">
+
+          {toggleLayout && (
+            <motion.div
+            initial={{y:-20,opacity:0}}
+            animate={{y:0,opacity:1}}
+            className="flex gap-4">
+              <div className="w-28 h-16 bg-black"></div>
+              <div className="w-28 h-16 bg-core"></div>
+            </motion.div>
+          )}
+
+          <div className="flex justify-between cursor-pointer"
+          onClick={() => settoggleDensity(!toggleDensity)}>
             <p>Density</p>
-            <p>comfortable</p>
+            <p className="text-core text-sm capitalize">comfortable</p>
           </div>
-          <div className="flex justify-between cursor-pointer">
+
+          {toggleDensity && (
+            <motion.div
+            initial={{y:-20,opacity:0}}
+            animate={{y:0,opacity:1}}
+            className="flex gap-4">
+              <div className="w-28 h-16 bg-black"></div>
+              <div className="w-28 h-16 bg-core"></div>
+            </motion.div>
+          )}
+          <div className="flex justify-between cursor-pointer"
+          onClick={() => settogglecomposer(!togglecomposer)}>
             <p>composer</p>
-            <p>Normal</p>
+            <p className="text-core text-sm capitalize">Normal</p>
           </div>
+
+          {togglecomposer && (
+            <motion.div
+            initial={{y:-20,opacity:0}}
+            animate={{y:0,opacity:1}}
+            className="flex gap-4">
+              <div className="w-28 h-16 bg-black"></div>
+              <div className="w-28 h-16 bg-core"></div>
+            </motion.div>
+          )}
         </div>
       </div>
 
-      <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow">
+      <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-6 mt-2">
           <div className="flex justify-between cursor-pointer">
             <p>Keyboard shortcuts</p>
@@ -84,7 +124,9 @@ const SettingSidebar = () => {
           </div>
 
           <div className="cursor-pointer">
-            <p><strong>Theme: </strong>Rellite</p>
+            <p>
+              <strong>Theme: </strong>Rellite
+            </p>
             <div className="flex justify-between mt-2">
               <p>Sync with system</p>
               <label className="inline-flex items-center cursor-pointer">
@@ -100,9 +142,5 @@ const SettingSidebar = () => {
 };
 
 export { SettingSidebar };
-
-
-
-
 
 export default Setting;
