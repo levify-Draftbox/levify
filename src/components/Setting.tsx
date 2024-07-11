@@ -4,6 +4,7 @@ import { ResizableHandle, ResizablePanel } from "./ui/resizable";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import Modal from "./Model";
 type SearchBarProp = {
   onSettingToggle: () => void;
 };
@@ -44,17 +45,30 @@ const SettingSidebar = () => {
   const [toggleLayout, settoggleLayout] = useState(false);
   const [toggleDensity, settoggleDensity] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const handleImageClick = (index: number) => {
     setSelectedImage(index);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+ 
+
   return (
     <div>
-      <Button variant={"superActive"} className="my-2">
+      <Button onClick={handleButtonClick} variant="superActive" className="my-2">
         All Settings
       </Button>
+      {isModalOpen && <Modal onClose={handleCloseModal}/>}
       <Button variant={"whiteButton"} className="mt-2">
         Get the Rellite Mail app
       </Button>
