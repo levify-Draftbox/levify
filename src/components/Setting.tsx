@@ -44,9 +44,9 @@ const SettingSidebar = () => {
   const [toggleLayout, settoggleLayout] = useState(false);
   const [toggleDensity, settoggleDensity] = useState(false);
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
-  const handleImageClick = (index) => {
+  const handleImageClick = (index: number) => {
     setSelectedImage(index);
   };
 
