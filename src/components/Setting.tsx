@@ -1,8 +1,8 @@
-import { X } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { ResizableHandle, ResizablePanel } from "./ui/resizable";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -28,7 +28,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
                 className="h-8"
                 onClick={() => onSettingToggle()}
               >
-                <X size={20} />
+                <ArrowRight size={20} />
               </Button>
             </div>
             <div className="mt-3">
@@ -43,6 +43,13 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
 const SettingSidebar = () => {
   const [toggleLayout, settoggleLayout] = useState(false);
   const [toggleDensity, settoggleDensity] = useState(false);
+
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageClick = (index: number | SetStateAction<null>) => {
+    setSelectedImage(index);
+  };
+
 
   return (
     <div>
@@ -87,14 +94,24 @@ const SettingSidebar = () => {
           </div>
 
           {toggleLayout && (
-            <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="flex gap-4"
-            >
-              <div className="w-28 h-16 bg-black"></div>
-              <div className="w-28 h-16 bg-core"></div>
-            </motion.div>
+             <motion.div
+             initial={{ y: -20, opacity: 0 }}
+             animate={{ y: 0, opacity: 1 }}
+             className="flex gap-4"
+           >
+             <img
+               src="./download (1).jpg"
+               className={`w-28 h-16 object-cover rounded-md ${selectedImage === 1 ? 'ring-2 ring-core' : ''}`}
+               onClick={() => handleImageClick(1)}
+               alt="Image 1"
+             />
+             <img
+               src="./download.jpg"
+               className={`w-28 h-16 object-cover rounded-md ${selectedImage === 2 ? 'ring-2 ring-core' : ''}`}
+               onClick={() => handleImageClick(2)}
+               alt="Image 2"
+             />
+           </motion.div>
           )}
 
           <div
@@ -107,13 +124,23 @@ const SettingSidebar = () => {
 
           {toggleDensity && (
             <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="flex gap-4"
-            >
-              <div className="w-28 h-16 bg-black"></div>
-              <div className="w-28 h-16 bg-core"></div>
-            </motion.div>
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="flex gap-4"
+          >
+            <img
+              src="./download (1).jpg"
+              className={`w-28 h-16 object-cover rounded-md ${selectedImage === 1 ? 'ring-2 ring-core' : ''}`}
+              onClick={() => handleImageClick(1)}
+              alt="Image 1"
+            />
+            <img
+              src="./download.jpg"
+              className={`w-28 h-16 object-cover rounded-md ${selectedImage === 2 ? 'ring-2 ring-core' : ''}`}
+              onClick={() => handleImageClick(2)}
+              alt="Image 2"
+            />
+          </motion.div>
           )}
 
           <div className="cursor-pointer">
@@ -163,19 +190,19 @@ const SettingSidebar = () => {
       </div>
 
       <div className="flex flex-wrap gap-1 p-2 mt-2">
-        <Button variant={"link"} size={"toolsize"}>
+        <Button variant={"link"} size={"toolsize"} >
           About .
         </Button>
-        <Button variant={"link"} size={"toolsize"}>
+        <Button variant={"link"} size={"toolsize"} >
           Help .
         </Button>
-        <Button variant={"link"} size={"toolsize"}>
+        <Button variant={"link"} size={"toolsize"} >
           Contact .
         </Button>
-        <Button variant={"link"} size={"toolsize"}>
+        <Button variant={"link"} size={"toolsize"} >
           Rellite .
         </Button>
-        <Button variant={"link"} size={"toolsize"}>
+        <Button variant={"link"} size={"toolsize"} >
           Privacy And Polacy .
         </Button>
       </div>
