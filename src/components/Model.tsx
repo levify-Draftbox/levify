@@ -1,13 +1,13 @@
 import { X } from "@phosphor-icons/react";
-import React from "react";
+import { FC } from "react";
 import ReactDOM from "react-dom";
 import { Button } from "./ui/button";
 
-type Modeltype = {
-    onClose: () => void;
-  };
+type ModalProps = {
+  onClose: () => void;
+};
 
-const Modal: React.FC = ({ onClose }:Modeltype) => {
+const Model: FC<ModalProps> = ({ onClose }) => {
   const portalRoot = document.querySelector(".reactPortal");
 
   if (!portalRoot) {
@@ -21,11 +21,11 @@ const Modal: React.FC = ({ onClose }:Modeltype) => {
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white w-[80%] h-[80%] rounded-lg p-4">
         <div className="flex justify-between">
           <h1>Modal</h1>
-          <Button variant={"toolbutton"} onClick={handleCloseModal}>
+          <Button variant="toolbutton" onClick={handleCloseModal}>
             <X size={20} />
           </Button>
         </div>
@@ -35,4 +35,4 @@ const Modal: React.FC = ({ onClose }:Modeltype) => {
   );
 };
 
-export default Modal;
+export default Model;

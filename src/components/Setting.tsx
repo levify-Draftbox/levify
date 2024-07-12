@@ -4,10 +4,13 @@ import { ResizableHandle, ResizablePanel } from "./ui/resizable";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import Modal from "./Model";
+import Modal from "./Model"; // Make sure to import Modal correctly
+
 type SearchBarProp = {
   onSettingToggle: () => void;
 };
+
+
 
 const Setting = ({ onSettingToggle }: SearchBarProp) => {
   return (
@@ -20,8 +23,8 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
           transition={{ stiffness: 200, duration: 0.25 }}
           className="h-full bg-inbox-bg select-none"
         >
-          <div className="p-3 ">
-            <div className=" flex justify-between">
+          <div className="p-3">
+            <div className="flex justify-between">
               <h1 className="my-auto">Settings</h1>
               <Button
                 variant={"toolbutton"}
@@ -41,17 +44,16 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
     </>
   );
 };
-const SettingSidebar = () => {
-  const [toggleLayout, settoggleLayout] = useState(false);
-  const [toggleDensity, settoggleDensity] = useState(false);
 
+const SettingSidebar = () => {
+  const [toggleLayout, setToggleLayout] = useState(false);
+  const [toggleDensity, setToggleDensity] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const handleButtonClick = () => {
     setIsModalOpen(!isModalOpen);
   };
-
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const handleImageClick = (index: number) => {
     setSelectedImage(index);
@@ -61,26 +63,24 @@ const SettingSidebar = () => {
     setIsModalOpen(false);
   };
 
- 
-
   return (
     <div>
       <Button onClick={handleButtonClick} variant="superActive" className="my-2">
         All Settings
       </Button>
-      {isModalOpen && <Modal onClose={handleCloseModal}/>}
+      {isModalOpen && <Modal onClose={handleCloseModal} />}
       <Button variant={"whiteButton"} className="mt-2">
         Get the Rellite Mail app
       </Button>
 
-      <div className="bg-white mt-3  items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
+      <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-3 mt-2 mb-3">
           <div className="text-center mb-1">
             <h2 className="font-semibold">Your Plan</h2>
           </div>
           <div className="w-full pt-1 px-1">
             <Progress value={10} />
-            <div className="text-xs flex justify-between  mt-2">
+            <div className="text-xs flex justify-between mt-2">
               <div className="flex">
                 <span className="font-semibold">200 MB </span>
                 <p>/ 2.0 GB</p>
@@ -88,7 +88,7 @@ const SettingSidebar = () => {
             </div>
           </div>
           <Button variant={"superActive"} className="capitalize">
-            upgrad your plan
+            Upgrade your plan
           </Button>
         </div>
       </div>
@@ -100,7 +100,7 @@ const SettingSidebar = () => {
           </div>
           <div
             className="flex justify-between cursor-pointer"
-            onClick={() => settoggleLayout(!toggleLayout)}
+            onClick={() => setToggleLayout(!toggleLayout)}
           >
             <p>Layout</p>
             <p className="text-core text-sm capitalize">row</p>
@@ -133,7 +133,7 @@ const SettingSidebar = () => {
 
           <div
             className="flex justify-between cursor-pointer"
-            onClick={() => settoggleDensity(!toggleDensity)}
+            onClick={() => setToggleDensity(!toggleDensity)}
           >
             <p>Density</p>
             <p className="text-core text-sm capitalize">comfortable</p>
@@ -222,7 +222,7 @@ const SettingSidebar = () => {
           Rellite .
         </Button>
         <Button variant={"link"} size={"toolsize"}>
-          Privacy And Polacy .
+          Privacy And Policy .
         </Button>
       </div>
     </div>
