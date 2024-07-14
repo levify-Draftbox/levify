@@ -34,11 +34,18 @@ const Modal: FC<ModalProps> = ({ onClose }) => {
   return ReactDOM.createPortal(
     <AnimatePresence>
       {isVisible && (
-        <motion.div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ ease: "easeInOut", duration: .15 }}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        >
           <motion.div
-            initial={{ opacity: 0, scale: 1.1 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ ease: "easeInOut", duration: .15 }}
             className="bg-white w-[80%] h-[80%] rounded-lg p-4"
           >
             <div className="flex justify-between">
