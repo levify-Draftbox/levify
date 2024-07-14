@@ -1,7 +1,7 @@
 import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { ResizableHandle, ResizablePanel } from "./ui/resizable";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "./Model"; // Make sure to import Modal correctly
@@ -9,8 +9,6 @@ import Modal from "./Model"; // Make sure to import Modal correctly
 type SearchBarProp = {
   onSettingToggle: () => void;
 };
-
-
 
 const Setting = ({ onSettingToggle }: SearchBarProp) => {
   return (
@@ -36,7 +34,9 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
               </Button>
             </div>
             <div className="mt-3">
-              <SettingSidebar />
+              <AnimatePresence>
+                <SettingSidebar />
+              </AnimatePresence>
             </div>
           </div>
         </motion.div>
@@ -65,7 +65,11 @@ const SettingSidebar = () => {
 
   return (
     <div>
-      <Button onClick={handleButtonClick} variant="superActive" className="my-2">
+      <Button
+        onClick={handleButtonClick}
+        variant="superActive"
+        className="my-2"
+      >
         All Settings
       </Button>
       {isModalOpen && <Modal onClose={handleCloseModal} />}
