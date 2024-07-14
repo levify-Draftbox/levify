@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "./Model"; // Make sure to import Modal correctly
+import { ChevronRight } from "lucide-react";
 
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -30,7 +31,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
                 className="h-8"
                 onClick={() => onSettingToggle()}
               >
-                <ArrowRight size={20} />
+                <ChevronRight size={20} />
               </Button>
             </div>
             <div className="mt-3">
