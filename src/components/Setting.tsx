@@ -19,9 +19,9 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ stiffness: 200, duration: 0.25 }}
-          className="h-full bg-inbox-bg select-none"
+          className="!h-[100vh] overflow-auto bg-inbox-bg select-none"
         >
-          <div className="p-3">
+          <div className="p-3 h-[100vh] overflow-auto scroll-bar">
             <div className="flex justify-between">
               <h1 className="my-auto">Settings</h1>
               <Button
@@ -33,7 +33,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
                 <ChevronRight size={20} />
               </Button>
             </div>
-            <div className="mt-3">
+            <div>
               <AnimatePresence>
                 <SettingSidebar />
               </AnimatePresence>
@@ -73,14 +73,15 @@ const SettingSidebar = () => {
         All Settings
       </Button>
       {isModalOpen && <Modal onClose={handleCloseModal} />}
-      <Button variant={"whiteButton"} className="mt-2">
-        Get the Rellite Mail app
-      </Button>
+      <div className="flex w-full justify-between">
+        <img style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }} className="h-auto cursor-pointer dark:border" src={"/getgoogleplay.png"} alt={"Get From Google Play"} />
+        <img style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }} className="h-auto cursor-pointer dark:border" src={"/getappstore.png"} alt={"Get From App Store"} />
+      </div>
 
       <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-3 mt-2 mb-3">
-          <div className="text-center mb-1">
-            <h2 className="font-semibold">Your Plan</h2>
+          <div className="mb-1">
+            <h2 className="text-xs text-gray-700 dark:text-gray-400">Your Plan</h2>
           </div>
           <div className="w-full pt-1 px-1">
             <Progress value={10} />
@@ -98,9 +99,9 @@ const SettingSidebar = () => {
       </div>
 
       <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
-        <div className="px-2 flex flex-col gap-4">
-          <div className="text-center mb-1">
-            <h2 className="font-semibold">Personalization</h2>
+        <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
+          <div className="">
+            <h2 className="text-xs text-gray-700 dark:text-gray-400">Personalization</h2>
           </div>
           <div
             className="flex justify-between cursor-pointer"
@@ -114,21 +115,26 @@ const SettingSidebar = () => {
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
+              transition={{ ease: "easeInOut" }}
               className="flex gap-4"
             >
               <img
                 src="./download (1).jpg"
-                className={`w-28 h-16 object-cover rounded-md ${
-                  selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+                style={{
+                  width: "calc((100% - 1rem) / 2)"
+                }}
+                className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
               <img
                 src="./download.jpg"
-                className={`w-28 h-16 object-cover rounded-md ${
-                  selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+                style={{
+                  width: "calc((100% - 1rem) / 2)"
+                }}
+                className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -147,21 +153,26 @@ const SettingSidebar = () => {
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
+              transition={{ ease: "easeInOut" }}
               className="flex gap-4"
             >
               <img
                 src="./download (1).jpg"
-                className={`w-28 h-16 object-cover rounded-md ${
-                  selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+                style={{
+                  width: "calc((100% - 1rem) / 2)"
+                }}
+                className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
               <img
                 src="./download.jpg"
-                className={`w-28 h-16 object-cover rounded-md ${
-                  selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+                style={{
+                  width: "calc((100% - 1rem) / 2)"
+                }}
+                className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -184,9 +195,9 @@ const SettingSidebar = () => {
       </div>
 
       <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
-        <div className="px-2 flex flex-col gap-6 mt-2">
-          <div className="text-center mb-1">
-            <h2 className="font-semibold">Preferences</h2>
+        <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
+          <div className="">
+            <h2 className="text-xs text-gray-700 dark:text-gray-400">Preferences</h2>
           </div>
           <div className="flex justify-between cursor-pointer">
             <p>Keyboard shortcuts</p>
@@ -212,22 +223,26 @@ const SettingSidebar = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1 p-2 mt-2">
-        <Button variant={"link"} size={"toolsize"}>
-          About .
-        </Button>
-        <Button variant={"link"} size={"toolsize"}>
-          Help .
-        </Button>
-        <Button variant={"link"} size={"toolsize"}>
-          Contact .
-        </Button>
-        <Button variant={"link"} size={"toolsize"}>
-          Rellite .
-        </Button>
-        <Button variant={"link"} size={"toolsize"}>
-          Privacy And Policy .
-        </Button>
+      <div className="flex flex-wrap gap-1 p-2 mt-2 justify-center text-xs text-gray-400">
+        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+          About
+        </a>
+        •
+        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+          Help
+        </a>
+        •
+        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+          Contact
+        </a>
+        •
+        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+          Rellite
+        </a>
+        •
+        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+          Privacy And Policy
+        </a>
       </div>
     </div>
   );

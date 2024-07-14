@@ -104,3 +104,28 @@ body {
     "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji",
     Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
+
+html{
+  height: 100vh;
+  overflow: hidden;
+}
+
+.scroll-bar::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+.scroll-bar::-webkit-scrollbar-track {
+  background: transparent; 
+}
+ 
+/* Handle */
+.scroll-bar::-webkit-scrollbar-thumb {
+  background: #88888863; 
+}
+
+/* Handle on hover */
+.scroll-bar::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}

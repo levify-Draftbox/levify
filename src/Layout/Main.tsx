@@ -15,7 +15,7 @@ const Main = () => {
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="min-h-screen max-w-full rounded-lg border"
+      className="min-h-screen max-h-screen max-w-full"
     >
       <ResizablePanel minSize={13} maxSize={20} defaultSize={13}>
         <div className="h-full">
