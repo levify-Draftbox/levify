@@ -39,7 +39,12 @@ const Modal: FC<ModalProps> = ({ onClose }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ ease: "easeInOut", duration: .15 }}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).classList.contains("modal--backdrop")) {
+              handleCloseModal()
+            }
+          }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
