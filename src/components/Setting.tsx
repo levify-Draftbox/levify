@@ -13,34 +13,35 @@ type SearchBarProp = {
 const Setting = ({ onSettingToggle }: SearchBarProp) => {
   return (
     <>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={20}>
-        <motion.div
-          initial={{ x: 50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ stiffness: 200, duration: 0.25 }}
-          className="h-full bg-inbox-bg select-none"
-        >
-          <div className="p-3">
-            <div className="flex justify-between">
-              <h1 className="my-auto">Settings</h1>
-              <Button
-                variant={"toolbutton"}
-                size={"toolsize"}
-                className="h-8"
-                onClick={() => onSettingToggle()}
-              >
-                <ArrowRight size={20} />
-              </Button>
-            </div>
-            <div className="mt-3">
-              <AnimatePresence>
+      <AnimatePresence>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={20}>
+          <motion.div
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ stiffness: 200, duration: 0.25 }}
+            exit={{ x: 50, opacity: 0 }}
+            className="h-full bg-inbox-bg select-none"
+          >
+            <div className="p-3">
+              <div className="flex justify-between">
+                <h1 className="my-auto">Settings</h1>
+                <Button
+                  variant={"toolbutton"}
+                  size={"toolsize"}
+                  className="h-8"
+                  onClick={() => onSettingToggle()}
+                >
+                  <ArrowRight size={20} />
+                </Button>
+              </div>
+              <div className="mt-3">
                 <SettingSidebar />
-              </AnimatePresence>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </ResizablePanel>
+          </motion.div>
+        </ResizablePanel>
+      </AnimatePresence>
     </>
   );
 };
