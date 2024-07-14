@@ -1,4 +1,3 @@
-import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { ResizableHandle, ResizablePanel } from "./ui/resizable";
 import { AnimatePresence, motion } from "framer-motion";
