@@ -74,14 +74,26 @@ const SettingSidebar = () => {
       </Button>
       {isModalOpen && <Modal onClose={handleCloseModal} />}
       <div className="flex w-full justify-between">
-        <img style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }} className="h-auto cursor-pointer dark:border" src={"/getgoogleplay.png"} alt={"Get From Google Play"} />
-        <img style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }} className="h-auto cursor-pointer dark:border" src={"/getappstore.png"} alt={"Get From App Store"} />
+        <img
+          style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }}
+          className="h-auto cursor-pointer dark:border"
+          src={"/getgoogleplay.png"}
+          alt={"Get From Google Play"}
+        />
+        <img
+          style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }}
+          className="h-auto cursor-pointer dark:border"
+          src={"/getappstore.png"}
+          alt={"Get From App Store"}
+        />
       </div>
 
       <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-3 mt-2 mb-3">
           <div className="mb-1">
-            <h2 className="text-xs text-gray-700 dark:text-gray-400">Your Plan</h2>
+            <h2 className="text-xs text-gray-700 dark:text-gray-400">
+              Your Plan
+            </h2>
           </div>
           <div className="w-full pt-1 px-1">
             <Progress value={10} />
@@ -101,7 +113,9 @@ const SettingSidebar = () => {
       <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
           <div className="">
-            <h2 className="text-xs text-gray-700 dark:text-gray-400">Personalization</h2>
+            <h2 className="text-xs text-gray-700 dark:text-gray-400">
+              Personalization
+            </h2>
           </div>
           <div
             className="flex justify-between cursor-pointer"
@@ -121,20 +135,22 @@ const SettingSidebar = () => {
               <img
                 src="./download (1).jpg"
                 style={{
-                  width: "calc((100% - 1rem) / 2)"
+                  width: "calc((100% - 1rem) / 2)",
                 }}
-                className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
-                  }`}
+                className={`h-auto object-cover rounded-md ${
+                  selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
               <img
                 src="./download.jpg"
                 style={{
-                  width: "calc((100% - 1rem) / 2)"
+                  width: "calc((100% - 1rem) / 2)",
                 }}
-                className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
-                  }`}
+                className={`h-auto object-cover rounded-md ${
+                  selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -159,20 +175,22 @@ const SettingSidebar = () => {
               <img
                 src="./download (1).jpg"
                 style={{
-                  width: "calc((100% - 1rem) / 2)"
+                  width: "calc((100% - 1rem) / 2)",
                 }}
-                className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
-                  }`}
+                className={`h-auto object-cover rounded-md ${
+                  selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
               <img
                 src="./download.jpg"
                 style={{
-                  width: "calc((100% - 1rem) / 2)"
+                  width: "calc((100% - 1rem) / 2)",
                 }}
-                className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
-                  }`}
+                className={`h-auto object-cover rounded-md ${
+                  selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -191,13 +209,28 @@ const SettingSidebar = () => {
               </label>
             </div> */}
           </div>
+
+          <div className="cursor-pointer">
+            <p>
+              <strong>Colors: </strong>
+            </p>
+            <div className="flex gap-3 mt-2">
+              <div className="w-10 h-10 rounded-full bg-red-600"></div>
+              <div className="w-10 h-10 rounded-full bg-green-600"></div>
+              <div className="w-10 h-10 rounded-full bg-blue-600"></div>
+              <div className="w-10 h-10 rounded-full bg-black"></div>
+              <div className="w-10 h-10 rounded-full bg-yellow-600"></div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
         <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
           <div className="">
-            <h2 className="text-xs text-gray-700 dark:text-gray-400">Preferences</h2>
+            <h2 className="text-xs text-gray-700 dark:text-gray-400">
+              Preferences
+            </h2>
           </div>
           <div className="flex justify-between cursor-pointer">
             <p>Keyboard shortcuts</p>
@@ -224,23 +257,43 @@ const SettingSidebar = () => {
       </div>
 
       <div className="flex flex-wrap gap-1 p-2 mt-2 justify-center text-xs text-gray-400">
-        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+        <a
+          target="_blank"
+          href="/"
+          className="hover:underline hover:text-gray-50"
+        >
           About
         </a>
         •
-        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+        <a
+          target="_blank"
+          href="/"
+          className="hover:underline hover:text-gray-50"
+        >
           Help
         </a>
         •
-        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+        <a
+          target="_blank"
+          href="/"
+          className="hover:underline hover:text-gray-50"
+        >
           Contact
         </a>
         •
-        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+        <a
+          target="_blank"
+          href="/"
+          className="hover:underline hover:text-gray-50"
+        >
           Rellite
         </a>
         •
-        <a target="_blank" href="/" className="hover:underline hover:text-gray-50">
+        <a
+          target="_blank"
+          href="/"
+          className="hover:underline hover:text-gray-50"
+        >
           Privacy And Policy
         </a>
       </div>
