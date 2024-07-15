@@ -1,10 +1,24 @@
 import { Button } from "./ui/button";
-import { ResizableHandle, ResizablePanel } from "./ui/resizable";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "./Model"; // Make sure to import Modal correctly
 import { ChevronRight } from "lucide-react";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "./ui/resizable";
+import { PaintRoller } from "lucide-react";
+import {
+  BoxArrowUp,
+  Globe,
+  Key,
+  Shield,
+  SquaresFour,
+  User,
+  X,
+} from "@phosphor-icons/react";
 
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -77,7 +91,168 @@ const SettingSidebar = () => {
       >
         All Settings
       </Button>
-      {isModalOpen && <Modal onClose={handleCloseModal} />}
+      {isModalOpen && (
+        <Modal onClose={handleCloseModal}>
+          <ResizablePanelGroup
+            className="min-h-full max-w-full rounded-lg border"
+            direction="horizontal"
+          >
+            <ResizablePanel minSize={14} maxSize={20} defaultSize={14}>
+              <div>
+                <div>
+                  <div className="mt-3">
+                    <p className="text-sm">Account</p>
+                    <div className="mt-2">
+                      <SidebarNavLink
+                        icon={<SquaresFour size={18} />}
+                        to="/inbox/dashbord"
+                      >
+                        Dashbord
+                      </SidebarNavLink>
+                    </div>
+                    <div className="mt-1">
+                      <SidebarNavLink
+                        icon={<BoxArrowUp size={18} />}
+                        to="/inbox/star"
+                      >
+                        Upgread plan
+                      </SidebarNavLink>
+                    </div>
+                    <div className="mt-1">
+                      <SidebarNavLink
+                        icon={<Key size={18} />}
+                        to="/inbox/recovery"
+                      >
+                        Recovery
+                      </SidebarNavLink>
+                    </div>
+                    <div className="mt-1">
+                      <SidebarNavLink
+                        icon={<User size={18} />}
+                        to="/inbox/account"
+                      >
+                        Account and Password
+                      </SidebarNavLink>
+                    </div>
+                    <div className="mt-1">
+                      <SidebarNavLink
+                        icon={<Globe size={18} />}
+                        to="/inbox/star"
+                      >
+                        Language and time
+                      </SidebarNavLink>
+                    </div>
+                    <div className="mt-1">
+                      <SidebarNavLink
+                        icon={<PaintRoller size={18} />}
+                        to="/inbox/appearance"
+                      >
+                        Appearance
+                      </SidebarNavLink>
+                    </div>
+                    <div className="mt-1">
+                      <SidebarNavLink
+                        icon={<Shield size={18} />}
+                        to="/inbox/appearance"
+                      >
+                        Security and privacy
+                      </SidebarNavLink>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="mt-3">
+                      <p className="text-sm">Rellite Mail</p>
+                      <div className="mt-2">
+                        <SidebarNavLink
+                          icon={<SquaresFour size={18} />}
+                          to="/inbox/dashbord"
+                        >
+                          Dashbord
+                        </SidebarNavLink>
+                      </div>
+                      <div className="mt-1">
+                        <SidebarNavLink
+                          icon={<BoxArrowUp size={18} />}
+                          to="/inbox/star"
+                        >
+                          Upgread plan
+                        </SidebarNavLink>
+                      </div>
+                      <div className="mt-1">
+                        <SidebarNavLink
+                          icon={<Key size={18} />}
+                          to="/inbox/recovery"
+                        >
+                          Recovery
+                        </SidebarNavLink>
+                      </div>
+                      <div className="mt-1">
+                        <SidebarNavLink
+                          icon={<User size={18} />}
+                          to="/inbox/account"
+                        >
+                          Account and Password
+                        </SidebarNavLink>
+                      </div>
+                      <div className="mt-1">
+                        <SidebarNavLink
+                          icon={<Globe size={18} />}
+                          to="/inbox/star"
+                        >
+                          Language and time
+                        </SidebarNavLink>
+                      </div>
+                      <div className="mt-1">
+                        <SidebarNavLink
+                          icon={<PaintRoller size={18} />}
+                          to="/inbox/appearance"
+                        >
+                          Appearance
+                        </SidebarNavLink>
+                      </div>
+                      <div className="mt-1">
+                        <SidebarNavLink
+                          icon={<Shield size={18} />}
+                          to="/inbox/appearance"
+                        >
+                          Security and privacy
+                        </SidebarNavLink>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel>
+              <div className="flex justify-between">
+                <div>
+                  <h1>
+                    hello Lorem ipsum dolor sit amet consectetur adipisicing
+                    elit. Dolorum necessitatibus laborum exercitationem
+                    molestias repellendus inventore excepturi dignissimos
+                    accusantium quos quae est, nam provident explicabo accusamus
+                    tempore obcaecati aspernatur iusto? Tenetur! Lorem ipsum
+                    dolor sit amet consectetur adipisicing elit. Iste,
+                    reiciendis alias. Totam enim voluptatibus alias quas esse
+                    consequatur accusamus at tempore vero illum aperiam, facilis
+                    porro earum. Quia, nemo tempore. Lorem ipsum dolor sit amet
+                    consectetur adipisicing elit. Maiores eligendi quasi debitis
+                    aliquam hic facilis consequatur quis nemo tempora
+                    recusandae. Hic harum dignissimos corporis sed magni fugit,
+                    recusandae quod itaque!Lorem
+                  </h1>
+                </div>
+                <div>
+                  <Button variant="toolbutton" onClick={handleCloseModal}>
+                    <X size={20} />
+                  </Button>
+                </div>
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </Modal>
+      )}
       <div className="flex w-full justify-between">
         <img
           style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }}
@@ -306,7 +481,7 @@ interface card {
   children: ReactNode;
 }
 
-const Card = ({ hedding, children }:card) => {
+const Card = ({ hedding, children }: card) => {
   return (
     <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
       <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
@@ -322,5 +497,22 @@ const Card = ({ hedding, children }:card) => {
 };
 
 export { Card };
+
+type SidebarNavLinkProp = {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  to?: string;
+  unread?: number;
+};
+function SidebarNavLink(p: SidebarNavLinkProp) {
+  return (
+    <Button variant={"navlink"} to={p.to || "/"}>
+      <div className="flex gap-2">
+        {p.icon}
+        <p className="text-sm">{p.children}</p>
+      </div>
+    </Button>
+  );
+}
 
 export default Setting;
