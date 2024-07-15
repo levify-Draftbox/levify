@@ -69,7 +69,7 @@ const Modal: FC<ModalProps> = ({ onClose }) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ ease: "easeInOut", duration: 0.15 }}
-              className="bg-white w-[80%] h-[80%] rounded-lg "
+              className="bg-background w-[80%] h-[80%] rounded-lg"
             >
               <ResizablePanelGroup
                 className="min-h-full max-w-full rounded-lg border p-3"
