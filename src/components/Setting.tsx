@@ -33,7 +33,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ stiffness: 200, duration: 0.25 }}
-          className="!h-[100vh] overflow-auto bg-inbox-bg select-none"
+          className="!h-[100vh] overflow-auto select-none"
         >
           <div className="p-3 h-[100vh] overflow-auto scroll-bar">
             <div className="flex justify-between">
@@ -94,7 +94,7 @@ const SettingSidebar = () => {
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
           <ResizablePanelGroup
-            className="min-h-full max-w-full rounded-lg border"
+            className="min-h-full max-w-full rounded-lg mt-2"
             direction="horizontal"
           >
             <ResizablePanel minSize={14} maxSize={20} defaultSize={14}>
@@ -226,7 +226,7 @@ const SettingSidebar = () => {
             <ResizableHandle />
             <ResizablePanel>
               <div className="flex justify-between">
-                <div>
+                <div className="p-3">
                   <h1>
                     hello Lorem ipsum dolor sit amet consectetur adipisicing
                     elit. Dolorum necessitatibus laborum exercitationem
@@ -483,7 +483,7 @@ interface card {
 
 const Card = ({ hedding, children }: card) => {
   return (
-    <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow dark:bg-[rgba(250,250,250,0.1)]">
+    <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow-lg dark:bg-[rgba(250,250,250,0.12)]">
       <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
         <div className="">
           <h2 className="text-xs font-medium  text-gray-700 dark:text-gray-400">
