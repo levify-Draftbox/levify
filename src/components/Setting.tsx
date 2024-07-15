@@ -17,7 +17,6 @@ import {
   Shield,
   SquaresFour,
   User,
-  X,
 } from "@phosphor-icons/react";
 
 type SearchBarProp = {
@@ -243,11 +242,7 @@ const SettingSidebar = () => {
                     recusandae quod itaque!Lorem
                   </h1>
                 </div>
-                <div>
-                  <Button variant="toolbutton" onClick={handleCloseModal}>
-                    <X size={20} />
-                  </Button>
-                </div>
+                
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

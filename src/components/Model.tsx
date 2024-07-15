@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { ThemeProvider } from "./Theme-provider";
+import { Button } from "./ui/button";
+import { X } from "@phosphor-icons/react";
 
 type ModalProps = {
   onClose: () => void;
@@ -55,10 +57,17 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ ease: "easeInOut", duration: 0.15 }}
-              className="bg-background w-[80%] h-[80%] rounded-lg dark:shadow dark:shadow-white"
+              className="bg-background w-[80%] h-[80%] rounded-lg dark:border-2 "
             >
               <div className="p-4 font-semibold">
-                <h1>All settings</h1>
+                <div className="flex justify-between">
+                  <h1>All settings</h1>
+                  <div>
+                  <Button variant="toolbutton" onClick={handleCloseModal}>
+                    <X size={20} />
+                  </Button>
+                </div>
+                </div>
                 {children}
               </div>
             </motion.div>
