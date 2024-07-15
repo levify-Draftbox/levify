@@ -14,7 +14,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
   return (
     <>
       <ResizableHandle />
-      <ResizablePanel defaultSize={20}>
+      <ResizablePanel defaultSize={20} minSize={16} maxSize={22}>
         <motion.div
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -50,6 +50,7 @@ const SettingSidebar = () => {
   const [toggleDensity, setToggleDensity] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const handleButtonClick = () => {
     setIsModalOpen(!isModalOpen);
@@ -61,6 +62,10 @@ const SettingSidebar = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleDivClick = (index: number) => {
+    setSelectedIndex(index);
   };
 
   return (
@@ -215,11 +220,25 @@ const SettingSidebar = () => {
               <strong>Colors: </strong>
             </p>
             <div className="flex gap-3 mt-2">
-              <div className="w-10 h-10 rounded-full bg-red-600"></div>
-              <div className="w-10 h-10 rounded-full bg-green-600"></div>
-              <div className="w-10 h-10 rounded-full bg-blue-600"></div>
-              <div className="w-10 h-10 rounded-full bg-black"></div>
-              <div className="w-10 h-10 rounded-full bg-yellow-600"></div>
+              <div className="flex space-x-2">
+                {[
+                  "bg-red-600",
+                  "bg-green-600",
+                  "bg-blue-600",
+                  "bg-black",
+                  "bg-yellow-600",
+                ].map((color, index) => (
+                  <div
+                    key={index}
+                    className={`w-10 h-10 rounded-full ${color} ${
+                      selectedIndex === index
+                        ? "ring-2 ring-offset-1 ring-core"
+                        : ""
+                    }`}
+                    onClick={() => handleDivClick(index)}
+                  ></div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -260,7 +279,7 @@ const SettingSidebar = () => {
         <a
           target="_blank"
           href="/"
-          className="hover:underline hover:text-gray-50"
+          className="hover:underline  hover:text-black dark:hover:text-white"
         >
           About
         </a>
@@ -268,7 +287,7 @@ const SettingSidebar = () => {
         <a
           target="_blank"
           href="/"
-          className="hover:underline hover:text-gray-50"
+          className="hover:underline hover:text-black dark:hover:text-white"
         >
           Help
         </a>
@@ -276,7 +295,7 @@ const SettingSidebar = () => {
         <a
           target="_blank"
           href="/"
-          className="hover:underline hover:text-gray-50"
+          className="hover:underline hover:text-black dark:hover:text-white"
         >
           Contact
         </a>
@@ -284,7 +303,7 @@ const SettingSidebar = () => {
         <a
           target="_blank"
           href="/"
-          className="hover:underline hover:text-gray-50"
+          className="hover:underline hover:text-black dark:hover:text-white"
         >
           Rellite
         </a>
@@ -292,7 +311,7 @@ const SettingSidebar = () => {
         <a
           target="_blank"
           href="/"
-          className="hover:underline hover:text-gray-50"
+          className="hover:underline hover:text-black dark:hover:text-white"
         >
           Privacy And Policy
         </a>
