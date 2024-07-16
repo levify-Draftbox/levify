@@ -1,23 +1,25 @@
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { ReactNode, useState } from "react";
+import { lazy, ReactNode, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "./Model"; // Make sure to import Modal correctly
 import { ChevronRight } from "lucide-react";
 import {
   ResizableHandle,
   ResizablePanel,
-  ResizablePanelGroup,
+  // ResizablePanelGroup,
 } from "./ui/resizable";
-import { PaintRoller } from "lucide-react";
-import {
-  BoxArrowUp,
-  Globe,
-  Key,
-  Shield,
-  SquaresFour,
-  User,
-} from "@phosphor-icons/react";
+// import { PaintRoller } from "lucide-react";
+// import {
+//   BoxArrowUp,
+//   Globe,
+//   Key,
+//   Shield,
+//   SquaresFour,
+//   User,
+// } from "@phosphor-icons/react";
+
+const AllSettings = lazy(() => import("@/AllSettings"))
 
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -92,163 +94,12 @@ const SettingSidebar = () => {
       </Button>
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
-          <ResizablePanelGroup
-            className="min-h-full max-w-full rounded-lg mt-2"
-            direction="horizontal"
-          >
-            <ResizablePanel minSize={14} maxSize={20} defaultSize={14}>
-              <div>
-                <div>
-                  <div className="mt-3">
-                    <p className="text-sm">Account</p>
-                    <div className="mt-2">
-                      <SidebarNavLink
-                        icon={<SquaresFour size={18} />}
-                        to="/inbox/dashbord"
-                      >
-                        Dashbord
-                      </SidebarNavLink>
-                    </div>
-                    <div className="mt-1">
-                      <SidebarNavLink
-                        icon={<BoxArrowUp size={18} />}
-                        to="/inbox/star"
-                      >
-                        Upgread plan
-                      </SidebarNavLink>
-                    </div>
-                    <div className="mt-1">
-                      <SidebarNavLink
-                        icon={<Key size={18} />}
-                        to="/inbox/recovery"
-                      >
-                        Recovery
-                      </SidebarNavLink>
-                    </div>
-                    <div className="mt-1">
-                      <SidebarNavLink
-                        icon={<User size={18} />}
-                        to="/inbox/account"
-                      >
-                        Account and Password
-                      </SidebarNavLink>
-                    </div>
-                    <div className="mt-1">
-                      <SidebarNavLink
-                        icon={<Globe size={18} />}
-                        to="/inbox/star"
-                      >
-                        Language and time
-                      </SidebarNavLink>
-                    </div>
-                    <div className="mt-1">
-                      <SidebarNavLink
-                        icon={<PaintRoller size={18} />}
-                        to="/inbox/appearance"
-                      >
-                        Appearance
-                      </SidebarNavLink>
-                    </div>
-                    <div className="mt-1">
-                      <SidebarNavLink
-                        icon={<Shield size={18} />}
-                        to="/inbox/appearance"
-                      >
-                        Security and privacy
-                      </SidebarNavLink>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mt-3">
-                      <p className="text-sm">Rellite Mail</p>
-                      <div className="mt-2">
-                        <SidebarNavLink
-                          icon={<SquaresFour size={18} />}
-                          to="/inbox/dashbord"
-                        >
-                          Dashbord
-                        </SidebarNavLink>
-                      </div>
-                      <div className="mt-1">
-                        <SidebarNavLink
-                          icon={<BoxArrowUp size={18} />}
-                          to="/inbox/star"
-                        >
-                          Upgread plan
-                        </SidebarNavLink>
-                      </div>
-                      <div className="mt-1">
-                        <SidebarNavLink
-                          icon={<Key size={18} />}
-                          to="/inbox/recovery"
-                        >
-                          Recovery
-                        </SidebarNavLink>
-                      </div>
-                      <div className="mt-1">
-                        <SidebarNavLink
-                          icon={<User size={18} />}
-                          to="/inbox/account"
-                        >
-                          Account and Password
-                        </SidebarNavLink>
-                      </div>
-                      <div className="mt-1">
-                        <SidebarNavLink
-                          icon={<Globe size={18} />}
-                          to="/inbox/star"
-                        >
-                          Language and time
-                        </SidebarNavLink>
-                      </div>
-                      <div className="mt-1">
-                        <SidebarNavLink
-                          icon={<PaintRoller size={18} />}
-                          to="/inbox/appearance"
-                        >
-                          Appearance
-                        </SidebarNavLink>
-                      </div>
-                      <div className="mt-1">
-                        <SidebarNavLink
-                          icon={<Shield size={18} />}
-                          to="/inbox/appearance"
-                        >
-                          Security and privacy
-                        </SidebarNavLink>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel>
-              <div className="flex justify-between">
-                <div className="p-3">
-                  <h1>
-                    hello Lorem ipsum dolor sit amet consectetur adipisicing
-                    elit. Dolorum necessitatibus laborum exercitationem
-                    molestias repellendus inventore excepturi dignissimos
-                    accusantium quos quae est, nam provident explicabo accusamus
-                    tempore obcaecati aspernatur iusto? Tenetur! Lorem ipsum
-                    dolor sit amet consectetur adipisicing elit. Iste,
-                    reiciendis alias. Totam enim voluptatibus alias quas esse
-                    consequatur accusamus at tempore vero illum aperiam, facilis
-                    porro earum. Quia, nemo tempore. Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Maiores eligendi quasi debitis
-                    aliquam hic facilis consequatur quis nemo tempora
-                    recusandae. Hic harum dignissimos corporis sed magni fugit,
-                    recusandae quod itaque!Lorem
-                  </h1>
-                </div>
-                
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
+          <Suspense fallback={"Loading..."} >
+            <AllSettings />
+          </Suspense>
         </Modal>
       )}
-        <Button variant={"whiteButton"} className="mt-2">
+      <Button variant={"whiteButton"} className="mt-2">
         Get the Rellite Mail app
       </Button>
 
@@ -288,9 +139,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 1 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(1)}
               alt="Image 1"
             />
@@ -299,9 +149,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 2 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(2)}
               alt="Image 2"
             />
@@ -328,9 +177,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 1 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(1)}
               alt="Image 1"
             />
@@ -339,9 +187,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 2 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(2)}
               alt="Image 2"
             />
@@ -376,11 +223,10 @@ const SettingSidebar = () => {
               ].map((color, index) => (
                 <div
                   key={index}
-                  className={`w-10 h-10 rounded-full ${color} ${
-                    selectedIndex === index
-                      ? "ring-2 ring-offset-1 ring-core"
-                      : ""
-                  }`}
+                  className={`w-10 h-10 rounded-full ${color} ${selectedIndex === index
+                    ? "ring-2 ring-offset-1 ring-core"
+                    : ""
+                    }`}
                   onClick={() => handleDivClick(index)}
                 ></div>
               ))}
@@ -482,21 +328,5 @@ const Card = ({ hedding, children }: card) => {
 
 export { Card };
 
-type SidebarNavLinkProp = {
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  to?: string;
-  unread?: number;
-};
-function SidebarNavLink(p: SidebarNavLinkProp) {
-  return (
-    <Button variant={"navlink"} to={p.to || "/"}>
-      <div className="flex gap-2">
-        {p.icon}
-        <p className="text-sm">{p.children}</p>
-      </div>
-    </Button>
-  );
-}
 
 export default Setting;

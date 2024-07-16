@@ -57,9 +57,9 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ ease: "easeInOut", duration: 0.15 }}
-              className="bg-background w-[80%] h-[80%] rounded-lg dark:border-2 "
+              className="bg-background w-[80%] h-[80%] rounded-lg dark:border "
             >
-              <div className="p-4 font-semibold">
+              <div className="p-4 font-semibold min-h-full">
                 <div className="flex justify-between">
                   <h1>All settings</h1>
                   <div>
