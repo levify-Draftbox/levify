@@ -64,12 +64,17 @@ const SettingSidebar = () => {
   const [toggleLayout, setToggleLayout] = useState(false);
   const [toggleDensity, setToggleDensity] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAppModalOpen, setisAppModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [Themeselected, setThemeSelected] = useState<number | null>(null);
 
   const handleButtonClick = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handleAppModel = () => {
+    setisAppModalOpen(!isAppModalOpen);
   };
 
   const handleImageClick = (index: number) => {
@@ -104,9 +109,15 @@ const SettingSidebar = () => {
           </Suspense>
         </Modal>
       )}
-      <Button variant={"whiteButton"} className="mt-2">
+      <Button onClick={handleAppModel} variant={"whiteButton"} className="mt-2">
         Get the Rellite Mail app
       </Button>
+
+      {isAppModalOpen && (
+        <Modal onClose={handleAppModel}>
+          <Suspense fallback={"Loading..."}></Suspense>
+        </Modal>
+      )}
 
       <Card hedding={"Your plan"}>
         <div className="w-full pt-1 px-1">
