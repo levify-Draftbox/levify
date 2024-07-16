@@ -248,20 +248,9 @@ const SettingSidebar = () => {
           </ResizablePanelGroup>
         </Modal>
       )}
-      <div className="flex w-full justify-between">
-        <img
-          style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }}
-          className="h-auto cursor-pointer dark:border"
-          src={"/getgoogleplay.png"}
-          alt={"Get From Google Play"}
-        />
-        <img
-          style={{ width: "calc((100% - .5rem) / 2)", borderRadius: "6px" }}
-          className="h-auto cursor-pointer dark:border"
-          src={"/getappstore.png"}
-          alt={"Get From App Store"}
-        />
-      </div>
+        <Button variant={"whiteButton"} className="mt-2">
+        Get the Rellite Mail app
+      </Button>
 
       <Card hedding={"Your plan"}>
         <div className="w-full pt-1 px-1">
