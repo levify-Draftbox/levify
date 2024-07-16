@@ -19,7 +19,7 @@ import {
 //   User,
 // } from "@phosphor-icons/react";
 
-const AllSettings = lazy(() => import("@/AllSettings"))
+const AllSettings = lazy(() => import("@/AllSettings"));
 
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -66,6 +66,7 @@ const SettingSidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [Themeselected, setThemeSelected] = useState<number | null>(null);
 
   const handleButtonClick = () => {
     setIsModalOpen(!isModalOpen);
@@ -83,6 +84,10 @@ const SettingSidebar = () => {
     setSelectedIndex(index);
   };
 
+  const handleClick = (index: number) => {
+    setThemeSelected(index);
+  };
+
   return (
     <div>
       <Button
@@ -94,7 +99,7 @@ const SettingSidebar = () => {
       </Button>
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
-          <Suspense fallback={"Loading..."} >
+          <Suspense fallback={"Loading..."}>
             <AllSettings />
           </Suspense>
         </Modal>
@@ -139,8 +144,9 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+              className={`h-auto object-cover rounded-md ${
+                selectedImage === 1 ? "ring-2 ring-core" : ""
+              }`}
               onClick={() => handleImageClick(1)}
               alt="Image 1"
             />
@@ -149,8 +155,9 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+              className={`h-auto object-cover rounded-md ${
+                selectedImage === 2 ? "ring-2 ring-core" : ""
+              }`}
               onClick={() => handleImageClick(2)}
               alt="Image 2"
             />
@@ -177,8 +184,9 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+              className={`h-auto object-cover rounded-md ${
+                selectedImage === 1 ? "ring-2 ring-core" : ""
+              }`}
               onClick={() => handleImageClick(1)}
               alt="Image 1"
             />
@@ -187,8 +195,9 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+              className={`h-auto object-cover rounded-md ${
+                selectedImage === 2 ? "ring-2 ring-core" : ""
+              }`}
               onClick={() => handleImageClick(2)}
               alt="Image 2"
             />
@@ -196,9 +205,31 @@ const SettingSidebar = () => {
         )}
 
         <div className="cursor-pointer">
-          <p>
-            <strong>Theme: </strong>Rellite
-          </p>
+          <p>Theme</p>
+
+          <div className="mt-2 flex gap-2">
+            <div
+              className={`w-10 h-10 rounded-full bg-black ${
+                Themeselected === 0 && "ring-2 ring-offset-1 ring-core"
+              }`}
+              onClick={() => handleClick(0)}
+            ></div>
+            <div
+              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${
+                Themeselected === 1 && "ring-2 ring-offset-1 ring-core"
+              }`}
+              onClick={() => handleClick(1)}
+            ></div>
+            <div
+              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${
+                Themeselected === 2 && "ring-2 ring-offset-1 ring-core"
+              }`}
+              style={{
+                background: "linear-gradient(to left, black 50%, white 50%)",
+              }}
+              onClick={() => handleClick(2)}
+            ></div>
+          </div>
           {/* <div className="flex justify-between mt-2">
               <p>Sync with system</p>
               <label className="inline-flex items-center cursor-pointer">
@@ -209,9 +240,7 @@ const SettingSidebar = () => {
         </div>
 
         <div className="cursor-pointer">
-          <p>
-            <strong>Colors: </strong>
-          </p>
+          <p>Colors</p>
           <div className="flex gap-3 mt-2">
             <div className="flex space-x-2">
               {[
@@ -223,10 +252,11 @@ const SettingSidebar = () => {
               ].map((color, index) => (
                 <div
                   key={index}
-                  className={`w-10 h-10 rounded-full ${color} ${selectedIndex === index
-                    ? "ring-2 ring-offset-1 ring-core"
-                    : ""
-                    }`}
+                  className={`w-10 h-10 rounded-full ${color} ${
+                    selectedIndex === index
+                      ? "ring-2 ring-offset-1 ring-core"
+                      : ""
+                  }`}
                   onClick={() => handleDivClick(index)}
                 ></div>
               ))}
@@ -327,6 +357,5 @@ const Card = ({ hedding, children }: card) => {
 };
 
 export { Card };
-
 
 export default Setting;
