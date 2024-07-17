@@ -129,15 +129,11 @@ const AllSettings = () => {
             >
               import And Export
             </SidebarNavLink>
-          </div>
-
-          <div className="mt-3">
-            <p className="text-sm">Mail</p>
             <SidebarNavLink
               icon={<Globe  size={18} />}
               setting={"appearance"}
             >
-              Add new domain
+              domains
             </SidebarNavLink>
             <SidebarNavLink icon={<Bell size={18} />} setting={"appearance"}>
             Get The Apps
