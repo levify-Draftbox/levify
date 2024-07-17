@@ -87,56 +87,53 @@ const AllSettings = () => {
               Appearance
             </SidebarNavLink>
 
-            <SidebarNavLink icon={<Bell size={18} />} setting={"appearance"}>
+            <SidebarNavLink icon={<Bell size={18} />} setting={"notification"}>
               Notification
             </SidebarNavLink>
 
             <SidebarNavLink
               icon={<LockKeyOpen size={18} />}
-              setting={"appearance"}
+              setting={"Privacy"}
             >
               Privacy
             </SidebarNavLink>
 
             <SidebarNavLink
-              icon={<EnvelopeSimple  size={18} />}
-              setting={"appearance"}
+              icon={<EnvelopeSimple size={18} />}
+              setting={"Compose"}
             >
               Compose
             </SidebarNavLink>
 
-            <SidebarNavLink icon={<Funnel size={18} />} setting={"appearance"}>
+            <SidebarNavLink icon={<Funnel size={18} />} setting={"Filter"}>
               Filter And Sweep
             </SidebarNavLink>
 
             <SidebarNavLink
               icon={<ArrowBendUpLeft size={18} />}
-              setting={"appearance"}
+              setting={"AutoReply"}
             >
               Auto Reply
             </SidebarNavLink>
 
             <SidebarNavLink
               icon={<ClockUser size={18} />}
-              setting={"appearance"}
+              setting={"Blocking"}
             >
               Blocking
             </SidebarNavLink>
 
             <SidebarNavLink
               icon={<ArrowSquareIn size={18} />}
-              setting={"appearance"}
+              setting={"importAndExport"}
             >
-              import And Export
+              Import And Export
             </SidebarNavLink>
-            <SidebarNavLink
-              icon={<Globe  size={18} />}
-              setting={"appearance"}
-            >
-              domains
+            <SidebarNavLink icon={<Globe size={18} />} setting={"domains"}>
+              Domains
             </SidebarNavLink>
-            <SidebarNavLink icon={<Bell size={18} />} setting={"appearance"}>
-            Get The Apps
+            <SidebarNavLink icon={<Bell size={18} />} setting={"GetTheApps"}>
+              Get The Apps
             </SidebarNavLink>
           </div>
         </div>
