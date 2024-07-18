@@ -18,33 +18,20 @@ import {
 import React, { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
-import profile from "../../public/image.png"
+import { Link } from "react-router-dom";
 
 const SideBar = () => {
   const { setTheme, theme } = useTheme();
   const [moreLess, setmoreLess] = useState(false);
 
-  const handleTheme = () => {
-    if (theme === "dark") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
-  };
+  const handleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   return (
     <div className="flex flex-col justify-between h-full  p-2 dark:bg-transparent selection:select-none">
       <div className="w-full flex flex-col mt-1">
-        <div className="flex w-full h-10 rounded-md overflow-hidden cursor-pointer">
-          <div className="flex items-center justify-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 rounded-md">
-              <img src={profile} className="rounded-md" />
-            </div>
-            <p className="dark:text-[#d5d5d5] max-w-40 text-xl truncate">
-              Rellite Mail
-            </p>
-          </div>
-        </div>
+        <Link to="/inbox" className="cursor-pointer my-1 mx-2">
+          <img className="w-full" alt="DraftBox Mail" src={theme === "light" ? "  /logo-light.svg" : "/logo-dark.svg"} />
+        </Link>
 
         <div className="mt-3">
           <Button size={"superActive"} variant={"superActive"}>

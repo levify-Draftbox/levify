@@ -25,21 +25,20 @@ const button = cva(
           "items-center justify-center w-full !py-2 bg-core hover:bg-core-lite active:bg-core  shadow  !text-[#fff]",
         navlink:
           "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-button-hover active:bg-button-active text-base",
-        toolbutton:"w-fit px-2 flex items-center hover:bg-button-hover active:bg-button-active",
-        star:"hover:text-yellow-500",
-        whiteButton:"bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
-        
+        toolbutton: "w-fit !py-2 !px-2 items-center hover:bg-button-hover active:bg-button-active",
+        star: "hover:text-yellow-500",
+        whiteButton: "bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
       },
-      active: { 
+      active: {
         true: "is-active bg-button-hover font-[500] text-base-active",
       },
       size: {
         default: "h-9 rounded-md py-2",
-        superActive:"py-2",
+        superActive: "py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-xl",
         icon: "h-10 w-10",
-        toolsize:"py-1"
+        toolsize: "py-1"
       },
     },
     defaultVariants: {
@@ -51,7 +50,7 @@ const button = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof button> {
+  VariantProps<typeof button> {
   asChild?: boolean;
 }
 

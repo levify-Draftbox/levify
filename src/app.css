@@ -53,8 +53,8 @@
   }
 
   .dark {
-    --background: #18191b;
-    --background-secondary: #212122;
+    --background: #1a1a1a;
+    --background-secondary: #1f1f1f;
     --foreground: hsl(210 40% 98%);
 
     --card: hsl(0, 0%, 100%);

@@ -51,18 +51,18 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
           className="!h-[100vh] overflow-auto select-none bg-background-secondary"
         >
           <div className="h-[100vh] overflow-auto scroll-bar" ref={scrollDivRef}>
-            <div className={`flex justify-between sticky top-0 p-3 z-[9999] ${showBorder[0] ? "border-b bg-background" : ""}`} >
+            <div className={`h-[52px] flex justify-between sticky top-0 px-3 z-[9999] bg-background-secondary ${showBorder[0] ? "border-b" : ""}`} >
               <h1 className="my-auto">Settings</h1>
               <Button
                 variant={"toolbutton"}
                 size={"toolsize"}
-                className="h-8"
+                className="my-auto"
                 onClick={() => onSettingToggle()}
               >
                 <ChevronRight size={20} />
               </Button>
             </div>
-            <div className="px-3 py-2">
+            <div className="px-3 py-0">
               <AnimatePresence>
                 <SettingSidebar />
               </AnimatePresence>
