@@ -1,4 +1,4 @@
-import { Gear, MagnifyingGlass } from "@phosphor-icons/react";
+import { Bell, Gear, MagnifyingGlass } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 
 type SearchBarProp = {
@@ -7,17 +7,21 @@ type SearchBarProp = {
 
 const SearchBar = ({ onSettingToggle }: SearchBarProp) => {
   return (
-    <div className="w-full h-[52px] border-b">
-      <div className="flex h-full items-center justify-between px-3 py-[10px]">
-        <div className="flex bg-[rgba(0,0,0,0.06)] h-full items-center px-3 rounded-lg">
-          <MagnifyingGlass size={18} />
+    <div className="flex justify-between w-full h-[52px] border-b">
+      <div></div>
+      <div className="flex h-full items-center justify-between px-3 py-[10px] gap-2">
+        <div className="flex bg-input border border-input-border  h-full items-center px-3 rounded-lg w-[350px]">
+          <MagnifyingGlass size={16} />
           <input
-            className="bg-transparent w-96 p-2 outline-none"
+            className="bg-transparent w-96 p-2 outline-none text-sm"
             src="text"
             placeholder="Search Message"
           />
         </div>
         <div className="flex items-center gap-2">
+          <Button variant={"toolbutton"} className="" onClick={() => onSettingToggle()}>
+            <Bell size={20} />
+          </Button>
           <Button variant={"toolbutton"} className="" onClick={() => onSettingToggle()}>
             <Gear size={20} />
           </Button>

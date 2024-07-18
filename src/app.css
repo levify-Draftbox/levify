@@ -100,6 +100,11 @@
     --button-active: rgb(0, 0, 0, 0.12);
     --button-border: rgba(0, 0, 0, 0.075);
 
+    --input-base: rgba(0, 0, 0, 0.040);
+    --input-hover: rgba(0, 0, 0, 0.085);
+    --input-active: rgb(0, 0, 0, 0.12);
+    --input-border: rgba(0, 0, 0, 0.05);
+
     --sidebar-cards-bg: rgb(245, 245, 245);
     --sidebar-cards-border: rgba(0, 0, 0, 0.040);
 
@@ -140,6 +145,10 @@
     --button-base: rgba(255, 255, 255, 0.065);
     --button-hover: rgba(255, 255, 255, 0.065);
     --button-active: rgba(255, 255, 255, 0.09);
+
+    --input-base: rgba(255, 255, 255, 0.08);
+    --input-hover: rgba(255, 255, 255, 0.065);
+    --input-active: rgba(255, 255, 255, 0.09);
 
     --sidebar-cards-bg: rgba(255, 255, 255, 0.035);
     --sidebar-cards-border: rgba(255, 255, 255, 0.05);

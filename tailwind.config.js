@@ -73,6 +73,12 @@ export const theme = {
         active: "var(--button-active)",
         border: "var(--button-border)",
       },
+      input: {
+        DEFAULT: "var(--input-base)",
+        hover: "var(--input-hover)",
+        active: "var(--input-active)",
+        border: "var(--input-border)",
+      },
       sideBarCards: {
         bg: "var(--sidebar-cards-bg)",
         border: "var(--sidebar-cards-border)"
