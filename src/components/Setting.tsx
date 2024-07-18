@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { lazy, ReactNode, Suspense, useState } from "react";
+import React, { lazy, ReactNode, Suspense, useEffect, useRef, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "./Model"; // Make sure to import Modal correctly
 import { ChevronRight } from "lucide-react";
@@ -26,6 +26,20 @@ type SearchBarProp = {
 };
 
 const Setting = ({ onSettingToggle }: SearchBarProp) => {
+
+  const scrollDivRef = useRef<HTMLDivElement>(null)
+  const showBorder = useState(false);
+
+  useEffect(() => {
+    const sEvent = (e: any) => {
+      showBorder[1](e.target.scrollTop != 0);
+    }
+    scrollDivRef.current?.addEventListener("scroll", sEvent)
+    return () => {
+      scrollDivRef.current?.removeEventListener("scroll", sEvent)
+    }
+  }, [scrollDivRef.current])
+
   return (
     <>
       <ResizableHandle />
@@ -34,10 +48,10 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ stiffness: 200, duration: 0.25 }}
-          className="!h-[100vh] overflow-auto select-none"
+          className="!h-[100vh] overflow-auto select-none bg-background-secondary"
         >
-          <div className="p-3 h-[100vh] overflow-auto scroll-bar">
-            <div className="flex justify-between">
+          <div className="h-[100vh] overflow-auto scroll-bar" ref={scrollDivRef}>
+            <div className={`flex justify-between sticky top-0 p-3 z-[9999] ${showBorder[0] ? "border-b bg-background" : ""}`} >
               <h1 className="my-auto">Settings</h1>
               <Button
                 variant={"toolbutton"}
@@ -48,7 +62,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
                 <ChevronRight size={20} />
               </Button>
             </div>
-            <div>
+            <div className="px-3 py-2">
               <AnimatePresence>
                 <SettingSidebar />
               </AnimatePresence>
@@ -94,22 +108,15 @@ const SettingSidebar = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-3 py-2">
       <Button
         onClick={handleButtonClick}
         variant="superActive"
-        className="my-2"
+        className=""
       >
         All Settings
       </Button>
-      {isModalOpen && (
-        <Modal onClose={handleCloseModal}>
-          <Suspense fallback={"Loading..."}>
-            <AllSettings />
-          </Suspense>
-        </Modal>
-      )}
-      <Button onClick={handleAppModel} variant={"whiteButton"} className="mt-2">
+      <Button onClick={handleAppModel} variant={"secondary"} className="">
         Get the Rellite Mail app
       </Button>
 
@@ -155,9 +162,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 1 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(1)}
               alt="Image 1"
             />
@@ -166,9 +172,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 2 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(2)}
               alt="Image 2"
             />
@@ -195,9 +200,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 1 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(1)}
               alt="Image 1"
             />
@@ -206,9 +210,8 @@ const SettingSidebar = () => {
               style={{
                 width: "calc((100% - 1rem) / 2)",
               }}
-              className={`h-auto object-cover rounded-md ${
-                selectedImage === 2 ? "ring-2 ring-core" : ""
-              }`}
+              className={`h-auto object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
               onClick={() => handleImageClick(2)}
               alt="Image 2"
             />
@@ -220,21 +223,18 @@ const SettingSidebar = () => {
 
           <div className="mt-2 flex gap-2">
             <div
-              className={`w-10 h-10 rounded-full bg-black ${
-                Themeselected === 0 && "ring-2 ring-offset-1 ring-core"
-              }`}
+              className={`w-10 h-10 rounded-full bg-black ${Themeselected === 0 && "ring-2 ring-offset-1 ring-core"
+                }`}
               onClick={() => handleClick(0)}
             ></div>
             <div
-              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${
-                Themeselected === 1 && "ring-2 ring-offset-1 ring-core"
-              }`}
+              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${Themeselected === 1 && "ring-2 ring-offset-1 ring-core"
+                }`}
               onClick={() => handleClick(1)}
             ></div>
             <div
-              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${
-                Themeselected === 2 && "ring-2 ring-offset-1 ring-core"
-              }`}
+              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${Themeselected === 2 && "ring-2 ring-offset-1 ring-core"
+                }`}
               style={{
                 background: "linear-gradient(to left, black 50%, white 50%)",
               }}
@@ -263,11 +263,10 @@ const SettingSidebar = () => {
               ].map((color, index) => (
                 <div
                   key={index}
-                  className={`w-10 h-10 rounded-full ${color} ${
-                    selectedIndex === index
-                      ? "ring-2 ring-offset-1 ring-core"
-                      : ""
-                  }`}
+                  className={`w-10 h-10 rounded-full ${color} ${selectedIndex === index
+                    ? "ring-2 ring-offset-1 ring-core"
+                    : ""
+                    }`}
                   onClick={() => handleDivClick(index)}
                 ></div>
               ))}
@@ -341,6 +340,15 @@ const SettingSidebar = () => {
           Privacy And Policy
         </a>
       </div>
+
+      {isModalOpen && (
+        <Modal onClose={handleCloseModal}>
+          <Suspense fallback={"Loading..."}>
+            <AllSettings />
+          </Suspense>
+        </Modal>
+      )}
+
     </div>
   );
 };
@@ -354,7 +362,7 @@ interface card {
 
 const Card = ({ hedding, children }: card) => {
   return (
-    <div className="bg-white mt-3 items-center rounded-lg justify-center w-full p-2 text-primary shadow-lg dark:bg-[rgba(250,250,250,0.12)]">
+    <div className="bg-sideBarCards-bg items-center rounded-lg justify-center w-full p-2 text-primary border border-sideBarCards-border">
       <div className="px-2 flex flex-col gap-4 mt-2 mb-3">
         <div className="">
           <h2 className="text-xs font-medium  text-gray-700 dark:text-gray-400">

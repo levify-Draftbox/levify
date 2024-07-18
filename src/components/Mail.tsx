@@ -9,7 +9,7 @@ const Mail = () => {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="w-full h-[50px] border-b-2 py-3 px-4 flex justify-between items-center hover:shadow-lg cursor-pointer"
+      className="w-full h-[50px] border-b py-3 px-4 flex justify-between items-center hover:shadow-lg cursor-pointer"
     >
       <div className="flex items-center gap-4">
         <div className="w-8 h-8 border-2 rounded-md flex items-center justify-center">

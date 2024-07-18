@@ -5,33 +5,33 @@ import { cn } from "@/lib/utils";
 import { NavLink } from "react-router-dom";
 
 const button = cva(
-  "inline-flex whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary:
-          "bg-primary items-center justify-center w-full text-primary-foreground hover:bg-primary/90",
+          "bg-core items-center justify-center w-full text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "w-full gap-2 px-3 justify-center items-center bg-button hover:bg-button-active active:bg-button-hover",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-core text-xs underline-offset-4 hover:underline",
         active:
           "bg-transparant items-center justify-left gap-2 px-3  w-full text-active-foreground hover:bg-active hover:shadow",
         superActive:
-          "items-center justify-center w-full py-3 bg-core hover:bg-core-lite shadow text-base !text-[#fff]",
+          "items-center justify-center w-full !py-2 bg-core hover:bg-core-lite active:bg-core  shadow  !text-[#fff]",
         navlink:
-          "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-sidebar-navlink active:bg-sidebar-navlink-active text-base",
-        toolbutton:"w-fit px-2 flex items-center hover:bg-[rgba(0,0,0,0.06)] dark:hover:bg-[rgba(250,250,250,0.19)]",
+          "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-button-hover active:bg-button-active text-base",
+        toolbutton:"w-fit px-2 flex items-center hover:bg-button-hover active:bg-button-active",
         star:"hover:text-yellow-500",
         whiteButton:"bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
         
       },
       active: { 
-        true: "is-active bg-sidebar-navlink font-semibold text-base-active",
+        true: "is-active bg-button-hover font-[500] text-base-active",
       },
       size: {
         default: "h-9 rounded-md py-2",

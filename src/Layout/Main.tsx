@@ -24,7 +24,7 @@ const Main = () => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={87}>
-        <div className="w-full h-full">
+        <div className="w-full h-full bg-background-secondary">
           <SearchBar onSettingToggle={() => setViewSetting(!viewSetting)} />
           <Outlet />
         </div>
