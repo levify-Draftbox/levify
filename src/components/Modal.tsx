@@ -2,9 +2,6 @@ import { FC, useState, useEffect, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Button } from "./ui/button";
-import { X } from "@phosphor-icons/react";
-
 type ModalProps = {
   onClose: () => void;
   children: ReactNode;
@@ -58,14 +55,6 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
             className="bg-background w-[80%] h-[80%] rounded-lg dark:border "
           >
             <div className="p-4 min-h-full">
-              <div className="flex justify-between">
-                <h1>All settings</h1>
-                <div>
-                  <Button variant="toolbutton" onClick={handleCloseModal}>
-                    <X size={20} />
-                  </Button>
-                </div>
-              </div>
               {children}
             </div>
           </motion.div>
@@ -75,6 +64,7 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
     portalRoot
   );
 };
+
 
 export default Modal;
 
