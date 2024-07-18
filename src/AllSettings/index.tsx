@@ -213,7 +213,7 @@ const AllSettings = () => {
     <ModalSidebarLayout sidebar={<SideBar />} ref={scrollChildDivRef}>
       {SettingsList[activeSetting] ? (
         <div className="h-full overflow-auto scroll-bar" ref={scrollChildDivRef}>
-          <h1 className={`text-2xl font-[500] sticky top-0  bg-background-secondary py-6 px-10 ${!childTop ? "border-b" : ""}`}>
+          <h1 className={`text-2xl font-[500] sticky top-0  bg-background-secondary py-5 px-10 ${!childTop ? "border-b" : ""}`}>
             {SettingsList[activeSetting].name}
           </h1>
           <div className="px-10 py-2">
