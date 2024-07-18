@@ -30,7 +30,7 @@ const button = cva(
         whiteButton: "bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
       },
       active: {
-        true: "is-active bg-button dark:bg-button-hover dark:active:bg-button-active font-[500]",
+        true: "is-active bg-button dark:bg-button-hover dark:active:bg-button-active !font-[500]",
       },
       size: {
         default: "h-9 rounded-md py-2",

@@ -18,7 +18,7 @@ const Appearance = () => {
   };
 
   return (
-    <div className="w-full h-full mt-6">
+    <div className="w-full h-full">
       <div>
         <h2 className="text-lg">Thame</h2>
         <p className="text-sm mt-1">
@@ -69,6 +69,126 @@ const Appearance = () => {
                   onClick={() => handleDivClick(index)}
                 ></div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-lg">Layout</h2>
+          <div className="flex mt-2 gap-4">
+            <div>
+              <img
+                src="./download (1).jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(1)}
+                alt="Image 1"
+              />
+              <p className="text-center mt-2">Row</p>
+            </div>
+            <div>
+              <img
+                src="./download.jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(2)}
+                alt="Image 2"
+              />
+              <p className="text-center mt-2">column</p>
+            </div>
+
+            <div>
+              <img
+                src="./download.jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 3 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(3)}
+                alt="Image 2"
+              />
+              <p className="text-center mt-2">Open in new tab</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-lg">Layout</h2>
+          <div className="flex mt-2 gap-4">
+            <div>
+              <img
+                src="./download (1).jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(1)}
+                alt="Image 1"
+              />
+              <p className="text-center mt-2">Row</p>
+            </div>
+            <div>
+              <img
+                src="./download.jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(2)}
+                alt="Image 2"
+              />
+              <p className="text-center mt-2">column</p>
+            </div>
+
+            <div>
+              <img
+                src="./download.jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 3 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(3)}
+                alt="Image 2"
+              />
+              <p className="text-center mt-2">Open in new tab</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-lg">Layout</h2>
+          <div className="flex mt-2 gap-4">
+            <div>
+              <img
+                src="./download (1).jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 1 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(1)}
+                alt="Image 1"
+              />
+              <p className="text-center mt-2">Row</p>
+            </div>
+            <div>
+              <img
+                src="./download.jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 2 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(2)}
+                alt="Image 2"
+              />
+              <p className="text-center mt-2">column</p>
+            </div>
+
+            <div>
+              <img
+                src="./download.jpg"
+                className={`h-24 w-36 object-cover rounded-md ${
+                  selectedImage === 3 ? "ring-2 ring-core" : ""
+                }`}
+                onClick={() => handleImageClick(3)}
+                alt="Image 2"
+              />
+              <p className="text-center mt-2">Open in new tab</p>
             </div>
           </div>
         </div>

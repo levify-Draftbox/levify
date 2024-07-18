@@ -2,7 +2,7 @@ import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { lazy, ReactNode, Suspense, useEffect, useRef, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import Modal from "./Modal"; // Make sure to import Modal correctly
+import Modal from "./Modal";
 import { ChevronRight } from "lucide-react";
 import {
   ResizableHandle,

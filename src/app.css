@@ -40,22 +40,22 @@
     --core: #FF6B6B;
     --core-lite: #FF8080;
   }
-  
+
   .teal {
     --core: #008080;
     --core-lite: #009999;
   }
-  
+
   .rust {
     --core: #B7410E;
     --core-lite: #CC5A2A;
   }
-  
+
   .cerulean {
     --core: #007BA7;
     --core-lite: #0095C9;
   }
-  
+
   .fuchsia {
     --core: #FF00FF;
     --core-lite: #FF33FF;
@@ -99,9 +99,12 @@
     --button-hover: rgba(0, 0, 0, 0.085);
     --button-active: rgb(0, 0, 0, 0.12);
     --button-border: rgba(0, 0, 0, 0.075);
-    
+
     --sidebar-cards-bg: rgb(245, 245, 245);
-    --sidebar-cards-border: rgba(0, 0, 0, 0.040)
+    --sidebar-cards-border: rgba(0, 0, 0, 0.040);
+
+    --scroll-bar-bg: #8888887e;
+    --scroll-bar-bg-hover: #8888889a;
   }
 
   .dark {
@@ -140,6 +143,9 @@
 
     --sidebar-cards-bg: rgba(255, 255, 255, 0.035);
     --sidebar-cards-border: rgba(255, 255, 255, 0.05);
+
+    --scroll-bar-bg: #8888882c;
+    --scroll-bar-bg-hover: #88888863;
   }
 }
 
@@ -165,6 +171,10 @@ html {
   overflow: hidden;
 }
 
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
 .scroll-bar::-webkit-scrollbar {
   width: 4px;
 }
@@ -176,10 +186,11 @@ html {
 
 /* Handle */
 .scroll-bar::-webkit-scrollbar-thumb {
-  background: #88888863;
+  border-radius: 10px;
+  background: var(--scroll-bar-bg);
 }
 
 /* Handle on hover */
 .scroll-bar::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--scroll-bar-bg-hover)
 }
