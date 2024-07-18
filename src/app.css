@@ -186,7 +186,7 @@ html {
 
 /* Handle */
 .scroll-bar::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  @apply rounded-md;
   background: var(--scroll-bar-bg);
 }
 
