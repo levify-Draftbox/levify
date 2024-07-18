@@ -35,21 +35,21 @@ const ToolBar = () => {
           <DotsThree weight="bold" size={18} />
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <Button variant={"toolbutton"} size={"toolsize"} to={"/inbox"}>
+      <div className="flex items-center gap-2">
+        <Button variant={"toolbutton"} className="!py-1 !px-3" size={"toolsize"} to={"/inbox"}>
           All
         </Button>
-        <Button variant={"toolbutton"} size={"toolsize"} to={"/"}>
+        <Button variant={"toolbutton"} className="!py-1 !px-3" size={"toolsize"} to={"/"}>
           Read
         </Button>
-        <Button variant={"toolbutton"} size={"toolsize"} to={"/"}>
+        <Button variant={"toolbutton"} className="!py-1 !px-3" size={"toolsize"} to={"/"}>
           Unread
         </Button>
-        <Button variant={"toolbutton"} size={"toolsize"} to={"/"}>
+        <Button variant={"toolbutton"} className="!py-1 !px-3" size={"toolsize"} to={"/"}>
           Has file
         </Button>
 
-        <Button variant={"toolbutton"} size={"toolsize"}>
+        <Button variant={"toolbutton"} className="!py-1 !px-3" size={"toolsize"}>
           <SortAscending size={20} />
         </Button>
 

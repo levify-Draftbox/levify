@@ -43,7 +43,7 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ ease: "easeInOut", duration: 0.15 }}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop dark:bg-opacity-80 "
+            className="z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop dark:bg-opacity-80 "
             onClick={(e) => {
               if (
                 (e.target as HTMLElement).classList.contains("modal--backdrop")

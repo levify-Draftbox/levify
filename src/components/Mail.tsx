@@ -20,7 +20,7 @@ const Mail = () => {
         </Button>
         <p>Rellite</p>
         <p className="text-sm text-core bg-">official</p>
-        <p className="ml-32 text-base">
+        <p className="ml-32 ">
           Discover all the features of your Rellite account
         </p>
       </div>

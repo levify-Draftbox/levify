@@ -71,6 +71,7 @@ export const theme = {
         DEFAULT: "var(--button-base)",
         hover: "var(--button-hover)",
         active: "var(--button-active)",
+        border: "var(--button-border)",
       },
       sideBarCards: {
         bg: "var(--sidebar-cards-bg)",

@@ -16,7 +16,7 @@ const button = cva(
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "w-full gap-2 px-3 justify-center items-center bg-button hover:bg-button-active active:bg-button-hover",
+          "w-full gap-2 px-3 justify-center items-center bg-button hover:bg-button-hover dark:hover:bg-button-active active:bg-button-active border border-button-border dark:border-none",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-core text-xs underline-offset-4 hover:underline",
         active:
@@ -24,13 +24,13 @@ const button = cva(
         superActive:
           "items-center justify-center w-full !py-2 bg-core hover:bg-core-lite active:bg-core  shadow  !text-[#fff]",
         navlink:
-          "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-button-hover active:bg-button-active text-base",
+          "group w-full gap-2 px-3 items-center text-normal justify-between hover:bg-button dark:hover:bg-button-hover active:!bg-button-active",
         toolbutton: "w-fit !py-2 !px-2 items-center hover:bg-button-hover active:bg-button-active",
         star: "hover:text-yellow-500",
         whiteButton: "bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
       },
       active: {
-        true: "is-active bg-button-hover font-[500] text-base-active",
+        true: "is-active bg-button dark:bg-button-hover dark:active:bg-button-active font-[500]",
       },
       size: {
         default: "h-9 rounded-md py-2",
