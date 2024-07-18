@@ -7,7 +7,7 @@ import Inbox from "./page/Inbox";
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />}>

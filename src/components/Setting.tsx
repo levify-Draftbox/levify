@@ -7,17 +7,8 @@ import { ChevronRight } from "lucide-react";
 import {
   ResizableHandle,
   ResizablePanel,
-  // ResizablePanelGroup,
 } from "./ui/resizable";
-// import { PaintRoller } from "lucide-react";
-// import {
-//   BoxArrowUp,
-//   Globe,
-//   Key,
-//   Shield,
-//   SquaresFour,
-//   User,
-// } from "@phosphor-icons/react";
+import { ThemeColors, useTheme } from "./Theme-provider";
 
 const AllSettings = lazy(() => import("@/AllSettings"));
 
@@ -75,13 +66,14 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
 };
 
 const SettingSidebar = () => {
+
+  const { setTheme, setThemeColor, theme, themeColor } = useTheme();
+
   const [toggleLayout, setToggleLayout] = useState(false);
   const [toggleDensity, setToggleDensity] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAppModalOpen, setisAppModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [Themeselected, setThemeSelected] = useState<number | null>(null);
 
   const handleButtonClick = () => {
     setIsModalOpen(!isModalOpen);
@@ -97,14 +89,6 @@ const SettingSidebar = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-  };
-
-  const handleDivClick = (index: number) => {
-    setSelectedIndex(index);
-  };
-
-  const handleClick = (index: number) => {
-    setThemeSelected(index);
   };
 
   return (
@@ -221,25 +205,27 @@ const SettingSidebar = () => {
         <div className="cursor-pointer">
           <p>Theme</p>
 
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex flex-wrap gap-4">
             <div
-              className={`w-10 h-10 rounded-full bg-black ${Themeselected === 0 && "ring-2 ring-offset-1 ring-core"
-                }`}
-              onClick={() => handleClick(0)}
-            ></div>
-            <div
-              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${Themeselected === 1 && "ring-2 ring-offset-1 ring-core"
-                }`}
-              onClick={() => handleClick(1)}
-            ></div>
-            <div
-              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${Themeselected === 2 && "ring-2 ring-offset-1 ring-core"
+              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${theme === "system" && "ring-2 ring-gray-600 dark:ring-gray-200"
                 }`}
               style={{
                 background: "linear-gradient(to left, black 50%, white 50%)",
+                rotate: "-45deg"
               }}
-              onClick={() => handleClick(2)}
+              onClick={() => setTheme("system")}
             ></div>
+            <div
+              className={`w-10 h-10 rounded-full bg-black ${theme === "dark" && "ring-2 ring-gray-600 dark:ring-gray-200"
+                }`}
+              onClick={() => setTheme("dark")}
+            ></div>
+            <div
+              className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${theme === "light" && "ring-2 ring-gray-600 dark:ring-gray-200"
+                }`}
+              onClick={() => setTheme("light")}
+            ></div>
+
           </div>
           {/* <div className="flex justify-between mt-2">
               <p>Sync with system</p>
@@ -253,21 +239,18 @@ const SettingSidebar = () => {
         <div className="cursor-pointer">
           <p>Colors</p>
           <div className="flex gap-3 mt-2">
-            <div className="flex space-x-2">
-              {[
-                "bg-red-600",
-                "bg-green-600",
-                "bg-blue-600",
-                "bg-black",
-                "bg-yellow-600",
-              ].map((color, index) => (
+            <div className="flex flex-wrap gap-4">
+              {Object.keys(ThemeColors).map((color, index) => (
                 <div
                   key={index}
-                  className={`w-10 h-10 rounded-full ${color} ${selectedIndex === index
-                    ? "ring-2 ring-offset-1 ring-core"
+                  className={`w-10 h-10 rounded-full ${themeColor === color
+                    ? "ring-2 ring-gray-600 dark:ring-gray-200"
                     : ""
                     }`}
-                  onClick={() => handleDivClick(index)}
+                  style={{
+                    background: ThemeColors[color as keyof typeof ThemeColors]
+                  }}
+                  onClick={() => setThemeColor(color as keyof typeof ThemeColors)}
                 ></div>
               ))}
             </div>

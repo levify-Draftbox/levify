@@ -6,9 +6,62 @@
 
 @layer base {
 
-  html {
+  .purple {
     --core: #7c5cff;
     --core-lite: #8567ff;
+  }
+
+  .blue {
+    --core: #0066ff;
+    --core-lite: #0f6fff;
+  }
+
+  .yellow {
+    --core: #f2f700;
+    --core-lite: #ffff96;
+  }
+
+  .red {
+    --core: #f1003c;
+    --core-lite: #f1285b;
+  }
+
+  .pink {
+    --core: #ff3e88;
+    --core-lite: #ff5999;
+  }
+
+  .green {
+    --core: #24b158;
+    --core-lite: #38c96d;
+  }
+
+  .coral {
+    --core: #FF6B6B;
+    --core-lite: #FF8080;
+  }
+  
+  .teal {
+    --core: #008080;
+    --core-lite: #009999;
+  }
+  
+  .rust {
+    --core: #B7410E;
+    --core-lite: #CC5A2A;
+  }
+  
+  .cerulean {
+    --core: #007BA7;
+    --core-lite: #0095C9;
+  }
+  
+  .fuchsia {
+    --core: #FF00FF;
+    --core-lite: #FF33FF;
+  }
+
+  :root {
     --radius: 0.5rem;
   }
 
@@ -45,7 +98,7 @@
     --button-base: rgba(0, 0, 0, 0.05);
     --button-hover: rgba(0, 0, 0, 0.085);
     --button-active: rgb(0, 0, 0, 0.12);
-    --button-border: rgba(0, 0, 0, 0.09);
+    --button-border: rgba(0, 0, 0, 0.075);
     
     --sidebar-cards-bg: rgb(245, 245, 245);
     --sidebar-cards-border: rgba(0, 0, 0, 0.040)

@@ -2,7 +2,6 @@ import { FC, useState, useEffect, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { ThemeProvider } from "./Theme-provider";
 import { Button } from "./ui/button";
 import { X } from "@phosphor-icons/react";
 
@@ -35,46 +34,44 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
   }, [isVisible, onClose]);
 
   return ReactDOM.createPortal(
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <AnimatePresence>
-        {isVisible && (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ ease: "easeInOut", duration: 0.15 }}
+          className="z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop dark:bg-opacity-80 "
+          onClick={(e) => {
+            if (
+              (e.target as HTMLElement).classList.contains("modal--backdrop")
+            ) {
+              handleCloseModal();
+            }
+          }}
+        >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ ease: "easeInOut", duration: 0.15 }}
-            className="z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop dark:bg-opacity-80 "
-            onClick={(e) => {
-              if (
-                (e.target as HTMLElement).classList.contains("modal--backdrop")
-              ) {
-                handleCloseModal();
-              }
-            }}
+            className="bg-background w-[80%] h-[80%] rounded-lg dark:border "
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ ease: "easeInOut", duration: 0.15 }}
-              className="bg-background w-[80%] h-[80%] rounded-lg dark:border "
-            >
-              <div className="p-4 min-h-full">
-                <div className="flex justify-between">
-                  <h1>All settings</h1>
-                  <div>
+            <div className="p-4 min-h-full">
+              <div className="flex justify-between">
+                <h1>All settings</h1>
+                <div>
                   <Button variant="toolbutton" onClick={handleCloseModal}>
                     <X size={20} />
                   </Button>
                 </div>
-                </div>
-                {children}
               </div>
-            </motion.div>
+              {children}
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </ThemeProvider>,
+        </motion.div>
+      )}
+    </AnimatePresence>,
     portalRoot
   );
 };

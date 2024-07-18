@@ -30,7 +30,14 @@ const SideBar = () => {
     <div className="flex flex-col justify-between h-full  p-2 dark:bg-transparent selection:select-none">
       <div className="w-full flex flex-col mt-1">
         <Link to="/inbox" className="cursor-pointer my-1 mx-2">
-          <img className="w-full" alt="DraftBox Mail" src={theme === "light" ? "  /logo-light.svg" : "/logo-dark.svg"} />
+          <img className="w-full" alt="DraftBox Mail" src={
+            theme === "system" ?
+              !window.matchMedia("(prefers-color-scheme: dark)")
+                .matches
+                ? "  /logo-light.svg" : "/logo-dark.svg"
+              :
+              theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
+          } />
         </Link>
 
         <div className="mt-3">
