@@ -10,6 +10,7 @@ import {
 } from "./ui/resizable";
 import { ThemeColors, useTheme } from "./Theme-provider";
 import ScrollArea from "./ScrollArea";
+import { Spinner } from "./Spinner";
 
 const AllSettings = lazy(() => import("@/AllSettings"));
 
@@ -315,7 +316,11 @@ const SettingSidebar = () => {
 
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
-          <Suspense fallback={"Loading..."}>
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-full w-full">
+              <Spinner size={50} borderWidth={4} />
+            </div>
+          }>
             <AllSettings />
           </Suspense>
         </Modal>
