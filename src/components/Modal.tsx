@@ -1,7 +1,8 @@
-import React, { FC, useState, useEffect, ReactNode, useRef } from "react";
+import React, { FC, useState, useEffect, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
+import ScrollArea from "./ScrollArea";
 
 type ModalProps = {
   onClose: () => void;
@@ -74,26 +75,6 @@ export const ModalSidebarLayout: React.FC<ModalSidebarLayoutProps> = ({
   children,
   sidebar
 }) => {
-
-  const scrollSideBarDivRef = useRef<HTMLDivElement>(null);
-  const [sideBarTop, setSideBarTop] = useState(true);
-  const [sideBarbottom, setSideBarBottom] = useState(false);
-
-  useEffect(() => {
-    const sEvent = (e: any) => {
-      const { scrollTop, scrollHeight, clientHeight } = e.target;
-      setSideBarTop(scrollTop === 0);
-      setSideBarBottom(scrollTop + clientHeight >= scrollHeight);
-    };
-
-    const scrollDiv = scrollSideBarDivRef.current;
-    scrollDiv?.addEventListener("scroll", sEvent);
-
-    return () => {
-      scrollDiv?.removeEventListener("scroll", sEvent);
-    };
-  }, []);
-
   return (
     <div className="h-full w-full">
       <ResizablePanelGroup
@@ -104,13 +85,11 @@ export const ModalSidebarLayout: React.FC<ModalSidebarLayoutProps> = ({
           minSize={18}
           maxSize={22}
           defaultSize={18}
-          className="h-full relative"
+          className="h-full"
         >
-          <div className={`h-10 ${sideBarTop ? "" : "bg-gradient-to-b from-background to-transparent"} absolute top-0 w-full pointer-events-none`}></div>
-          <div className="h-full overflow-auto scroll-hide bg-background" ref={scrollSideBarDivRef}>
+          <ScrollArea className="scroll-hide bg-background">
             {sidebar}
-          </div>
-          <div className={`h-10 ${sideBarbottom ? "" : "bg-gradient-to-t from-background to-transparent"} absolute bottom-0 w-full pointer-events-none`}></div>
+          </ScrollArea>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel>

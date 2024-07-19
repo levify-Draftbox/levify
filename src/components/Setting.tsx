@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { lazy, ReactNode, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, ReactNode, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "./Modal";
 import { ChevronRight } from "lucide-react";
@@ -9,6 +9,7 @@ import {
   ResizablePanel,
 } from "./ui/resizable";
 import { ThemeColors, useTheme } from "./Theme-provider";
+import ScrollArea from "./ScrollArea";
 
 const AllSettings = lazy(() => import("@/AllSettings"));
 
@@ -17,20 +18,6 @@ type SearchBarProp = {
 };
 
 const Setting = ({ onSettingToggle }: SearchBarProp) => {
-
-  const scrollDivRef = useRef<HTMLDivElement>(null)
-  const showBorder = useState(false);
-
-  useEffect(() => {
-    const sEvent = (e: any) => {
-      showBorder[1](e.target.scrollTop != 0);
-    }
-    scrollDivRef.current?.addEventListener("scroll", sEvent)
-    return () => {
-      scrollDivRef.current?.removeEventListener("scroll", sEvent)
-    }
-  }, [scrollDivRef.current])
-
   return (
     <>
       <ResizableHandle />
@@ -41,8 +28,8 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
           transition={{ stiffness: 200, duration: 0.25 }}
           className="!h-[100vh] overflow-auto select-none bg-background-secondary"
         >
-          <div className="h-[100vh] overflow-auto scroll-bar" ref={scrollDivRef}>
-            <div className={`h-[52px] flex justify-between sticky top-0 px-3 z-[9999] bg-background-secondary ${showBorder[0] ? "border-b" : ""}`} >
+          <div className="h-[100vh] flex flex-col">
+            <div className={`h-[51px] flex justify-between sticky top-0 px-3 z-[9999] bg-background-secondary`} >
               <h1 className="my-auto">Settings</h1>
               <Button
                 variant={"toolbutton"}
@@ -53,10 +40,12 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
                 <ChevronRight size={20} />
               </Button>
             </div>
-            <div className="px-3 py-0">
-              <AnimatePresence>
-                <SettingSidebar />
-              </AnimatePresence>
+            <div className="overflow-hidden flex-1">
+              <ScrollArea border className="px-3 py-2">
+                <AnimatePresence>
+                  <SettingSidebar />
+                </AnimatePresence>
+              </ScrollArea>
             </div>
           </div>
         </motion.div>

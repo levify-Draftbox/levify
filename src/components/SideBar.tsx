@@ -1,5 +1,3 @@
-import { IoSunnyOutline } from "react-icons/io5";
-import { IoMoonOutline } from "react-icons/io5";
 import { useTheme } from "./Theme-provider";
 import { Button } from "./ui/button";
 import {
@@ -19,35 +17,38 @@ import React, { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
 import { Link } from "react-router-dom";
+import ScrollArea from "./ScrollArea";
 
 const SideBar = () => {
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
   const [moreLess, setmoreLess] = useState(false);
 
-  const handleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
-
   return (
-    <div className="flex flex-col justify-between h-full  p-2 dark:bg-transparent selection:select-none">
-      <div className="w-full flex flex-col mt-1">
-        <Link to="/inbox" className="cursor-pointer my-1 mx-2">
-          <img className="w-full" alt="DraftBox Mail" src={
-            theme === "system" ?
-              !window.matchMedia("(prefers-color-scheme: dark)")
-                .matches
-                ? "  /logo-light.svg" : "/logo-dark.svg"
-              :
-              theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
-          } />
-        </Link>
+    <div className="flex flex-col justify-between h-full dark:bg-transparent selection:select-none">
+      <div className="p-2">
+        <div className="w-full flex flex-col mt-1">
+          <Link to="/inbox" className="cursor-pointer my-1 mx-2">
+            <img className="w-full" alt="DraftBox Mail" src={
+              theme === "system" ?
+                !window.matchMedia("(prefers-color-scheme: dark)")
+                  .matches
+                  ? "  /logo-light.svg" : "/logo-dark.svg"
+                :
+                theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
+            } />
+          </Link>
 
-        <div className="mt-3">
-          <Button size={"superActive"} variant={"superActive"}>
-            New Mail
-          </Button>
+          <div className="mt-3">
+            <Button size={"superActive"} variant={"superActive"}>
+              New Mail
+            </Button>
+          </div>
+
         </div>
+      </div>
 
-        <div className="mt-5 flex flex-col gap-1">
-
+      <div className="flex-1 overflow-hidden py-2">
+        <ScrollArea border className="flex flex-col gap-1 scroll-hide px-2">
           <SidebarNavLink
             icon={<Tray size={18} />}
             unread={4}
@@ -90,59 +91,39 @@ const SideBar = () => {
               </div>
             )}
           </div>
+          {
+            [0, 0, 0, 0].map(_ =>
+              moreLess && (
+                <div className="flex flex-col gap-1">
 
-          {moreLess && (
-            <div className="flex flex-col gap-1">
+                  <SidebarNavLink
+                    icon={<CalendarBlank size={18} />}
+                    to="/inbox/later"
+                  >Send later</SidebarNavLink>
 
-              <SidebarNavLink
-                icon={<CalendarBlank size={18} />}
-                to="/inbox/later"
-              >Send later</SidebarNavLink>
+                  <SidebarNavLink
+                    icon={<WarningOctagon size={18} />}
+                    unread={3}
+                    to="/inbox/spam"
+                  >Spam</SidebarNavLink>
 
-              <SidebarNavLink
-                icon={<WarningOctagon size={18} />}
-                unread={3}
-                to="/inbox/spam"
-              >Spam</SidebarNavLink>
+                  <SidebarNavLink
+                    icon={<Archive size={18} />}
+                    to="/inbox/archive"
+                  >Archive</SidebarNavLink>
 
-              <SidebarNavLink
-                icon={<Archive size={18} />}
-                to="/inbox/archive"
-              >Archive</SidebarNavLink>
+                  <SidebarNavLink
+                    icon={<TrashSimple size={18} />}
+                    to="/inbox/trash"
+                  >Trash</SidebarNavLink>
 
-              <SidebarNavLink
-                icon={<TrashSimple size={18} />}
-                to="/inbox/trash"
-              >Trash</SidebarNavLink>
-
-            </div>
-          )}
-        </div>
+                </div>
+              ))
+          }
+        </ScrollArea>
       </div>
 
-      <div className="w-full flex flex-col mb-2">
-        <div
-          onClick={handleTheme}
-          className="flex w-full px-3 py-4 h-10 rounded-md cursor-pointer hover:bg-[rgba(0,0,0,0.06)] dark:hover:bg-[rgba(255,255,255,0.2)]"
-        >
-          <div className="flex items-center justify-center gap-3">
-            {theme === "light" ? (
-              <IoMoonOutline
-                fontSize={18}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-            ) : (
-              <IoSunnyOutline
-                fontSize={18}
-                className="text-[#91918e] dark:text-[#a3a3a3]"
-              />
-            )}
-            <h1 className=" dark:text-[#a3a3a3]">
-              {theme === "light" ? "Dark" : "Light"}
-            </h1>
-          </div>
-        </div>
-
+      <div className="w-full flex flex-col p-1 pb-4">
         <div className="w-full pt-3 px-1">
           <Progress value={10} />
           <div className="text-xs flex justify-between  mt-2">
@@ -154,7 +135,7 @@ const SideBar = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
