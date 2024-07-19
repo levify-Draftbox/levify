@@ -3,6 +3,7 @@ import Dashboard from "./dashboard";
 
 type SettingsListType = {
   name: string;
+  description?: string;
   component: React.ReactNode;
 };
 
@@ -22,7 +23,8 @@ const SettingsList: {
     component: <>Active 2FAI!</>,
   },
   appearance: {
-    name: "Appearance And Feel",
+    name: "Appearance",
+    description: "Personalize your workspace with custom themes and layouts.",
     component: <Appearance />,
   },
   notification: {

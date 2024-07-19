@@ -16,7 +16,7 @@ import {
 // import { Key, User, Globe, PaintRoller, Shield } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react";
 import SettingsList from "./list";
-import { ModalSidebarLayout } from "@/components/Modal";
+import { ModalSidebarLayout } from "@/components/Modal";;
 
 type SidebarNavLinkProp = {
   icon: React.ReactNode;
@@ -186,7 +186,7 @@ const AllSettings = () => {
       </div>
     )
   }
-  
+
   const scrollChildDivRef = useRef<HTMLDivElement>(null);
   const [childTop, setChildTop] = useState(true);
   // const [childBottom, setChildBottom] = useState(false);
@@ -194,7 +194,7 @@ const AllSettings = () => {
   useEffect(() => {
     const sEvent = (e: any) => {
       console.log(1);
-      
+
       const { scrollTop /* , scrollHeight, clientHeight  */ } = e.target;
       setChildTop(scrollTop === 0);
       // setChildBottom(scrollTop + clientHeight >= scrollHeight);
@@ -213,10 +213,20 @@ const AllSettings = () => {
     <ModalSidebarLayout sidebar={<SideBar />} ref={scrollChildDivRef}>
       {SettingsList[activeSetting] ? (
         <div className="h-full overflow-auto scroll-bar" ref={scrollChildDivRef}>
-          <h1 className={`text-2xl font-[500] sticky top-0  bg-background-secondary py-5 px-10 ${!childTop ? "border-b" : ""}`}>
-            {SettingsList[activeSetting].name}
-          </h1>
+          <div className={`flex flex-col sticky top-0  bg-background-secondary py-5 px-10 gap-1 ${!childTop ? "border-b" : ""} z-[9]`}>
+            <h1 className={`text-2xl font-[500] `}>
+              {SettingsList[activeSetting].name}
+            </h1>
+            {
+              SettingsList[activeSetting].description &&
+              <div className="text-sm font-thin text-gray-700 dark:text-gray-200">
+                {SettingsList[activeSetting].description}
+              </div>
+            }
+          </div>
+
           <div className="px-10 py-2">
+
             {SettingsList[activeSetting].component}
           </div>
         </div>

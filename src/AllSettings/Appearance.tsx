@@ -1,17 +1,12 @@
 import { useState } from "react";
+import { SettingDiv, SettingTitle } from "./components";
+import { ThemeColors, useTheme } from "@/components/Theme-provider";
 
 const Appearance = () => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [Themeselected, setThemeSelected] = useState<number | null>(null);
+
+  const { setTheme, setThemeColor, theme, themeColor } = useTheme()
+
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
-
-  const handleDivClick = (index: number) => {
-    setSelectedIndex(index);
-  };
-
-  const handleClick = (index: number) => {
-    setThemeSelected(index);
-  };
 
   const handleImageClick = (index: number) => {
     setSelectedImage(index);
@@ -20,68 +15,56 @@ const Appearance = () => {
   return (
     <div className="w-full h-full">
       <div>
-        <h2 className="text-lg">Thame</h2>
-        <p className="text-sm mt-1">
-          Customize the look and feel of Rellite applications.
-        </p>
-        <div className="mt-3 flex gap-2">
+        <SettingTitle>Theme</SettingTitle>
+        <SettingDiv className="flex flex-wrap gap-4">
           <div
-            className={`w-10 h-10 rounded-full bg-black ${
-              Themeselected === 0 && "ring-2 ring-offset-1 ring-core"
-            }`}
-            onClick={() => handleClick(0)}
-          ></div>
-          <div
-            className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${
-              Themeselected === 1 && "ring-2 ring-offset-1 ring-core"
-            }`}
-            onClick={() => handleClick(1)}
-          ></div>
-          <div
-            className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${
-              Themeselected === 2 && "ring-2 ring-offset-1 ring-core"
-            }`}
+            className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${theme === "system" && "ring-2 ring-gray-600 dark:ring-gray-200"
+              }`}
             style={{
               background: "linear-gradient(to left, black 50%, white 50%)",
+              rotate: "-45deg"
             }}
-            onClick={() => handleClick(2)}
+            onClick={() => setTheme("system")}
           ></div>
-        </div>
+          <div
+            className={`w-10 h-10 rounded-full bg-black ${theme === "dark" && "ring-2 ring-gray-600 dark:ring-gray-200"
+              }`}
+            onClick={() => setTheme("dark")}
+          ></div>
+          <div
+            className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${theme === "light" && "ring-2 ring-gray-600 dark:ring-gray-200"
+              }`}
+            onClick={() => setTheme("light")}
+          ></div>
 
-        <div className="cursor-pointer mt-10 ">
-          <p className="text-lg">Colors</p>
-          <div className="flex gap-3 mt-2">
-            <div className="flex space-x-2">
-              {[
-                "bg-red-600",
-                "bg-green-600",
-                "bg-blue-600",
-                "bg-black",
-                "bg-yellow-600",
-              ].map((color, index) => (
-                <div
-                  key={index}
-                  className={`w-10 h-10 rounded-full ${color} ${
-                    selectedIndex === index
-                      ? "ring-2 ring-offset-1 ring-core"
-                      : ""
+        </SettingDiv>
+
+
+        <SettingTitle>Colors</SettingTitle>
+        <SettingDiv className="flex flex-wrap gap-4">
+          {Object.keys(ThemeColors).map((color, index) => (
+            <div
+              key={index}
+              className={`w-10 h-10 rounded-full ${themeColor === color
+                ? "ring-2 ring-gray-600 dark:ring-gray-200"
+                : ""
+                }`}
+              style={{
+                background: ThemeColors[color as keyof typeof ThemeColors]
+              }}
+              onClick={() => setThemeColor(color as keyof typeof ThemeColors)}
+            ></div>
+          ))}
+        </SettingDiv>
+
+        <div className="mt-10">
+          <h2 className="text-lg">Layout</h2>
+          <div className="flex mt-2 gap-4">
+            <div>
+              <img
+                src="./download (1).jpg"
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
                   }`}
-                  onClick={() => handleDivClick(index)}
-                ></div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-10">
-          <h2 className="text-lg">Layout</h2>
-          <div className="flex mt-2 gap-4">
-            <div>
-              <img
-                src="./download (1).jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
@@ -90,9 +73,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -102,9 +84,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 3 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 3 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(3)}
                 alt="Image 2"
               />
@@ -119,9 +100,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download (1).jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
@@ -130,9 +110,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -142,9 +121,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 3 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 3 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(3)}
                 alt="Image 2"
               />
@@ -159,9 +137,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download (1).jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
@@ -170,9 +147,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -182,9 +158,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 3 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 3 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(3)}
                 alt="Image 2"
               />
@@ -199,9 +174,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download (1).jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 1 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(1)}
                 alt="Image 1"
               />
@@ -210,9 +184,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 2 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(2)}
                 alt="Image 2"
               />
@@ -222,9 +195,8 @@ const Appearance = () => {
             <div>
               <img
                 src="./download.jpg"
-                className={`h-24 w-36 object-cover rounded-md ${
-                  selectedImage === 3 ? "ring-2 ring-core" : ""
-                }`}
+                className={`h-24 w-36 object-cover rounded-md ${selectedImage === 3 ? "ring-2 ring-core" : ""
+                  }`}
                 onClick={() => handleImageClick(3)}
                 alt="Image 2"
               />
