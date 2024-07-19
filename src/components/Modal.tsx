@@ -3,13 +3,19 @@ import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
 import ScrollArea from "./ScrollArea";
+import useEscKeyStore from "@/store/escStack";
 
 type ModalProps = {
   onClose: () => void;
   children: ReactNode;
+  key: string
 };
 
-const Modal: FC<ModalProps> = ({ onClose, children }) => {
+const Modal: FC<ModalProps> = ({ onClose, children, key }) => {
+
+  const { pushEsc, popEsc } = useEscKeyStore()
+  useEffect(() => pushEsc(`modal-${key}`, () => setIsVisible(false)), [])
+
   const [isVisible, setIsVisible] = useState(true);
   const portalRoot = document.querySelector("#reactPortal");
 
@@ -20,13 +26,18 @@ const Modal: FC<ModalProps> = ({ onClose, children }) => {
   }
 
   const handleCloseModal = () => {
+    popEsc()
     setIsVisible(false);
   };
+
+  const closeEvent = () => {
+    onClose()
+  }
 
   useEffect(() => {
     if (!isVisible) {
       const timer = setTimeout(() => {
-        onClose();
+        closeEvent()
       }, 300); // Match this duration with your exit animation duration
       return () => clearTimeout(timer);
     }

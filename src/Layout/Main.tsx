@@ -8,9 +8,21 @@ import { Outlet } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
 import Setting from "@/components/Setting";
+import useEscKeyStore from "@/store/escStack";
 
 const Main = () => {
   const [viewSetting, setViewSetting] = useState(false);
+  const { pushEsc, popEsc } = useEscKeyStore()
+
+  const settingToggle = () => {
+    if (viewSetting) {
+      setViewSetting(false)
+      popEsc()
+    } else {
+      setViewSetting(true)
+      pushEsc("setting-bar", () => setViewSetting(false))
+    }
+  }
 
   return (
     <ResizablePanelGroup
@@ -25,12 +37,12 @@ const Main = () => {
       <ResizableHandle />
       <ResizablePanel defaultSize={87}>
         <div className="w-full h-full bg-background-secondary">
-          <SearchBar onSettingToggle={() => setViewSetting(!viewSetting)} />
+          <SearchBar onSettingToggle={() => settingToggle()} />
           <Outlet />
         </div>
       </ResizablePanel>
       {viewSetting && (
-        <Setting onSettingToggle={() => setViewSetting(!viewSetting)}/>
+        <Setting onSettingToggle={() => settingToggle()} />
       )}
     </ResizablePanelGroup>
   );

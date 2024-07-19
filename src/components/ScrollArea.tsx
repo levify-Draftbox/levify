@@ -19,8 +19,6 @@ export default function ScrollArea({
             const { scrollTop, scrollHeight, clientHeight } = e.target;
             setSideBarTop(scrollTop === 0);
             setSideBarBottom(scrollTop + clientHeight >= scrollHeight);
-            console.log(11);
-            
         };
 
         const scrollDiv = scrollSideBarDivRef.current;

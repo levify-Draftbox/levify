@@ -94,12 +94,6 @@ const SettingSidebar = () => {
         Get the Rellite Mail app
       </Button>
 
-      {isAppModalOpen && (
-        <Modal onClose={handleAppModel}>
-          <Suspense fallback={"Loading..."}></Suspense>
-        </Modal>
-      )}
-
       <Card hedding={"Your plan"}>
         <div className="w-full pt-1 px-1">
           <Progress value={10} />
@@ -315,7 +309,7 @@ const SettingSidebar = () => {
       </div>
 
       {isModalOpen && (
-        <Modal onClose={handleCloseModal}>
+        <Modal key="full-settings" onClose={handleCloseModal}>
           <Suspense fallback={
             <div className="flex items-center justify-center h-full w-full">
               <Spinner size={50} borderWidth={4} />
@@ -325,6 +319,13 @@ const SettingSidebar = () => {
           </Suspense>
         </Modal>
       )}
+
+      {isAppModalOpen && (
+        <Modal key="upgread" onClose={handleAppModel}>
+          <Suspense fallback={"Loading..."}></Suspense>
+        </Modal>
+      )}
+
 
     </div>
   );
