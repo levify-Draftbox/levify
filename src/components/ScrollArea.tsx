@@ -28,12 +28,10 @@ export default function ScrollArea({
 
         scrollDiv?.addEventListener("scroll", sEvent);
         scrollDiv?.addEventListener("mouseenter", sEvent);
-        scrollDiv?.addEventListener("click", sEvent);
 
         return () => {
             scrollDiv?.removeEventListener("scroll", sEvent);
             scrollDiv?.removeEventListener("mouseenter", sEvent);
-            scrollDiv?.removeEventListener("click", sEvent);
         };
     }, []);
 
