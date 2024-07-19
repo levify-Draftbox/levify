@@ -97,7 +97,7 @@
 
     --button-base: rgba(0, 0, 0, 0.05);
     --button-hover: rgba(0, 0, 0, 0.085);
-    --button-active: rgb(0, 0, 0, 0.12);
+    --button-active: rgb(0, 0, 0, 0.1);
     --button-border: rgba(0, 0, 0, 0.075);
 
     --input-base: rgba(0, 0, 0, 0.040);
