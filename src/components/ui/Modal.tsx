@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./resizable";
 import ScrollArea from "./ScrollArea";
 import useEscKeyStore from "@/store/escStack";
 

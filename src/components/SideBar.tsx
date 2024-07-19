@@ -17,7 +17,7 @@ import React, { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
 import { Link } from "react-router-dom";
-import ScrollArea from "./ScrollArea";
+import ScrollArea from "./ui/ScrollArea";
 
 const SideBar = () => {
   const { theme } = useTheme();
@@ -92,7 +92,7 @@ const SideBar = () => {
             )}
           </div>
           {
-            [0, 0, 0, 0].map(_ =>
+            [0, 0, 0, 0, 0, 0].map(_ =>
               moreLess && (
                 <div className="flex flex-col gap-1">
 

@@ -2,15 +2,16 @@ import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { lazy, ReactNode, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import Modal from "./Modal";
+import Modal from "@/components/ui/Modal";
 import { ChevronRight } from "lucide-react";
 import {
   ResizableHandle,
   ResizablePanel,
 } from "./ui/resizable";
 import { ThemeColors, useTheme } from "./Theme-provider";
-import ScrollArea from "./ScrollArea";
+import ScrollArea from "./ui/ScrollArea";
 import { Spinner } from "./Spinner";
+import Kbd from "./ui/kbd";
 
 const AllSettings = lazy(() => import("@/AllSettings"));
 
@@ -243,8 +244,10 @@ const SettingSidebar = () => {
       </Card>
 
       <Card hedding={"Preferences"}>
-        <div className="flex justify-between cursor-pointer">
-          <p>Keyboard shortcuts</p>
+        <div className="flex justify-between cursor-pointer items-center">
+          <span className="flex items-center gap-2">
+            <p>Keyboard shortcuts</p><Kbd className="">Alt</Kbd>
+          </span>
           <label className="inline-flex items-center cursor-pointer">
             <input type="checkbox" value="" className="sr-only peer" />
             <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-core"></div>

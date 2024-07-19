@@ -16,7 +16,7 @@ import {
 // import { Key, User, Globe, PaintRoller, Shield } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react";
 import SettingsList from "./list";
-import { ModalSidebarLayout } from "@/components/Modal";;
+import { ModalSidebarLayout } from "@/components/ui/Modal";;
 
 type SidebarNavLinkProp = {
   icon: React.ReactNode;
