@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { SettingDiv, SettingTitle } from "./components";
 import { ThemeColors, useTheme } from "@/components/Theme-provider";
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 const Appearance = () => {
   const { setTheme, setThemeColor, theme, themeColor } = useTheme();
@@ -11,11 +13,7 @@ const Appearance = () => {
     setSelectedImage(index);
   };
 
-  const [selectedOption, setSelectedOption] = useState("subject"); // Default to 'subject'
 
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
 
   return (
     <div className="w-full h-full">
@@ -104,35 +102,23 @@ const Appearance = () => {
 
         <SettingTitle>Mail reading format</SettingTitle>
         <SettingDiv>
-          <div>
-            <input
-              type="radio"
-              id="subject"
-              name="radioOption"
-              value="subject"
-              checked={selectedOption === "subject"}
-              onChange={handleChange}
-              className="mr-2 "
-            />
-
-            <label htmlFor="subject">Subject first</label>
-          </div>
-
-          <div>
-            <input
-              type="radio"
-              id="sender"
-              name="radioOption"
-              value="sender"
-              checked={selectedOption === "sender"}
-              onChange={handleChange}
-              className="mr-2 text-black focus:ring-black"
-            />
-            <label htmlFor="sender">Sender first</label>
-          </div>
+          <RadioGroup defaultValue="comfortable">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="default" id="r1" />
+              <Label htmlFor="r1">Default</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="comfortable" id="r2" />
+              <Label htmlFor="r2">Comfortable</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="compact" id="r3" />
+              <Label htmlFor="r3">Compact</Label>
+            </div>
+          </RadioGroup>
         </SettingDiv>
 
-        <SettingTitle>While starting up</SettingTitle>
+       
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import Appearance from "./Appearance";
 import Dashboard from "./dashboard";
+import Notification from "./Notification";
+import Privacy from "./Privacy";
 
 type SettingsListType = {
   name: string;
@@ -29,11 +31,13 @@ const SettingsList: {
   },
   notification: {
     name: "notification",
-    component: <>notification</>,
+    description: "The notification section allows users to manage their alert preferences",
+    component: <Notification/>,
   },
   Privacy: {
     name: "Privacy",
-    component: <>Privacy</>,
+    description: "Privacy is key on our mail service site, protecting user data with robust security.",
+    component: <Privacy/>,
   },
   Compose: {
     name: "Compose",

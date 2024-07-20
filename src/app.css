@@ -174,10 +174,6 @@ body {
     Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-input[type="radio"] {
-  accent-color: black;
-}
-
 
 html {
   height: 100vh;
