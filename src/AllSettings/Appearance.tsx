@@ -100,20 +100,6 @@ const Appearance = () => {
           </div>
         </SettingDiv>
 
-        <SettingTitle>Who frist</SettingTitle>
-        <SettingDiv>
-          <RadioGroup defaultValue="comfortable">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="default" id="r1" />
-              <Label htmlFor="r1">Sender frist</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="comfortable" id="r2" />
-              <Label htmlFor="r2">Subject frist</Label>
-            </div>
-          </RadioGroup>
-        </SettingDiv>
-
        
       </div>
     </div>
