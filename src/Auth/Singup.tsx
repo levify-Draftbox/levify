@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { useState } from "react";
-import { Eye, EyeSlash, ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { Eye, EyeSlash, ArrowRight } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
