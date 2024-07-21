@@ -17,10 +17,8 @@ const Notification = () => {
             <SelectValue placeholder="Enable" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Enable</SelectItem>
-            <SelectItem value="dark">disable</SelectItem>
-            <SelectItem value="dark">disable</SelectItem>
-            <SelectItem value="dark">disable</SelectItem>
+            <SelectItem value="Enable">Enable</SelectItem>
+            <SelectItem value="disable">disable</SelectItem>
           </SelectContent>
         </Select>
       </SettingDiv>
@@ -33,10 +31,8 @@ const Notification = () => {
             <SelectValue placeholder="Enable" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Enable</SelectItem>
-            <SelectItem value="dark">disable</SelectItem>
-            <SelectItem value="dark">disable</SelectItem>
-            <SelectItem value="dark">disable</SelectItem>
+            <SelectItem value="Enable">Enable</SelectItem>
+            <SelectItem value="disable">disable</SelectItem>
           </SelectContent>
         </Select>
       </SettingDiv>
