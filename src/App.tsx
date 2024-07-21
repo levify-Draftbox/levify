@@ -7,7 +7,7 @@ import Inbox from "./page/Inbox";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import ShortcutLoad from "./lib/Shortcut";
-import Singup from "./Auth/Singup";
+import Signup from "./Auth/Signup";
 
 function App() {
   ShortcutLoad();
@@ -18,7 +18,7 @@ function App() {
         <TooltipProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/singup" element={<Singup />} />
+            <Route path="/signup" element={<Signup />} />
 
             <Route path="/" element={<Home />}>
               <Route path="/" element={<Inbox />} />

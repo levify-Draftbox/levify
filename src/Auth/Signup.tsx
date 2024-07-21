@@ -37,12 +37,12 @@ const Signup = () => {
         </Link>
       </div>
       <div className="w-full h-full flex justify-center py-14 overflow-hidden">
-        <div className="w-[35%] relative">
+        <div className="w-[30%] relative">
           <motion.div
             className="w-full absolute"
             initial={{ x: "0%", opacity: 1 }}
             animate={{
-              x: isVerifying ? "100%" : "0%",
+              x: isVerifying ? "-100%" : "0%",
               opacity: isVerifying ? 0 : 1,
             }}
             transition={{ duration: 0.5 }}
@@ -83,7 +83,7 @@ const Signup = () => {
                     >
                       Password
                     </Label>
-                    <div className="mt-1 relative rounded-md shadow-sm">
+                    <div className="mt-1 relative rounded-md ">
                       <Input
                         type={showPassword ? "text" : "password"}
                         id="password"
@@ -135,7 +135,7 @@ const Signup = () => {
             className="w-full absolute"
             initial={{ x: "-100%", opacity: 0 }}
             animate={{
-              x: isVerifying ? "0%" : "-100%",
+              x: isVerifying ? "0%" : "100%",
               opacity: isVerifying ? 1 : 0,
             }}
             transition={{ duration: 0.5 }}
