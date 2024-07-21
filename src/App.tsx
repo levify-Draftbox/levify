@@ -5,19 +5,21 @@ import { ThemeProvider } from "./components/Theme-provider";
 import Login from "./Auth/Login";
 import Inbox from "./page/Inbox";
 import { TooltipProvider } from "./components/ui/tooltip";
-import { HotkeysProvider } from 'react-hotkeys-hook'
+import { HotkeysProvider } from "react-hotkeys-hook";
 import ShortcutLoad from "./lib/Shortcut";
+import Singup from "./Auth/Singup";
 
 function App() {
-
-  ShortcutLoad()
+  ShortcutLoad();
 
   return (
-    <HotkeysProvider initiallyActiveScopes={['settings']}>
+    <HotkeysProvider initiallyActiveScopes={["settings"]}>
       <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
         <TooltipProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/singup" element={<Singup />} />
+
             <Route path="/" element={<Home />}>
               <Route path="/" element={<Inbox />} />
               <Route path="/*" element={<Inbox />} />
