@@ -1,4 +1,5 @@
 import Appearance from "./Appearance";
+import Composer from "./Composer";
 import Dashboard from "./dashboard";
 import Notification from "./Notification";
 import Privacy from "./Privacy";
@@ -31,17 +32,21 @@ const SettingsList: {
   },
   notification: {
     name: "notification",
-    description: "The notification section allows users to manage their alert preferences",
-    component: <Notification/>,
+    description:
+      "The notification section allows users to manage their alert preferences",
+    component: <Notification />,
   },
   Privacy: {
     name: "Privacy",
-    description: "Privacy is key on our mail service site, protecting user data with robust security.",
-    component: <Privacy/>,
+    description:
+      "Privacy is key on our mail service site, protecting user data with robust security.",
+    component: <Privacy />,
   },
   Compose: {
     name: "Compose",
-    component: <>Compose</>,
+    description:
+      "Customize email composition preferences and settings.",
+    component: <Composer />,
   },
   Filter: {
     name: "Filter",

@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { SettingDiv, SettingTitle } from "./components";
 import { ThemeColors, useTheme } from "@/components/Theme-provider";
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 const Appearance = () => {
   const { setTheme, setThemeColor, theme, themeColor } = useTheme();
@@ -12,8 +10,6 @@ const Appearance = () => {
   const handleImageClick = (index: number) => {
     setSelectedImage(index);
   };
-
-
 
   return (
     <div className="w-full h-full">
@@ -99,8 +95,6 @@ const Appearance = () => {
             <p className="text-center mt-2">Open in new tab</p>
           </div>
         </SettingDiv>
-
-       
       </div>
     </div>
   );
