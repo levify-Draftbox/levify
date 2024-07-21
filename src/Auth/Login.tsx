@@ -78,20 +78,21 @@ const Login = () => {
           />
         </Link>
       </div>
-      <div className="w-full h-full flex justify-center ">
-        <div className="w-[40%]">
+      <div className="w-full h-full flex justify-center py-14">
+        <div className="w-[37%]">
           <div className="p-10">
-            <div>
+            <div className="text-center">
               <h1 className="text-4xl inline">
-                Create your <h1 className="inline text-[#a67e4f]">Draftbox</h1>{" "}
+                Create your <h1 className="inline text-[#926e43]">Draftbox</h1>{" "}
                 Account
               </h1>
-            </div>
-            <p className="mt-10 text-lg">
-              Welcome to Draftbox! We're excited to have you on board. Get ready
+            <p className="mt-3 text-lg">
+              Welcome to Draftbox! We're excited to have you on board.
+               Get ready
               to experience a smarter way to manage your emails.
             </p>
-            <div className="">
+            </div>
+            <div className="mt-10">
               <form>
                 <div className="mb-4 mt-5">
                   <label htmlFor="username" className="block  text-gray-700 ">
