@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
-import { useState } from "react";
-import { Eye, EyeSlash, ArrowRight } from "@phosphor-icons/react";
+import {  useState } from "react";
+import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,11 +11,107 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import axios from "axios";
 
 const Signup = () => {
   const { theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [token, setToken] = useState<string>("");
+  const [formData, setFormData] = useState<{ username: string; password: string; mobile: string }>({
+    username: "",
+    password: "",
+    mobile: "",
+  });
+  const [otp, setOtp] = useState<string>("");
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+    setErrors({ ...errors, [id]: null });
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    // Username validation
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    } else {
+      formData.username = formData.username.trim().toLowerCase();
+    }
+
+    // Password validation
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[!@#$%^&*()-=_+[\]{}|;':",./<>?])(?=.*\d).{6,}$/;
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Password must contain at least one uppercase letter, one special character, one number, and be at least 6 characters long";
+    }
+
+    // Mobile validation
+    const mobileRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!formData.mobile.trim()) {
+      newErrors.mobile = "Mobile number is required";
+    } else if (!mobileRegex.test(formData.mobile.trim())) {
+      newErrors.mobile = "Invalid mobile number format";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      const response = await axios.post<{
+        message(arg0: string, message: unknown): unknown; success: boolean; token?: string 
+}>(
+        "http://localhost:3030/auth/signup",
+        formData
+      );
+      console.log(response);
+
+      if (response.data.success) {
+        if (response.data.token) {
+          setToken(response.data.token);
+        }
+        setIsVerifying(true);
+      } else {
+        console.error("Signup failed:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+    }
+  };
+
+  const handleVerify = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post<{ success: boolean; message?: string }>(
+        "http://localhost:3030/auth/verify",
+        { otp, token }
+      );
+      if (response.data.success) {
+        alert("Verification successful");
+      } else {
+        console.error("Verification failed:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error during verification:", error);
+    }
+  };
+
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
+  };
 
   return (
     <div className="flex w-full flex-col h-screen">
@@ -60,7 +156,7 @@ const Signup = () => {
                 </p>
               </div>
               <div className="mt-10">
-                <form>
+                <form onSubmit={handleSignup}>
                   <div className="mb-4 mt-5">
                     <Label
                       htmlFor="username"
@@ -71,9 +167,18 @@ const Signup = () => {
                     <Input
                       type="text"
                       id="username"
-                      className="w-full p-3 rounded-lg outline-none mt-2"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
+                        errors.username ? "border-red-500" : ""
+                      }`}
                       placeholder="Username"
                     />
+                    {errors.username && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.username}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mb-4">
@@ -87,8 +192,12 @@ const Signup = () => {
                       <Input
                         type={showPassword ? "text" : "password"}
                         id="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
                         placeholder="Password"
-                        className="rounded-lg w-full p-3 outline-none"
+                        className={`rounded-lg w-full p-3 outline-none ${
+                          errors.password ? "border-red-500" : ""
+                        }`}
                       />
                       <button
                         type="button"
@@ -102,27 +211,40 @@ const Signup = () => {
                         )}
                       </button>
                     </div>
+                    {errors.password && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mb-6">
                     <Label
-                      htmlFor="Number"
+                      htmlFor="mobile"
                       className="block text-sm font-medium text-gray-700 dark:text-white"
                     >
-                      Number
+                      Mobile
                     </Label>
                     <Input
-                      id="Number"
+                      id="mobile"
+                      value={formData.mobile}
+                      onChange={handleInputChange}
                       placeholder="+91"
-                      className="w-full p-3 rounded-lg outline-none mt-1"
+                      className={`w-full p-3 rounded-lg outline-none mt-1 ${
+                        errors.mobile ? "border-red-500" : ""
+                      }`}
                     />
+                    {errors.mobile && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.mobile}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-2">
                     <button
-                      type="button"
+                      type="submit"
                       className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg"
-                      onClick={() => setIsVerifying(true)}
                     >
                       Create account
                     </button>
@@ -141,16 +263,10 @@ const Signup = () => {
             transition={{ duration: 0.5 }}
           >
             <div className="p-10">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6">
                 <h2 className="text-2xl">Verify Your Account</h2>
-                <button
-                  onClick={() => setIsVerifying(false)}
-                  className="mr-4 text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  <ArrowRight size={24} className="dark:text-white" />
-                </button>
               </div>
-              <form>
+              <form onSubmit={handleVerify}>
                 <div className="mb-4">
                   <Label
                     htmlFor="otp"
@@ -159,7 +275,11 @@ const Signup = () => {
                     Enter OTP
                   </Label>
                   <div className="mt-3">
-                    <InputOTP maxLength={6}>
+                    <InputOTP
+                      maxLength={6}
+                      value={otp}
+                      onChange={handleOtpChange}
+                    >
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
@@ -174,9 +294,20 @@ const Signup = () => {
                     </InputOTP>
                   </div>
                 </div>
+                <div className="mb-2">
+                  <button
+                    type="button"
+                    className="text-core hover:underline"
+                    onClick={() => {
+                      /* Add resend OTP logic */
+                    }}
+                  >
+                    Resend OTP
+                  </button>
+                </div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg"
+                  className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg mb-4"
                 >
                   Verify
                 </button>
