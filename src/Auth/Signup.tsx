@@ -11,40 +11,55 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:3030',
+  baseURL: "http://localhost:3030",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Add interceptor to set token in headers for authenticated requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+);
+
+interface SignupResponse {
+  message: string;
+  success: boolean;
+  token?: string;
+}
+
+interface VerifyResponse {
+  success: boolean;
+  message?: string;
+  token?: string;
+}
 
 const Signup = () => {
   const { theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [token, setToken] = useState<string>("");
-  const [formData, setFormData] = useState<{ username: string; password: string; mobile: string }>({
+  const [formData, setFormData] = useState({
     username: "",
     password: "",
     mobile: "",
   });
   const [otp, setOtp] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
-  const [timeRemaining, setTimeRemaining] = useState(60); 
+  const [timeRemaining, setTimeRemaining] = useState(60);
   const Navigate = useNavigate();
 
   useEffect(() => {
@@ -75,12 +90,14 @@ const Signup = () => {
       formData.username = formData.username.trim().toLowerCase();
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()-=_+[\]{}|;':",./<>?])(?=.*\d).{6,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[!@#$%^&*()-=_+[\]{}|;':",./<>?])(?=.*\d).{6,}$/;
 
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (!passwordRegex.test(formData.password)) {
-      newErrors.password = "Password must contain at least one uppercase letter, one special character, one number, and be at least 6 characters long";
+      newErrors.password =
+        "Password must contain at least one uppercase letter, one special character, one number, and be at least 6 characters long";
     }
 
     const mobileRegex = /^\+?[1-9]\d{1,14}$/;
@@ -100,9 +117,7 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await api.post<{
-        message(arg0: string, message: unknown): unknown; success: boolean; token?: string 
-      }>("/auth/signup", formData);
+      const response = await api.post<SignupResponse>("/auth/signup", formData);
 
       if (response.data.success) {
         if (response.data.token) {
@@ -113,7 +128,12 @@ const Signup = () => {
         console.error("Signup failed:", response.data.message);
       }
     } catch (error) {
-      console.log("Error during signup:", (error as AxiosError).response);
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data.error);
+        console.log("Error during signup:", error.response);
+      } else {
+        console.error("Unexpected error:", error);
+      }
     }
   };
 
@@ -124,14 +144,11 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await api.post<{ success: boolean; message?: string; token?: string }>(
-        "/auth/verify",
-        { otp, token }
-      );
+      const response = await api.post<VerifyResponse>("/auth/verify", { otp, token });
       if (response.data.success) {
         alert("Verification successful");
         if (response.data.token) {
-          localStorage.setItem('token', response.data.token); // Update token in localStorage if a new one is provided
+          localStorage.setItem("token", response.data.token);
         }
         Navigate("/inbox");
       } else {
@@ -150,7 +167,7 @@ const Signup = () => {
       );
       if (response.data.success) {
         alert("New OTP sent successfully");
-        setTimeRemaining(60); 
+        setTimeRemaining(60);
       } else {
         console.error("Failed to resend OTP:", response.data.message);
       }
@@ -361,7 +378,9 @@ const Signup = () => {
                     onClick={handleResendOTP}
                     disabled={timeRemaining > 0}
                   >
-                    {timeRemaining > 0 ? `Resend OTP (${timeRemaining}s)` : "Resend OTP"}
+                    {timeRemaining > 0
+                      ? `Resend OTP (${timeRemaining}s)`
+                      : "Resend OTP"}
                   </button>
                 </div>
                 <button

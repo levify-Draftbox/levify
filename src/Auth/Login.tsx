@@ -64,14 +64,25 @@ const Login = () => {
       const response = await api.post<LoginResponse>("/auth/login", formData);
 
       if (response.data.success && response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        navigate("/inbox"); // Redirect to inbox after successful login
+         localStorage.setItem("token", response.data.token);
+        alert("login successfull...");
+        navigate("/"); // Redirect to inbox after successful login
       } else {
-        setErrors({ ...errors, general: response.data.message || "Login failed" });
+        setErrors({
+          ...errors,
+          general: response.data.message || "Login failed",
+        });
       }
     } catch (error) {
-      console.error("Error during login:", (error as AxiosError<LoginResponse>).response?.data || (error as Error).message);
-      setErrors({ ...errors, general: "An error occurred during login. Please try again." });
+      console.error(
+        "Error during login:",
+        (error as AxiosError<LoginResponse>).response?.data ||
+          (error as Error).message
+      );
+      setErrors({
+        ...errors,
+        general: "invalid username or password.",
+      });
     }
   };
 
@@ -111,7 +122,9 @@ const Login = () => {
               <div className="mt-10">
                 <form onSubmit={handleLogin}>
                   {errors.general && (
-                    <p className="text-red-500 text-sm mb-4">{errors.general}</p>
+                    <p className="text-red-500 text-sm mb-4">
+                      {errors.general}
+                    </p>
                   )}
                   <div className="mb-4 mt-5">
                     <Label
@@ -183,6 +196,17 @@ const Login = () => {
                     </button>
                   </div>
                 </form>
+                <div className="mt-4 text-center">
+                  <p className="text-sm">
+                    Don't have an account?{" "}
+                    <Link
+                      to="/signup"
+                      className="text-[#926e43] hover:underline"
+                    >
+                      Sign up here
+                    </Link>
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
