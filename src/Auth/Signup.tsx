@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
-import {  useState } from "react";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,26 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+// Create axios instance
+const api = axios.create({
+  baseURL: 'http://localhost:3030',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add interceptor to set token in headers for authenticated requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
 const Signup = () => {
   const { theme } = useTheme();
@@ -25,6 +44,21 @@ const Signup = () => {
   });
   const [otp, setOtp] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+  const [timeRemaining, setTimeRemaining] = useState(60); 
+  const Navigate = useNavigate();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isVerifying && timeRemaining > 0) {
+      timer = setInterval(() => {
+        setTimeRemaining((prevTime) => prevTime - 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isVerifying, timeRemaining]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -35,25 +69,20 @@ const Signup = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    // Username validation
     if (!formData.username.trim()) {
       newErrors.username = "Username is required";
     } else {
       formData.username = formData.username.trim().toLowerCase();
     }
 
-    // Password validation
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*[!@#$%^&*()-=_+[\]{}|;':",./<>?])(?=.*\d).{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()-=_+[\]{}|;':",./<>?])(?=.*\d).{6,}$/;
 
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (!passwordRegex.test(formData.password)) {
-      newErrors.password =
-        "Password must contain at least one uppercase letter, one special character, one number, and be at least 6 characters long";
+      newErrors.password = "Password must contain at least one uppercase letter, one special character, one number, and be at least 6 characters long";
     }
 
-    // Mobile validation
     const mobileRegex = /^\+?[1-9]\d{1,14}$/;
     if (!formData.mobile.trim()) {
       newErrors.mobile = "Mobile number is required";
@@ -71,13 +100,9 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post<{
+      const response = await api.post<{
         message(arg0: string, message: unknown): unknown; success: boolean; token?: string 
-}>(
-        "http://localhost:3030/auth/signup",
-        formData
-      );
-      console.log(response);
+      }>("/auth/signup", formData);
 
       if (response.data.success) {
         if (response.data.token) {
@@ -88,19 +113,27 @@ const Signup = () => {
         console.error("Signup failed:", response.data.message);
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.log("Error during signup:", (error as AxiosError).response);
     }
   };
 
   const handleVerify = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (otp.length !== 6) {
+      alert("Please enter a 6-digit OTP");
+      return;
+    }
     try {
-      const response = await axios.post<{ success: boolean; message?: string }>(
-        "http://localhost:3030/auth/verify",
+      const response = await api.post<{ success: boolean; message?: string; token?: string }>(
+        "/auth/verify",
         { otp, token }
       );
       if (response.data.success) {
         alert("Verification successful");
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token); // Update token in localStorage if a new one is provided
+        }
+        Navigate("/inbox");
       } else {
         console.error("Verification failed:", response.data.message);
       }
@@ -109,9 +142,27 @@ const Signup = () => {
     }
   };
 
+  const handleResendOTP = async () => {
+    try {
+      const response = await api.post<{ success: boolean; message?: string }>(
+        "/auth/resend-otp",
+        { token }
+      );
+      if (response.data.success) {
+        alert("New OTP sent successfully");
+        setTimeRemaining(60); 
+      } else {
+        console.error("Failed to resend OTP:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error resending OTP:", error);
+    }
+  };
+
   const handleOtpChange = (value: string) => {
     setOtp(value);
   };
+
 
   return (
     <div className="flex w-full flex-col h-screen">
@@ -133,7 +184,7 @@ const Signup = () => {
         </Link>
       </div>
       <div className="w-full h-full flex justify-center py-14 overflow-hidden">
-        <div className="w-[30%] relative">
+        <div className="lg:w-[40%] xl:w-[35%]  w-[50%]  relative">
           <motion.div
             className="w-full absolute"
             initial={{ x: "0%", opacity: 1 }}
@@ -265,6 +316,15 @@ const Signup = () => {
             <div className="p-10">
               <div className="mb-6">
                 <h2 className="text-2xl">Verify Your Account</h2>
+                {timeRemaining > 0 ? (
+                  <p className="text-sm text-gray-600 mt-1">
+                    Time remaining: {timeRemaining} seconds
+                  </p>
+                ) : (
+                  <p className="text-sm text-red-500">
+                    Otp expired. Please resend OTP.
+                  </p>
+                )}
               </div>
               <form onSubmit={handleVerify}>
                 <div className="mb-4">
@@ -297,17 +357,17 @@ const Signup = () => {
                 <div className="mb-2">
                   <button
                     type="button"
-                    className="text-core hover:underline"
-                    onClick={() => {
-                      /* Add resend OTP logic */
-                    }}
+                    className="text-core hover:underline mb-1"
+                    onClick={handleResendOTP}
+                    disabled={timeRemaining > 0}
                   >
-                    Resend OTP
+                    {timeRemaining > 0 ? `Resend OTP (${timeRemaining}s)` : "Resend OTP"}
                   </button>
                 </div>
                 <button
                   type="submit"
                   className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg mb-4"
+                  disabled={timeRemaining === 0}
                 >
                   Verify
                 </button>
