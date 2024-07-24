@@ -25,7 +25,7 @@ const Notification = () => {
 
 
       <SettingDiv >
-        <SettingTitle>Notification Sound</SettingTitle>
+        <SettingTitle>Desktop notifications Sound</SettingTitle>
         <Select>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Enable" />

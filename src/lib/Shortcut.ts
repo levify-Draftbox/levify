@@ -12,7 +12,7 @@ const ShortcutLoad = () => {
 
     useHotkeys('esc', (e) => {
         e.preventDefault()
-        let ecsFunc = popEsc()
+        const ecsFunc = popEsc()
         console.log(ecsFunc);
         ecsFunc && ecsFunc()
     })

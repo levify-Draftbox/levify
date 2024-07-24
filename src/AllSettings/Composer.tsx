@@ -13,7 +13,7 @@ const Composer = () => {
   return (
     <div>
       <SettingDiv>
-        <SettingTitle>Notification Sound</SettingTitle>
+        <SettingTitle>Default Browser Composser</SettingTitle>
         <Select>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Enable" />

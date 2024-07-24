@@ -5,14 +5,8 @@ import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios, { AxiosError } from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:3030",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { AxiosError } from "axios";
+import api from "@/lib/api";
 
 interface LoginResponse {
   success: boolean;
@@ -64,9 +58,10 @@ const Login = () => {
       const response = await api.post<LoginResponse>("/auth/login", formData);
 
       if (response.data.success && response.data.token) {
-         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", response.data.token);
         alert("login successfull...");
-        navigate("/"); // Redirect to inbox after successful login
+        window.location.href = "/";
+
       } else {
         setErrors({
           ...errors,

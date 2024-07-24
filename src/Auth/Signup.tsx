@@ -12,28 +12,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import axios from "axios";
+import api from "@/lib/api";
 
-// Create axios instance
-const api = axios.create({
-  baseURL: "http://localhost:3030",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add interceptor to set token in headers for authenticated requests
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 interface SignupResponse {
   message: string;
