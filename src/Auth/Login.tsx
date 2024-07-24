@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
@@ -16,7 +16,6 @@ interface LoginResponse {
 
 const Login = () => {
   const { theme } = useTheme();
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<{
     username: string;
