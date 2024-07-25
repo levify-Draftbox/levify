@@ -60,7 +60,6 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         alert("login successfull...");
         window.location.href = "/";
-
       } else {
         setErrors({
           ...errors,
@@ -99,8 +98,8 @@ const Login = () => {
           />
         </Link>
       </div>
-      <div className="w-full h-full flex justify-center py-14 overflow-hidden">
-        <div className="lg:w-[40%] xl:w-[35%]  w-[50%]  relative">
+      <div className=" w-full h-full flex justify-center py-14 overflow-hidden">
+        <div className=" w-full  relative">
           <motion.div className="w-full absolute">
             <div className="p-10">
               <div className="text-center">
@@ -113,8 +112,8 @@ const Login = () => {
                   Welcome back to Draftbox! Let's get you back to your emails.
                 </p>
               </div>
-              <div className="mt-10">
-                <form onSubmit={handleLogin}>
+              <div className="w-full justify-center flex flex-col items-center mt-10">
+                <form className="w-[500px]" onSubmit={handleLogin}>
                   {errors.general && (
                     <p className="text-red-500 text-sm mb-4">
                       {errors.general}

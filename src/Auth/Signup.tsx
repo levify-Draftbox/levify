@@ -181,7 +181,7 @@ const Signup = () => {
         </Link>
       </div>
       <div className="w-full h-full flex justify-center py-14 overflow-hidden">
-        <div className="lg:w-[40%] xl:w-[35%]  w-[50%]  relative">
+        <div className="container relative">
           <motion.div
             className="w-full absolute"
             initial={{ x: "0%", opacity: 1 }}
@@ -191,20 +191,20 @@ const Signup = () => {
             }}
             transition={{ duration: 0.5 }}
           >
-            <div className="p-10">
-              <div className="text-center">
+            <div className=" p-10">
+              <div className="w-full flex items-center flex-col text-center">
                 <h1 className="text-4xl inline">
                   Create your{" "}
                   <span className="inline text-[#926e43]">Draftbox</span>{" "}
                   Account
                 </h1>
-                <p className="mt-3 text-lg">
+                <p className="w-[600px] mt-3 text-lg">
                   Welcome to Draftbox! We're excited to have you on board. Get
                   ready to experience a smarter way to manage your emails.
                 </p>
               </div>
-              <div className="mt-10">
-                <form onSubmit={handleSignup}>
+              <div className="flex justify-center mt-10">
+                <form className="w-[600px]" onSubmit={handleSignup}>
                   <div className="mb-4 mt-5">
                     <Label
                       htmlFor="username"
