@@ -70,7 +70,7 @@ const Login = () => {
       console.error(
         "Error during login:",
         (error as AxiosError<LoginResponse>).response?.data ||
-          (error as Error).message
+        (error as Error).message
       );
       setErrors({
         ...errors,
@@ -92,8 +92,8 @@ const Login = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                ? "/logo-light.svg"
-                : "/logo-dark.svg"
+                  ? "/logo-light.svg"
+                  : "/logo-dark.svg"
             }
           />
         </Link>
@@ -131,16 +131,11 @@ const Login = () => {
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
-                        errors.username ? "border-red-500" : ""
-                      }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
+                        }`}
                       placeholder="Username"
+                      error={errors.username}
                     />
-                    {errors.username && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.username}
-                      </p>
-                    )}
                   </div>
 
                   <div className="mb-4">
@@ -157,9 +152,9 @@ const Login = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Password"
-                        className={`rounded-lg w-full p-3 outline-none ${
-                          errors.password ? "border-red-500" : ""
-                        }`}
+                        className={`rounded-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""
+                          }`}
+                        error={errors.password}
                       />
                       <button
                         type="button"
@@ -173,11 +168,6 @@ const Login = () => {
                         )}
                       </button>
                     </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.password}
-                      </p>
-                    )}
                   </div>
 
                   <div className="mt-2">

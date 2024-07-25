@@ -174,8 +174,8 @@ const Signup = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                ? "/logo-light.svg"
-                : "/logo-dark.svg"
+                  ? "/logo-light.svg"
+                  : "/logo-dark.svg"
             }
           />
         </Link>
@@ -217,16 +217,12 @@ const Signup = () => {
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
-                        errors.username ? "border-red-500" : ""
-                      }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
+                        }`}
                       placeholder="Username"
+                      error={errors.username || ""}
                     />
-                    {errors.username && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.username}
-                      </p>
-                    )}
+
                   </div>
 
                   <div className="mb-4">
@@ -243,9 +239,8 @@ const Signup = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Password"
-                        className={`rounded-lg w-full p-3 outline-none ${
-                          errors.password ? "border-red-500" : ""
-                        }`}
+                        className={`rounded-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""}`}
+                        error={errors.password || ""}
                       />
                       <button
                         type="button"
@@ -259,11 +254,7 @@ const Signup = () => {
                         )}
                       </button>
                     </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.password}
-                      </p>
-                    )}
+
                   </div>
 
                   <div className="mb-6">
@@ -278,15 +269,10 @@ const Signup = () => {
                       value={formData.mobile}
                       onChange={handleInputChange}
                       placeholder="+91"
-                      className={`w-full p-3 rounded-lg outline-none mt-1 ${
-                        errors.mobile ? "border-red-500" : ""
-                      }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-1 ${errors.mobile ? "border-red-500" : ""}`}
+                      error={errors.mobile || ""}
                     />
-                    {errors.mobile && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.mobile}
-                      </p>
-                    )}
+
                   </div>
 
                   <div className="mt-2">
