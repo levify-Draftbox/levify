@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { CaretDown, Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,6 +47,12 @@ const Signup = () => {
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
   const [timeRemaining, setTimeRemaining] = useState(60);
   const Navigate = useNavigate();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSelect = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -227,13 +233,13 @@ const Signup = () => {
                           id="username"
                           value={formData.username}
                           onChange={handleInputChange}
-                          className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
+                          className={`w-full p-3 !rounded-l-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
                             }`}
                           placeholder="Username"
                         />
                       </div>
-                      <div className="flex h-10 px-3 rounded-lg bg-input justify-center items-center">
-                        <Select>
+                      <div className="flex gap-2 h-10 px-3 rounded-r-lg bg-input justify-center items-center cursor-pointer">
+                        <Select  open={isOpen} onOpenChange={setIsOpen}>
                           <SelectTrigger className="w-auto">
                             <SelectValue placeholder="draftbox.com" />
                           </SelectTrigger>
@@ -244,6 +250,7 @@ const Signup = () => {
                             </SelectItem>
                           </SelectContent>
                         </Select>
+                        <CaretDown size={15} onClick={toggleSelect} />
                       </div>
                     </div>
                     {errors.username && (
@@ -309,6 +316,8 @@ const Signup = () => {
                       Create account
                     </button>
                   </div>
+
+
                 </form>
               </div>
             </div>
