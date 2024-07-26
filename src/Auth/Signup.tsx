@@ -182,8 +182,8 @@ const Signup = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                ? "/logo-light.svg"
-                : "/logo-dark.svg"
+                  ? "/logo-light.svg"
+                  : "/logo-dark.svg"
             }
           />
         </Link>
@@ -213,28 +213,35 @@ const Signup = () => {
               <div className="flex justify-center mt-10">
                 <form className="w-[500px]" onSubmit={handleSignup}>
                   <div className="mb-4 mt-5">
-                    <div className="flex justify-center ">
+                    <label
+                      htmlFor="username"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
+                    >
+                      username
+                    </label>
+                    <div className="flex justify-center items-end">
                       <div className="w-full">
+
                         <Input
-                          label="username"
                           type="text"
                           id="username"
                           value={formData.username}
                           onChange={handleInputChange}
-                          className={`w-full p-3 rounded-lg outline-none mt-2 ${
-                            errors.username ? "border-red-500" : ""
-                          }`}
+                          className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
+                            }`}
                           placeholder="Username"
                         />
                       </div>
-                      <div className="flex">
+                      <div className="flex h-10 px-3 rounded-lg bg-input justify-center items-center">
                         <Select>
                           <SelectTrigger className="w-auto">
-                            <SelectValue placeholder="Enable" />
+                            <SelectValue placeholder="draftbox.com" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Enable">draftbox.com</SelectItem>
-                            <SelectItem value="disable">draftbox.dev</SelectItem>
+                            <SelectItem value="draftbox.com">draftbox.com</SelectItem>
+                            <SelectItem value="draftbox.dev">
+                              draftbox.dev
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -255,9 +262,8 @@ const Signup = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Password"
-                        className={`rounded-lg w-full p-3 outline-none ${
-                          errors.password ? "border-red-500" : ""
-                        }`}
+                        className={`rounded-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""
+                          }`}
                       />
                       <button
                         type="button"
@@ -285,9 +291,8 @@ const Signup = () => {
                       value={formData.mobile}
                       onChange={handleInputChange}
                       placeholder="+91"
-                      className={`w-full p-3 rounded-lg outline-none mt-1 ${
-                        errors.mobile ? "border-red-500" : ""
-                      }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-1 ${errors.mobile ? "border-red-500" : ""
+                        }`}
                     />
                     {errors.mobile && (
                       <p className="text-red-500 text-sm mt-1">
