@@ -1,17 +1,19 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { AnimatePresence, motion } from "framer-motion"
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  error?: string
+  error?: string;
+  label?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, ...props }, ref) => {
+  ({ className, type, error, label, ...props }, ref) => {
     return (
       <>
+        <label htmlFor={label} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white">{label}</label>
         <input
           type={type}
           className={cn(
@@ -23,34 +25,33 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         />
         {
           <AnimatePresence>
-            {
-              error &&
+            {error && (
               <motion.div
                 initial={{
                   opacity: 0,
-                  height: 0
+                  height: 0,
                 }}
                 animate={{
                   opacity: 1,
-                  height: "auto"
+                  height: "auto",
                 }}
                 exit={{
                   opacity: 0,
-                  height: 0
+                  height: 0,
                 }}
-                transition={{ease: "easeOut", duration: .3}}
+                transition={{ ease: "easeOut", duration: 0.3 }}
               >
-                <motion.span
-
-                  className="text-red-500 text-sm block mt-1">{error}</motion.span>
+                <motion.span className="text-red-500 text-sm block mt-1">
+                  {error}
+                </motion.span>
               </motion.div>
-            }
+            )}
           </AnimatePresence>
         }
       </>
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input }
+export { Input };

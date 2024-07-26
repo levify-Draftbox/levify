@@ -13,7 +13,13 @@ import {
 } from "@/components/ui/input-otp";
 import axios from "axios";
 import api from "@/lib/api";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { SelectTrigger } from "@radix-ui/react-select";
 
 interface SignupResponse {
   message: string;
@@ -124,7 +130,10 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await api.post<VerifyResponse>("/auth/verify", { otp, token });
+      const response = await api.post<VerifyResponse>("/auth/verify", {
+        otp,
+        token,
+      });
       if (response.data.success) {
         alert("Verification successful");
         if (response.data.token) {
@@ -160,7 +169,6 @@ const Signup = () => {
     setOtp(value);
   };
 
-
   return (
     <div className="flex w-full flex-col h-screen">
       <div className="w-[230px] mx-10 my-2">
@@ -174,8 +182,8 @@ const Signup = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                  ? "/logo-light.svg"
-                  : "/logo-dark.svg"
+                ? "/logo-light.svg"
+                : "/logo-dark.svg"
             }
           />
         </Link>
@@ -194,8 +202,7 @@ const Signup = () => {
             <div className=" p-10">
               <div className="w-full flex items-center flex-col text-center">
                 <h1 className="text-4xl inline">
-                  Create your{" "}
-                  <span className="inline text-[#926e43]">Draftbox</span>{" "}
+                  Create your <span className="inline text-core">Draftbox</span>{" "}
                   Account
                 </h1>
                 <p className="w-[600px] mt-3 text-lg">
@@ -204,43 +211,53 @@ const Signup = () => {
                 </p>
               </div>
               <div className="flex justify-center mt-10">
-                <form className="w-[600px]" onSubmit={handleSignup}>
+                <form className="w-[500px]" onSubmit={handleSignup}>
                   <div className="mb-4 mt-5">
-                    <Label
-                      htmlFor="username"
-                      className="block text-gray-700 dark:text-white"
-                    >
-                      Username
-                    </Label>
-                    <Input
-                      type="text"
-                      id="username"
-                      value={formData.username}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
-                        }`}
-                      placeholder="Username"
-                      error={errors.username || ""}
-                    />
-
+                    <div className="flex justify-center ">
+                      <div className="w-full">
+                        <Input
+                          label="username"
+                          type="text"
+                          id="username"
+                          value={formData.username}
+                          onChange={handleInputChange}
+                          className={`w-full p-3 rounded-lg outline-none mt-2 ${
+                            errors.username ? "border-red-500" : ""
+                          }`}
+                          placeholder="Username"
+                        />
+                      </div>
+                      <div className="flex">
+                        <Select>
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Enable" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Enable">draftbox.com</SelectItem>
+                            <SelectItem value="disable">draftbox.dev</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    {errors.username && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.username}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mb-4">
-                    <Label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-gray-700 dark:text-white"
-                    >
-                      Password
-                    </Label>
                     <div className="mt-1 relative rounded-md ">
                       <Input
+                        label="password"
                         type={showPassword ? "text" : "password"}
                         id="password"
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Password"
-                        className={`rounded-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""}`}
-                        error={errors.password || ""}
+                        className={`rounded-lg w-full p-3 outline-none ${
+                          errors.password ? "border-red-500" : ""
+                        }`}
                       />
                       <button
                         type="button"
@@ -254,31 +271,35 @@ const Signup = () => {
                         )}
                       </button>
                     </div>
-
+                    {errors.password && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mb-6">
-                    <Label
-                      htmlFor="mobile"
-                      className="block text-sm font-medium text-gray-700 dark:text-white"
-                    >
-                      Mobile
-                    </Label>
                     <Input
+                      label="mobile"
                       id="mobile"
                       value={formData.mobile}
                       onChange={handleInputChange}
                       placeholder="+91"
-                      className={`w-full p-3 rounded-lg outline-none mt-1 ${errors.mobile ? "border-red-500" : ""}`}
-                      error={errors.mobile || ""}
+                      className={`w-full p-3 rounded-lg outline-none mt-1 ${
+                        errors.mobile ? "border-red-500" : ""
+                      }`}
                     />
-
+                    {errors.mobile && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.mobile}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-2">
                     <button
                       type="submit"
-                      className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg"
+                      className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg hover:bg-core-lite"
                     >
                       Create account
                     </button>
@@ -288,7 +309,7 @@ const Signup = () => {
             </div>
           </motion.div>
           <motion.div
-            className="w-full absolute"
+            className="w-full flex justify-center"
             initial={{ x: "-100%", opacity: 0 }}
             animate={{
               x: isVerifying ? "0%" : "100%",
@@ -296,7 +317,7 @@ const Signup = () => {
             }}
             transition={{ duration: 0.5 }}
           >
-            <div className="p-10">
+            <div className="p-10  w-[500px]">
               <div className="mb-6">
                 <h2 className="text-2xl">Verify Your Account</h2>
                 {timeRemaining > 0 ? (
@@ -351,7 +372,7 @@ const Signup = () => {
                 </div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg mb-4"
+                  className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg mb-4 hover:bg-core-lite"
                   disabled={timeRemaining === 0}
                 >
                   Verify

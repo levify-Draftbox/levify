@@ -58,7 +58,6 @@ const Login = () => {
 
       if (response.data.success && response.data.token) {
         localStorage.setItem("token", response.data.token);
-        alert("login successfull...");
         window.location.href = "/";
       } else {
         setErrors({
@@ -70,7 +69,7 @@ const Login = () => {
       console.error(
         "Error during login:",
         (error as AxiosError<LoginResponse>).response?.data ||
-        (error as Error).message
+          (error as Error).message
       );
       setErrors({
         ...errors,
@@ -92,28 +91,29 @@ const Login = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                  ? "/logo-light.svg"
-                  : "/logo-dark.svg"
+                ? "/logo-light.svg"
+                : "/logo-dark.svg"
             }
           />
         </Link>
       </div>
       <div className=" w-full h-full flex justify-center py-14 overflow-hidden">
         <div className=" w-full  relative">
-          <motion.div className="w-full absolute">
+          <motion.div className="w-full ">
             <div className="p-10">
-              <div className="text-center">
-                <h1 className="text-4xl inline">
-                  Login to your{" "}
-                  <span className="inline text-[#926e43]">Draftbox</span>{" "}
-                  Account
-                </h1>
-                <p className="mt-3 text-lg">
-                  Welcome back to Draftbox! Let's get you back to your emails.
-                </p>
+              <div className="flex justify-center">
+                <div className=" text-center w-[450px]">
+                  <h1 className="text-4xl inline">
+                    Login to your{" "}
+                    <span className="inline text-core">Draftbox</span> Account
+                  </h1>
+                  <p className="mt-3 text-lg w-[450px]">
+                    Welcome back to Draftbox! Let's get you back to your emails.
+                  </p>
+                </div>
               </div>
               <div className="w-full justify-center flex flex-col items-center mt-10">
-                <form className="w-[500px]" onSubmit={handleLogin}>
+                <form className="w-[450px]" onSubmit={handleLogin}>
                   {errors.general && (
                     <p className="text-red-500 text-sm mb-4">
                       {errors.general}
@@ -131,8 +131,9 @@ const Login = () => {
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
-                        }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
+                        errors.username ? "border-red-500" : ""
+                      }`}
                       placeholder="Username"
                       error={errors.username}
                     />
@@ -152,8 +153,9 @@ const Login = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Password"
-                        className={`rounded-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""
-                          }`}
+                        className={`rounded-lg w-full p-3 outline-none ${
+                          errors.password ? "border-red-500" : ""
+                        }`}
                         error={errors.password}
                       />
                       <button
@@ -173,7 +175,7 @@ const Login = () => {
                   <div className="mt-2">
                     <button
                       type="submit"
-                      className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg"
+                      className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg hover:bg-core-lite"
                     >
                       Login
                     </button>
@@ -182,10 +184,7 @@ const Login = () => {
                 <div className="mt-4 text-center">
                   <p className="text-sm">
                     Don't have an account?{" "}
-                    <Link
-                      to="/signup"
-                      className="text-[#926e43] hover:underline"
-                    >
+                    <Link to="/signup" className="text-core hover:underline">
                       Sign up here
                     </Link>
                   </p>
