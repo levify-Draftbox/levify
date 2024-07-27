@@ -121,7 +121,6 @@ const Signup = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // alert(error.response?.data.error);
 
         setErrors({ "username": error.response?.data.error });
 
@@ -285,7 +284,7 @@ const Signup = () => {
                       <div className="">
 
                         <div
-                          className=" inset-y-0  h-full right-0 px-3 bg-input rounded-r-lg flex items-center"
+                          className=" inset-y-0  h-10 right-0 px-3 bg-input rounded-r-lg flex items-center"
                           onClick={() => setShowPassword(!showPassword)}
 
                         >
