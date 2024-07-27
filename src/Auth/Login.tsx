@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AxiosError } from "axios";
@@ -114,9 +114,35 @@ const Login = () => {
               </div>
               <div className="w-full justify-center flex flex-col items-center mt-10">
                 <form className="w-[450px]" onSubmit={handleLogin}>
+
+
+
                   {errors.general && (
                     <p className="text-red-500 text-sm mb-4">
-                      {errors.general}
+                      <AnimatePresence>
+
+                        <motion.div
+                          initial={{
+                            opacity: 0,
+                            height: 0,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            height: "auto",
+                          }}
+                          exit={{
+                            opacity: 0,
+                            height: 0,
+                          }}
+                          transition={{ ease: "easeOut", duration: 0.3 }}
+                        >
+                          <motion.span className="text-red-500 text-sm  block mt-1">
+                            {errors.general}
+                          </motion.span>
+                        </motion.div>
+
+                      </AnimatePresence>
+
                     </p>
                   )}
                   <div className="mb-4 mt-5">

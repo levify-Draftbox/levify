@@ -44,7 +44,7 @@ const Signup = () => {
     mobile: "",
   });
   const [otp, setOtp] = useState<string>("");
-  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+  const [errors, setErrors] = useState<{ [key: string]: string | undefined }>({});
   const [timeRemaining, setTimeRemaining] = useState(60);
   const Navigate = useNavigate();
 
@@ -70,7 +70,7 @@ const Signup = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
-    setErrors({ ...errors, [id]: null });
+    setErrors({ ...errors, [id]: undefined });
   };
 
   const validateForm = () => {
