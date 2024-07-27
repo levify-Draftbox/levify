@@ -121,7 +121,10 @@ const Signup = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        alert(error.response?.data.error);
+        // alert(error.response?.data.error);
+
+        setErrors({ "username": error.response?.data.error });
+
         console.log("Error during signup:", error.response);
       } else {
         console.error("Unexpected error:", error);
@@ -225,9 +228,8 @@ const Signup = () => {
                     >
                       username
                     </label>
-                    <div className="flex justify-center items-end">
+                    <div className="flex justify-center ">
                       <div className="w-full">
-
                         <Input
                           type="text"
                           id="username"
@@ -236,28 +238,26 @@ const Signup = () => {
                           className={`w-full p-3 !rounded-l-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
                             }`}
                           placeholder="Username"
+                          error={errors.username}
                         />
                       </div>
-                      <div className="flex gap-2 h-10 px-3 rounded-r-lg bg-input justify-center items-center cursor-pointer">
+
+                      <div className={`flex gap-2 h-10 px-3 mt-2 rounded-r-lg bg-input justify-center items-center cursor-pointer `}>
                         <Select open={isOpen} onOpenChange={setIsOpen}>
                           <SelectTrigger className="w-auto">
-                            <SelectValue placeholder="draftbox.com" />
+                            <SelectValue placeholder="@draftbox.com" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="draftbox.com">draftbox.com</SelectItem>
-                            <SelectItem value="draftbox.dev">
-                              draftbox.dev
+                            <SelectItem value="@draftbox.com">@draftbox.com</SelectItem>
+                            <SelectItem value="@draftbox.dev">
+                              @draftbox.dev
                             </SelectItem>
                           </SelectContent>
                         </Select>
                         <CaretDown size={15} onClick={toggleSelect} />
                       </div>
                     </div>
-                    {errors.username && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.username}
-                      </p>
-                    )}
+
                   </div>
 
                   <div className="mb-4 w-full">
@@ -278,12 +278,14 @@ const Signup = () => {
                           placeholder="Password"
                           className={`rounded-l-lg w-full p-3  outline-none ${errors.password ? "border-red-500" : ""
                             }`}
+                          error={errors.password}
+
                         />
                       </div>
                       <div className="">
 
                         <div
-                          className=" inset-y-0  h-full right-0 pr-3 bg-input rounded-r-lg flex items-center"
+                          className=" inset-y-0  h-full right-0 px-3 bg-input rounded-r-lg flex items-center"
                           onClick={() => setShowPassword(!showPassword)}
 
                         >
@@ -295,11 +297,7 @@ const Signup = () => {
                         </div>
                       </div>
                     </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.password}
-                      </p>
-                    )}
+
                   </div>
 
                   <div className="mb-6">
@@ -311,14 +309,9 @@ const Signup = () => {
                       placeholder="+91"
                       className={`w-full p-3 rounded-lg outline-none mt-1 ${errors.mobile ? "border-red-500" : ""
                         }`}
+                      error={errors.mobile}
                     />
-                    {errors.mobile && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.mobile}
-                      </p>
-                    )}
                   </div>
-
                   <div className="mt-2">
                     <button
                       type="submit"
@@ -327,8 +320,6 @@ const Signup = () => {
                       Create account
                     </button>
                   </div>
-
-
                 </form>
               </div>
             </div>
@@ -368,6 +359,7 @@ const Signup = () => {
                       maxLength={6}
                       value={otp}
                       onChange={handleOtpChange}
+                      
                     >
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />

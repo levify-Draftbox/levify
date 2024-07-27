@@ -42,7 +42,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 }}
                 transition={{ ease: "easeOut", duration: 0.3 }}
               >
-                <motion.span className="text-red-500 text-sm block mt-1">
+                <motion.span className="text-red-500 text-sm  block mt-1">
                   {error}
                 </motion.span>
               </motion.div>

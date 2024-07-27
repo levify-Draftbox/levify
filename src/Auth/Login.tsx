@@ -69,7 +69,7 @@ const Login = () => {
       console.error(
         "Error during login:",
         (error as AxiosError<LoginResponse>).response?.data ||
-          (error as Error).message
+        (error as Error).message
       );
       setErrors({
         ...errors,
@@ -91,8 +91,8 @@ const Login = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                ? "/logo-light.svg"
-                : "/logo-dark.svg"
+                  ? "/logo-light.svg"
+                  : "/logo-dark.svg"
             }
           />
         </Link>
@@ -131,45 +131,50 @@ const Login = () => {
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
-                        errors.username ? "border-red-500" : ""
-                      }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
+                        }`}
                       placeholder="Username"
                       error={errors.username}
                     />
                   </div>
-
-                  <div className="mb-4">
-                    <Label
+                  <div className="mb-4 w-full">
+                    <label
                       htmlFor="password"
-                      className="block text-sm font-medium text-gray-700 dark:text-white"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
                     >
-                      Password
-                    </Label>
-                    <div className="mt-1 relative rounded-md ">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="Password"
-                        className={`rounded-lg w-full p-3 outline-none ${
-                          errors.password ? "border-red-500" : ""
-                        }`}
-                        error={errors.password}
-                      />
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeSlash size={20} />
-                        ) : (
-                          <Eye size={20} />
-                        )}
-                      </button>
+                      password
+                    </label>
+                    <div className=" mt-1 flex w-full rounded-md">
+                      <div className="w-full">
+
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          placeholder="Password"
+                          className={`rounded-l-lg w-full p-3  outline-none ${errors.password ? "border-red-500" : ""
+
+                            }`}
+                          error={errors.password}
+
+                        />
+                      </div>
+                      <div className="">
+                        <div
+                          className=" inset-y-0 h-10  right-0 px-3 bg-input rounded-r-lg flex items-center"
+                          onClick={() => setShowPassword(!showPassword)}
+
+                        >
+                          {showPassword ? (
+                            <EyeSlash size={20} />
+                          ) : (
+                            <Eye size={20} />
+                          )}
+                        </div>
+                      </div>
                     </div>
+
                   </div>
 
                   <div className="mt-2">
