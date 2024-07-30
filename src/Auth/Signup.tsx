@@ -121,9 +121,7 @@ const Signup = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-
         setErrors({ "username": error.response?.data.error });
-
         console.log("Error during signup:", error.response);
       } else {
         console.error("Unexpected error:", error);
@@ -134,7 +132,7 @@ const Signup = () => {
   const handleVerify = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (otp.length !== 6) {
-      alert("Please enter a 6-digit OTP");
+      setErrors({ ...errors, otp: "Please enter a 6-digit OTP" });
       return;
     }
     try {
@@ -143,16 +141,16 @@ const Signup = () => {
         token,
       });
       if (response.data.success) {
-        alert("Verification successful");
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
         }
-        Navigate("/inbox");
+        window.location.href = "/";
+
       } else {
-        console.error("Verification failed:", response.data.message);
+        setErrors({ ...errors, otp: response.data.message || "Verification failed" });
       }
     } catch (error) {
-      console.error("Error during verification:", error);
+      setErrors({ ...errors, otp: "invalid otp" });
     }
   };
 
@@ -163,13 +161,12 @@ const Signup = () => {
         { token }
       );
       if (response.data.success) {
-        alert("New OTP sent successfully");
         setTimeRemaining(60);
       } else {
-        console.error("Failed to resend OTP:", response.data.message);
+        setErrors({ ...errors, otp: response.data.message || "Failed to resend OTP" });
       }
     } catch (error) {
-      console.error("Error resending OTP:", error);
+      setErrors({ ...errors, otp: "Error resending OTP" });
     }
   };
 
@@ -358,7 +355,6 @@ const Signup = () => {
                       maxLength={6}
                       value={otp}
                       onChange={handleOtpChange}
-                      
                     >
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
@@ -373,6 +369,9 @@ const Signup = () => {
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
+                  {errors.otp && (
+                    <p className="text-red-500 text-sm mt-1">{errors.otp}</p>
+                  )}
                 </div>
                 <div className="mb-2">
                   <button

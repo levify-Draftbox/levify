@@ -9,6 +9,7 @@ import { TooltipProvider } from "./components/ui/tooltip";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import ShortcutLoad from "./lib/Shortcut";
 import Signup from "./Auth/Signup";
+import Welcome from "./newUser/Welcome";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -35,6 +36,8 @@ function App() {
               <Route index element={<Inbox />} />
               <Route path="/*" element={<Inbox />} />
             </Route>
+            <Route path="/welcome" element={<Welcome />} />
+
           </Routes>
         </TooltipProvider>
       </ThemeProvider>
