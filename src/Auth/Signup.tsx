@@ -225,7 +225,7 @@ const Signup = () => {
                       htmlFor="username"
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
                     >
-                      username
+                      Username
                     </label>
                     <div className="flex justify-center ">
                       <div className="w-full">
@@ -264,7 +264,7 @@ const Signup = () => {
                       htmlFor="password"
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
                     >
-                      password
+                      Password
                     </label>
                     <div className=" mt-1 flex w-full rounded-md">
                       <div className="w-full">
@@ -301,7 +301,7 @@ const Signup = () => {
 
                   <div className="mb-6">
                     <Input
-                      label="mobile"
+                      label="Mobile"
                       id="mobile"
                       value={formData.mobile}
                       onChange={handleInputChange}

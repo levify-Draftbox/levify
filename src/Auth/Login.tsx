@@ -168,7 +168,7 @@ const Login = () => {
                       htmlFor="password"
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
                     >
-                      password
+                      Password
                     </label>
                     <div className=" mt-1 flex w-full rounded-md">
                       <div className="w-full">
