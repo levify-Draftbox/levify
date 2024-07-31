@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/lib/api";
 import ResizeableModel from "@/components/ui/ResizeableModel";
+import { Button } from "@/components/ui/button";
 
 // Lazy load the Spinner component
-const Spinner = lazy(() => 
-  import("@/components/Spinner").then(module => ({ default: module.Spinner }))
+const Spinner = lazy(() =>
+  import("@/components/Spinner").then((module) => ({ default: module.Spinner }))
 );
 
 interface LoginResponse {
@@ -75,7 +76,7 @@ const Login = () => {
         });
       }
     } catch (error) {
-      console.log("error");
+      console.log("Error:", error);
       setShowErrorDialog(true);
     } finally {
       setIsLoading(false);
@@ -102,22 +103,30 @@ const Login = () => {
           {showErrorDialog && (
             <ResizeableModel
               key="model"
-              size={{ width: "40%", height: "18%" }}
+              size={{ width: "30%", height: "15%" }}
               onClose={() => setShowErrorDialog(false)}
             >
-              <div className="p-4">
-                <p>An error occurred during login. Please try again later.</p>
+              <div className="p-6 w-full h-full">
+                <h1 className={`text-2xl font-[500] `}>
+                  <p>error</p>
+                </h1>
+                <div className="text-sm mt-3 font-thin text-gray-700 dark:text-gray-200">
+                  invalid username or password.
+                </div>
+                {/* <div className="w-full mt-7 flex items-end justify-end ">
+                  <Button className="px-10" variant={"destructive"}>cancel</Button>
+                </div> */}
               </div>
             </ResizeableModel>
           )}
         </Link>
       </div>
-      <div className=" w-full h-full flex justify-center py-14 overflow-hidden">
-        <div className=" w-full  relative">
-          <motion.div className="w-full ">
+      <div className="w-full h-full flex justify-center py-14 overflow-hidden">
+        <div className="w-full relative">
+          <motion.div className="w-full">
             <div className="p-10">
               <div className="flex justify-center">
-                <div className=" text-center w-[450px]">
+                <div className="text-center w-[450px]">
                   <h1 className="text-4xl inline">
                     Login to your{" "}
                     <span className="inline text-core">Draftbox</span> Account
@@ -147,7 +156,7 @@ const Login = () => {
                           }}
                           transition={{ ease: "easeOut", duration: 0.3 }}
                         >
-                          <motion.span className="text-red-500 text-sm  block mt-1">
+                          <motion.span className="text-red-500 text-sm block mt-1">
                             {errors.general}
                           </motion.span>
                         </motion.div>
@@ -180,7 +189,7 @@ const Login = () => {
                     >
                       Password
                     </label>
-                    <div className=" mt-1 flex w-full rounded-md">
+                    <div className="mt-1 flex w-full rounded-md">
                       <div className="w-full">
                         <Input
                           type={showPassword ? "text" : "password"}
@@ -188,7 +197,7 @@ const Login = () => {
                           value={formData.password}
                           onChange={handleInputChange}
                           placeholder="Password"
-                          className={`rounded-l-lg w-full p-3  outline-none ${
+                          className={`rounded-l-lg w-full p-3 outline-none ${
                             errors.password ? "border-red-500" : ""
                           }`}
                           error={errors.password}
@@ -196,7 +205,7 @@ const Login = () => {
                       </div>
                       <div className="">
                         <div
-                          className=" inset-y-0 h-10  right-0 px-3 bg-input rounded-r-lg flex items-center"
+                          className="inset-y-0 h-10 right-0 px-3 bg-input rounded-r-lg flex items-center"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
