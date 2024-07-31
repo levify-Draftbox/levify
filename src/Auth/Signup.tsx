@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { CaretDown, Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
@@ -20,6 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SelectTrigger } from "@radix-ui/react-select";
+
+const Spinner = lazy(() =>
+  import("@/components/Spinner").then(module => ({ default: module.Spinner }))
+);
 
 interface SignupResponse {
   message: string;
@@ -46,7 +50,8 @@ const Signup = () => {
   const [otp, setOtp] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string | undefined }>({});
   const [timeRemaining, setTimeRemaining] = useState(60);
-  const Navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -105,7 +110,9 @@ const Signup = () => {
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!validateForm()) {
+      setIsLoading(false);
       return;
     }
     try {
@@ -126,6 +133,8 @@ const Signup = () => {
       } else {
         console.error("Unexpected error:", error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -135,6 +144,7 @@ const Signup = () => {
       setErrors({ ...errors, otp: "Please enter a 6-digit OTP" });
       return;
     }
+    setIsLoading(true); // Start loading spinner
     try {
       const response = await api.post<VerifyResponse>("/auth/verify", {
         otp,
@@ -145,12 +155,13 @@ const Signup = () => {
           localStorage.setItem("token", response.data.token);
         }
         window.location.href = "/";
-
       } else {
         setErrors({ ...errors, otp: response.data.message || "Verification failed" });
       }
     } catch (error) {
-      setErrors({ ...errors, otp: "invalid otp" });
+      setErrors({ ...errors, otp: "Invalid OTP" });
+    } finally {
+      setIsLoading(false); // Stop loading spinner
     }
   };
 
@@ -204,7 +215,7 @@ const Signup = () => {
             }}
             transition={{ duration: 0.5 }}
           >
-            <div className=" p-10">
+            <div className="p-10">
               <div className="w-full flex items-center flex-col text-center">
                 <h1 className="text-4xl inline">
                   Create your <span className="inline text-core">Draftbox</span>{" "}
@@ -312,8 +323,15 @@ const Signup = () => {
                     <button
                       type="submit"
                       className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg hover:bg-core-lite"
+                      disabled={isLoading}
                     >
-                      Create account
+                      {isLoading ? (
+                        <Suspense fallback={<div>Loading...</div>}>
+                          <Spinner />
+                        </Suspense>
+                      ) : (
+                        "Create account"
+                      )}
                     </button>
                   </div>
                 </form>
@@ -338,7 +356,7 @@ const Signup = () => {
                   </p>
                 ) : (
                   <p className="text-sm text-red-500">
-                    Otp expired. Please resend OTP.
+                    OTP expired. Please resend OTP.
                   </p>
                 )}
               </div>
@@ -359,7 +377,7 @@ const Signup = () => {
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={2} />  
                       </InputOTPGroup>
                       <InputOTPSeparator />
                       <InputOTPGroup>
@@ -388,9 +406,15 @@ const Signup = () => {
                 <button
                   type="submit"
                   className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg mb-4 hover:bg-core-lite"
-                  disabled={timeRemaining === 0}
+                  disabled={timeRemaining === 0 || isLoading}
                 >
-                  Verify
+                  {isLoading ? (
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Spinner />
+                    </Suspense>
+                  ) : (
+                    "Verify"
+                  )}
                 </button>
               </form>
             </div>

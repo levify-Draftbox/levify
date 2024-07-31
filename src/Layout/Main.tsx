@@ -9,7 +9,6 @@ import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
 import Setting from "@/components/Setting";
 import useEscKeyStore from "@/store/escStack";
-import Modal from "@/components/ui/Modal";
 
 const Main = () => {
   const [viewSetting, setViewSetting] = useState(false);
@@ -40,9 +39,6 @@ const Main = () => {
         <div className="w-full h-full bg-background-secondary">
           <SearchBar onSettingToggle={() => settingToggle()} />
           <Outlet />
-          <Modal> 
-            <h1>hello</h1>
-          </Modal>
         </div>
       </ResizablePanel>
       {viewSetting && (

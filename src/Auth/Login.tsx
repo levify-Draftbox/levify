@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AxiosError } from "axios";
 import api from "@/lib/api";
+import ResizeableModel from "@/components/ui/ResizeableModel";
+
+// Lazy load the Spinner component
+const Spinner = lazy(() => 
+  import("@/components/Spinner").then(module => ({ default: module.Spinner }))
+);
 
 interface LoginResponse {
   success: boolean;
@@ -25,6 +30,8 @@ const Login = () => {
     password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -53,6 +60,8 @@ const Login = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const response = await api.post<LoginResponse>("/auth/login", formData);
 
@@ -66,15 +75,10 @@ const Login = () => {
         });
       }
     } catch (error) {
-      console.error(
-        "Error during login:",
-        (error as AxiosError<LoginResponse>).response?.data ||
-        (error as Error).message
-      );
-      setErrors({
-        ...errors,
-        general: "invalid username or password.",
-      });
+      console.log("error");
+      setShowErrorDialog(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,10 +95,21 @@ const Login = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                  ? "/logo-light.svg"
-                  : "/logo-dark.svg"
+                ? "/logo-light.svg"
+                : "/logo-dark.svg"
             }
           />
+          {showErrorDialog && (
+            <ResizeableModel
+              key="model"
+              size={{ width: "40%", height: "18%" }}
+              onClose={() => setShowErrorDialog(false)}
+            >
+              <div className="p-4">
+                <p>An error occurred during login. Please try again later.</p>
+              </div>
+            </ResizeableModel>
+          )}
         </Link>
       </div>
       <div className=" w-full h-full flex justify-center py-14 overflow-hidden">
@@ -114,13 +129,9 @@ const Login = () => {
               </div>
               <div className="w-full justify-center flex flex-col items-center mt-10">
                 <form className="w-[450px]" onSubmit={handleLogin}>
-
-
-
                   {errors.general && (
                     <p className="text-red-500 text-sm mb-4">
                       <AnimatePresence>
-
                         <motion.div
                           initial={{
                             opacity: 0,
@@ -140,9 +151,7 @@ const Login = () => {
                             {errors.general}
                           </motion.span>
                         </motion.div>
-
                       </AnimatePresence>
-
                     </p>
                   )}
                   <div className="mb-4 mt-5">
@@ -157,8 +166,9 @@ const Login = () => {
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
-                        }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
+                        errors.username ? "border-red-500" : ""
+                      }`}
                       placeholder="Username"
                       error={errors.username}
                     />
@@ -172,25 +182,22 @@ const Login = () => {
                     </label>
                     <div className=" mt-1 flex w-full rounded-md">
                       <div className="w-full">
-
                         <Input
                           type={showPassword ? "text" : "password"}
                           id="password"
                           value={formData.password}
                           onChange={handleInputChange}
                           placeholder="Password"
-                          className={`rounded-l-lg w-full p-3  outline-none ${errors.password ? "border-red-500" : ""
-
-                            }`}
+                          className={`rounded-l-lg w-full p-3  outline-none ${
+                            errors.password ? "border-red-500" : ""
+                          }`}
                           error={errors.password}
-
                         />
                       </div>
                       <div className="">
                         <div
                           className=" inset-y-0 h-10  right-0 px-3 bg-input rounded-r-lg flex items-center"
                           onClick={() => setShowPassword(!showPassword)}
-
                         >
                           {showPassword ? (
                             <EyeSlash size={20} />
@@ -200,15 +207,21 @@ const Login = () => {
                         </div>
                       </div>
                     </div>
-
                   </div>
 
                   <div className="mt-2">
                     <button
                       type="submit"
                       className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg hover:bg-core-lite"
+                      disabled={isLoading}
                     >
-                      Login
+                      {isLoading ? (
+                        <Suspense fallback={<div>Loading...</div>}>
+                          <Spinner />
+                        </Suspense>
+                      ) : (
+                        "Login"
+                      )}
                     </button>
                   </div>
                 </form>
