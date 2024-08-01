@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState  } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
@@ -7,11 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/lib/api";
 import ResizeableModel from "@/components/ui/ResizeableModel";
-
-// Lazy load the Spinner component
-const Spinner = lazy(() =>
-  import("@/components/Spinner").then((module) => ({ default: module.Spinner }))
-);
+import { Spinner } from "@/components/Spinner";
 
 interface LoginResponse {
   success: boolean;
@@ -99,7 +95,9 @@ const Login = () => {
                 : "/logo-dark.svg"
             }
           />
+        </Link>
           {showErrorDialog && (
+            <AnimatePresence>
             <ResizeableModel
               key="model"
               size={{ width: "30%", height: "15%" }}
@@ -117,8 +115,8 @@ const Login = () => {
                 </div> */}
               </div>
             </ResizeableModel>
+            </AnimatePresence>
           )}
-        </Link>
       </div>
       <div className="w-full h-full flex justify-center py-14 overflow-hidden">
         <div className="w-full relative">
@@ -224,9 +222,7 @@ const Login = () => {
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                        <Suspense fallback={<div>Loading...</div>}>
                           <Spinner />
-                        </Suspense>
                       ) : (
                         "Login"
                       )}
