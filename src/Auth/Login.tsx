@@ -135,9 +135,9 @@ const Login = () => {
                 <div className="text-center w-[450px]">
                   <h1 className="text-4xl inline">
                     Login to your{" "}
-                    <span className="inline text-core">Draftbox</span> Account
+                    <span className="inline text-core">Draftbox</span> 
                   </h1>
-                  <p className="mt-3 text-lg w-[450px]">
+                  <p className="mt-3 text-base w-[450px]">
                     Welcome back to Draftbox! Let's get you back to your emails.
                   </p>
                 </div>
@@ -182,7 +182,7 @@ const Login = () => {
                       value={formData.username}
                       onChange={handleInputChange}
                       className={`w-full p-3 rounded-lg outline-none mt-2 ${
-                        errors.username ? "border-red-500" : ""
+                        errors.username ? "border-red-x" : ""
                       }`}
                       placeholder="Username"
                       error={errors.username}

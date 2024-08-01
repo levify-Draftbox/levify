@@ -217,7 +217,7 @@ const Signup = () => {
                   Create your <span className="inline text-core">Draftbox</span>{" "}
                   Account
                 </h1>
-                <p className="w-[600px] mt-3 text-lg">
+                <p className="w-[600px] mt-3 text-base">
                   Welcome to Draftbox! We're excited to have you on board. Get
                   ready to experience a smarter way to manage your emails.
                 </p>
@@ -328,7 +328,16 @@ const Signup = () => {
                       )}
                     </button>
                   </div>
+                  <div className="mt-4 text-center">
+                  <p className="text-sm">
+                    alredy have an account?{" "}
+                    <Link to="/login" className="text-core hover:underline">
+                      Log in here
+                    </Link>
+                  </p>
+                </div>
                 </form>
+               
               </div>
             </div>
           </motion.div>
