@@ -9,8 +9,12 @@ import { TooltipProvider } from "./components/ui/tooltip";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import ShortcutLoad from "./lib/Shortcut";
 import Signup from "./Auth/Signup";
+import useInterServerModal from "./store/internalserver";
+import ResizeableModel from "./components/ui/ResizeableModel";
 
 function App() {
+  const { open, toggleModal } = useInterServerModal()
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -36,9 +40,9 @@ function App() {
           <Routes>
             <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
             <Route path="/signup" element={isAuthenticated ? <Navigate to="/" replace /> : <Signup />} />
-            
-            <Route 
-              path="/" 
+
+            <Route
+              path="/"
               element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />}
             >
               <Route index element={<Inbox />} />
@@ -46,6 +50,13 @@ function App() {
             </Route>
 
           </Routes>
+
+          {
+            open &&
+            <ResizeableModel onClose={() => toggleModal()} key="interservererror">
+              Internal server error!
+            </ResizeableModel>
+          }
         </TooltipProvider>
       </ThemeProvider>
     </HotkeysProvider>

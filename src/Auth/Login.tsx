@@ -1,4 +1,4 @@
-import React, { useState  } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
@@ -27,7 +27,7 @@ const Login = () => {
     password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [showErrorIncorrectCerd, setShowIncorrectCred] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,32 +61,35 @@ const Login = () => {
 
     try {
       const response = await api.post<LoginResponse>("/auth/login", formData);
-
-      if (response.data.success && response.data.token) {
+      if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         window.location.href = "/";
-      } else {
-        setErrors({
-          ...errors,
-          general: response.data.message || "Login failed",
-        });
       }
-    } catch (error) {
-      console.log("Error:", error);
-      setShowErrorDialog(true);
+    } catch (error: any) {
+      if (error.response.status === 404) {
+        setShowIncorrectCred(true);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handelTryagain = () => {
 
-  const handelTryagain=()=>{
+    setFormData({
+      password: "",
+      username: "",
+    })
 
-    window.location.href = "/";
+    setErrors({
+      username: "",
+      password: ""
+    })
 
+    setShowIncorrectCred(false);
   }
 
-  
+
   return (
     <div className="flex w-full flex-col h-screen">
       <div className="w-[230px] mx-10 my-2">
@@ -100,32 +103,30 @@ const Login = () => {
                   ? "/logo-light.svg"
                   : "/logo-dark.svg"
                 : theme === "light"
-                ? "/logo-light.svg"
-                : "/logo-dark.svg"
+                  ? "/logo-light.svg"
+                  : "/logo-dark.svg"
             }
           />
         </Link>
-          {showErrorDialog && (
-            <AnimatePresence>
-            <ResizeableModel
-              key="model"
-              size={{ width: "30%", height: "15%" }}
-              onClose={() => setShowErrorDialog(false)}
-            >
-              <div className="p-6 w-full h-full">
-                <h1 className={`text-2xl font-[500] `}>
-                  <p>error</p>
-                </h1>
-                <div className="text-sm mt-3 font-thin text-gray-700 dark:text-gray-200">
-                incorrect username or password.
-                </div>
-                <div className=" flex justify-end items-end">
-                  <Button onClick={handelTryagain} className="w-32 bg-black " variant="superActive">try again</Button>
-                </div>
+        {showErrorIncorrectCerd && (
+          <ResizeableModel
+            key="model"
+            size={{ width: "30%", height: "15%" }}
+            onClose={handelTryagain}
+          >
+            <div className="p-6 w-full h-full">
+              <h1 className={`text-2xl font-[500] `}>
+                <p>error</p>
+              </h1>
+              <div className="text-sm mt-3 font-thin text-gray-700 dark:text-gray-200">
+                Incorrect username or password.
               </div>
-            </ResizeableModel>
-            </AnimatePresence>
-          )}
+              <div className="mt-4 flex justify-end items-end">
+                <Button variant={"superActive"} onClick={handelTryagain} className="w-32" >try again</Button>
+              </div>
+            </div>
+          </ResizeableModel>
+        )}
       </div>
       <div className="w-full h-full flex justify-center py-14 overflow-hidden">
         <div className="w-full relative">
@@ -135,7 +136,7 @@ const Login = () => {
                 <div className="text-center w-[450px]">
                   <h1 className="text-4xl inline">
                     Login to your{" "}
-                    <span className="inline text-core">Draftbox</span> 
+                    <span className="inline text-core">Draftbox</span>
                   </h1>
                   <p className="mt-3 text-base w-[450px]">
                     Welcome back to Draftbox! Let's get you back to your emails.
@@ -181,9 +182,8 @@ const Login = () => {
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${
-                        errors.username ? "border-red-x" : ""
-                      }`}
+                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-x" : ""
+                        }`}
                       placeholder="Username"
                       error={errors.username}
                     />
@@ -203,9 +203,8 @@ const Login = () => {
                           value={formData.password}
                           onChange={handleInputChange}
                           placeholder="Password"
-                          className={`rounded-l-lg w-full p-3 outline-none ${
-                            errors.password ? "border-red-500" : ""
-                          }`}
+                          className={`rounded-l-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""
+                            }`}
                           error={errors.password}
                         />
                       </div>
@@ -231,7 +230,7 @@ const Login = () => {
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                          <Spinner />
+                        <Spinner />
                       ) : (
                         "Login"
                       )}

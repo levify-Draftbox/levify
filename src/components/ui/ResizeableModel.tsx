@@ -66,12 +66,12 @@ const ResizeableModel: FC<ModalProps> = ({ onClose, children, key, size }) => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 2 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ ease: "easeInOut", duration: 0.15 }}
             className="bg-background rounded-lg overflow-hidden"
             style={{
               width: size?.width || 'auto',
-              height: size?.height || 'auto'
+              minHeight: size?.height || 'auto'
             }}
           >
             {children}

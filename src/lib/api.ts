@@ -1,3 +1,4 @@
+import useInterServerModal from "@/store/internalserver";
 import axios from "axios";
 
 const api = axios.create({
@@ -38,6 +39,9 @@ api.interceptors.response.use(
     ) {
       localStorage.removeItem("token");
       window.location.href = "/login";
+    } else if (error.response && error.response.status === 500) {
+      const toggleModal = useInterServerModal.getState().toggleModal
+      toggleModal()
     }
     return Promise.reject(error);
   }

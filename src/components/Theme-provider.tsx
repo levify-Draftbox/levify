@@ -79,7 +79,7 @@ export function ThemeProvider({
   }, [theme])
 
   useEffect(() => {
-    const root = window.document.getElementById("root") as HTMLDivElement
+    const root = window.document.body
     root.classList.remove("purple", "red", "blue", "yellow", "green", "pink", "coral",   "teal", "rust", "cerulean", "fuchsia")
     root.classList.add(themeColor)
   }, [themeColor])
