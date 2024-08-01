@@ -9,7 +9,7 @@ const useInterServerModal = create<InterServerModal>()((set, get) => ({
     toggleModal: () => {
         set((state) => ({ open: !state.open }))
     },
-    open: true
+    open: false
 }))
 
 export default useInterServerModal
