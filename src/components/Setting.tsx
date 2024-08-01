@@ -12,6 +12,7 @@ import { ThemeColors, useTheme } from "./Theme-provider";
 import ScrollArea from "./ui/ScrollArea";
 import { Spinner } from "./Spinner";
 import Kbd from "./ui/kbd";
+import { SignOut } from "@phosphor-icons/react";
 
 const AllSettings = lazy(() => import("@/AllSettings"));
 
@@ -81,6 +82,13 @@ const SettingSidebar = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    
+    window.location.href = "/";
+  };
+  
 
   return (
     <div className="flex flex-col gap-3 py-2">
@@ -268,6 +276,13 @@ const SettingSidebar = () => {
           </label>
         </div>
       </Card>
+
+      <Button variant={"secondary"} onClick={handleLogout} className="">
+        <div className="flex items-center gap-2 "> 
+          <SignOut size={16}/>
+          <p>Log out</p>
+        </div>
+      </Button>
 
       <div className="flex flex-wrap gap-1 p-2 mt-2 justify-center text-xs text-gray-400">
         <a

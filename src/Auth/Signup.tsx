@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
 import { CaretDown, Eye, EyeSlash } from "@phosphor-icons/react";
@@ -20,11 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SelectTrigger } from "@radix-ui/react-select";
-
-const Spinner = lazy(() =>
-  import("@/components/Spinner").then(module => ({ default: module.Spinner }))
-);
-
+import { Spinner } from "@/components/Spinner";
 interface SignupResponse {
   message: string;
   success: boolean;
@@ -326,9 +322,7 @@ const Signup = () => {
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                        <Suspense fallback={<div>Loading...</div>}>
                           <Spinner />
-                        </Suspense>
                       ) : (
                         "Create account"
                       )}
@@ -409,9 +403,7 @@ const Signup = () => {
                   disabled={timeRemaining === 0 || isLoading}
                 >
                   {isLoading ? (
-                    <Suspense fallback={<div>Loading...</div>}>
                       <Spinner />
-                    </Suspense>
                   ) : (
                     "Verify"
                   )}

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import api from "@/lib/api";
 import ResizeableModel from "@/components/ui/ResizeableModel";
 import { Spinner } from "@/components/Spinner";
+import { Button } from "@/components/ui/button";
 
 interface LoginResponse {
   success: boolean;
@@ -78,6 +79,14 @@ const Login = () => {
     }
   };
 
+
+  const handelTryagain=()=>{
+
+    window.location.href = "/";
+
+  }
+
+  
   return (
     <div className="flex w-full flex-col h-screen">
       <div className="w-[230px] mx-10 my-2">
@@ -108,11 +117,11 @@ const Login = () => {
                   <p>error</p>
                 </h1>
                 <div className="text-sm mt-3 font-thin text-gray-700 dark:text-gray-200">
-                  invalid username or password.
+                incorrect username or password.
                 </div>
-                {/* <div className="w-full mt-7 flex items-end justify-end ">
-                  <Button className="px-10" variant={"destructive"}>cancel</Button>
-                </div> */}
+                <div className=" flex justify-end items-end">
+                  <Button onClick={handelTryagain} className="w-32 bg-black " variant="superActive">try again</Button>
+                </div>
               </div>
             </ResizeableModel>
             </AnimatePresence>
