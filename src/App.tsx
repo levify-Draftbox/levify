@@ -61,6 +61,7 @@ function App() {
               <Route index element={<Inbox />} />
               <Route path="/*" element={<Inbox />} />
             </Route>
+          <Route path="/editor" element={<Editor />} />
           </Routes>
 
           {open && (
@@ -72,7 +73,6 @@ function App() {
             </ResizeableModel>
           )}
 
-          <Route path="/login" element={<Editor />} />
         </TooltipProvider>
       </ThemeProvider>
     </HotkeysProvider>
