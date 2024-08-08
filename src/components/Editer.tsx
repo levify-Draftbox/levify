@@ -1,10 +1,12 @@
-import EditorJS, { EditorConfig } from '@editorjs/editorjs';
+import EditorJS, { EditorConfig } from "@editorjs/editorjs";
 import { useEffect, useRef } from "react";
+import edjsHTML from "editorjs-html";
 
 const Editor: React.FC = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const editorInstanceRef = useRef<EditorJS | null>(null);
 
+  const edjsParser = edjsHTML();
   useEffect(() => {
     if (editorRef.current && !editorInstanceRef.current) {
       const editorConfig: EditorConfig = {
@@ -12,7 +14,11 @@ const Editor: React.FC = () => {
         autofocus: true,
         onChange: async () => {
           const content = await editorInstanceRef.current?.save();
-          console.log(content);
+
+          if (content) {
+            const html = edjsParser.parse(content);
+            console.log(html);
+          }
         },
         tools: {
           // We'll leave this empty for now
@@ -37,25 +43,23 @@ const Editor: React.FC = () => {
           editorInstanceRef.current = editor;
         })
         .catch((error: Error) => {
-          console.error('Editor.js initialization failed:', error);
+          console.error("Editor.js initialization failed:", error);
         });
     }
 
     return () => {
       const editor = editorInstanceRef.current;
-      if (editor && typeof editor.destroy === 'function') {
+      if (editor && typeof editor.destroy === "function") {
         try {
           editor.destroy();
         } catch (e) {
-          console.error('Error destroying editor:', e);
+          console.error("Error destroying editor:", e);
         }
       }
     };
   }, []);
 
-  return (
-    <div ref={editorRef} className="editor"></div>
-  );
+  return <div ref={editorRef} className="editor"></div>;
 };
 
 export default Editor;
