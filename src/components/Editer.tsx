@@ -1,88 +1,61 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-nocheck
-import EditorJS from "@editorjs/editorjs";
+import EditorJS, { EditorConfig } from '@editorjs/editorjs';
 import { useEffect, useRef } from "react";
-import List from "@editorjs/list";
-import LinkTool from "@editorjs/link";
-import RawTool from "@editorjs/raw";
-import ImageTool from "@editorjs/image";
-import Checklist from "@editorjs/checklist";
-import Embed from "@editorjs/embed";
-import Quote from "@editorjs/quote";
-import Header from "@editorjs/header";
 
-const Editer = () => {
-  // const DEFAULT_INITIAL_DATA = {
-  //   time: new Date().getTime(),
-  //   blocks: [
-  //     {
-  //       type: "header",
-  //       data: {
-  //         text: "This is my awesome editor!",
-  //         level: 1,
-  //       },
-  //     },
-  //   ],
-  // };
-
-  const ejInstance = useRef();
-
-  const initEditor = () => {
-    const editor = new EditorJS({
-      holder: "editorjs",
-      autofocus: true,
-
-      onChange: async () => {
-        const content = await editor.save();
-        console.log(content);
-      },
-      tools: {
-        header: {
-          class: Header,
-          config: {
-            placeholder: "Untitled",
-            defaultLevel: 1,
-          },
-        },
-        List,
-        LinkTool,
-        RawTool,
-        ImageTool,
-        Checklist,
-        Embed,
-        Quote,
-      },
-      data: {
-        time: new Date().getTime(),
-        blocks: [
-          {
-            type: "header",
-            data: {
-              // text: "Untitled",
-              level: 1,
-            },
-          },
-        ],
-      },
-    });
-  };
+const Editor: React.FC = () => {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const editorInstanceRef = useRef<EditorJS | null>(null);
 
   useEffect(() => {
-    if (ejInstance.current === null) {
-      initEditor();
+    if (editorRef.current && !editorInstanceRef.current) {
+      const editorConfig: EditorConfig = {
+        holder: editorRef.current,
+        autofocus: true,
+        onChange: async () => {
+          const content = await editorInstanceRef.current?.save();
+          console.log(content);
+        },
+        tools: {
+          // We'll leave this empty for now
+        },
+        data: {
+          time: new Date().getTime(),
+          blocks: [
+            {
+              type: "paragraph",
+              data: {
+                text: "Start writing here...",
+              },
+            },
+          ],
+        },
+      };
+
+      const editor = new EditorJS(editorConfig);
+
+      editor.isReady
+        .then(() => {
+          editorInstanceRef.current = editor;
+        })
+        .catch((error: Error) => {
+          console.error('Editor.js initialization failed:', error);
+        });
     }
 
     return () => {
-      ejInstance?.current?.destroy();
-      ejInstance.current = null;
+      const editor = editorInstanceRef.current;
+      if (editor && typeof editor.destroy === 'function') {
+        try {
+          editor.destroy();
+        } catch (e) {
+          console.error('Error destroying editor:', e);
+        }
+      }
     };
   }, []);
 
   return (
-    <>
-      <div className="heding" id="editorjs"></div>
-    </>
+    <div ref={editorRef} className="editor"></div>
   );
 };
 
-export default Editer;
+export default Editor;

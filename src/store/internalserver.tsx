@@ -5,7 +5,7 @@ type InterServerModal = {
     open: boolean
 }
 
-const useInterServerModal = create<InterServerModal>()((set, get) => ({
+const useInterServerModal = create<InterServerModal>()((set) => ({
     toggleModal: () => {
         set((state) => ({ open: !state.open }))
     },

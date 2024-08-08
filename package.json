@@ -10,6 +10,7 @@
     "preview": "vite preview --port 3031 --host"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.30.2",
     "@editorjs/quote": "^2.6.0",
     "@editorjs/raw": "^2.5.0",
     "@phosphor-icons/react": "^2.1.6",
