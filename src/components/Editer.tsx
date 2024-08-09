@@ -1,21 +1,28 @@
 import EditorJS, { EditorConfig } from "@editorjs/editorjs";
 import { useEffect, useRef } from "react";
-import edjsHTML from "editorjs-html";
-import Header from '@editorjs/header';
-import LinkTool from '@editorjs/link';
-import RawTool from '@editorjs/raw';
-import ImageTool from '@editorjs/image';
-import Checklist from '@editorjs/checklist'
+import Header from "@editorjs/header";
+import LinkTool from "@editorjs/link";
+import RawTool from "@editorjs/raw";
+import ImageTool from "@editorjs/image";
+import Checklist from "@editorjs/checklist";
 import List from "@editorjs/list";
-import Embed from '@editorjs/embed';
-import Quote from '@editorjs/quote';
+import Embed from "@editorjs/embed";
+import Quote from "@editorjs/quote";
+import Table from '@editorjs/table'
 
+
+import edjsParser from "editorjs-parser";
+
+const config = {};
+const customParsers = {};
+const embedMarkup = {};
+
+const parser = new edjsParser(config, customParsers, embedMarkup);
 
 const Editor: React.FC = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const editorInstanceRef = useRef<EditorJS | null>(null);
 
-  const edjsParser = edjsHTML();
   useEffect(() => {
     if (editorRef.current && !editorInstanceRef.current) {
       const editorConfig: EditorConfig = {
@@ -25,20 +32,22 @@ const Editor: React.FC = () => {
           const content = await editorInstanceRef.current?.save();
 
           if (content) {
-            const html = edjsParser.parse(content);
-            console.log(html);
+            const markup = parser.parse(content);
+            console.log(markup);
+            
           }
         },
         tools: {
           header: Header,
           linkTool: LinkTool,
           raw: RawTool,
+          table: Table,
           image: {
             class: ImageTool,
             config: {
               endpoints: {
-                byFile: 'http://localhost:8008/uploadFile',
-                byUrl: 'http://localhost:8008/fetchUrl',
+                byFile: "http://localhost:8008/uploadFile",
+                byUrl: "http://localhost:8008/fetchUrl",
               },
             },
           },
@@ -50,13 +59,13 @@ const Editor: React.FC = () => {
             class: List,
             inlineToolbar: true,
             config: {
-              defaultStyle: 'unordered',
+              defaultStyle: "unordered",
             },
           },
           embed: Embed,
           quote: Quote,
         },
-        
+
         data: {
           time: new Date().getTime(),
           blocks: [
@@ -93,7 +102,11 @@ const Editor: React.FC = () => {
     };
   }, []);
 
-  return <div ref={editorRef} className="editor"></div>;
+  return (
+    <div className="w-full h-full">
+      <div ref={editorRef} className="editor"></div>
+    </div>
+  );
 };
 
 export default Editor;
