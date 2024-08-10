@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useCallback } from "react";
-import { BellRinging, BellSlash } from "@phosphor-icons/react";
+import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react"; // Import the SpeakerHigh icon
 
 const sounds = [
   { name: "Bell", src: "/sounds/bell.wav" },
@@ -18,9 +18,13 @@ const sounds = [
 
 const Notification = () => {
   const [notiEnable, setNotiEnable] = useState(false);
-  const [, setSelectedSound] = useState(sounds[0].src);
+  const [selectedSound, setSelectedSound] = useState<string | null>(null); // Allow null initially
 
-  const playSound = useCallback((soundSrc: string | undefined) => {
+  const playSound = useCallback((soundSrc: string | null) => {
+    if (!soundSrc) {
+      console.warn("No sound selected");
+      return;
+    }
     const audio = new Audio(soundSrc);
     audio.play().catch((error) => {
       console.error("Error playing sound:", error);
@@ -31,26 +35,36 @@ const Notification = () => {
     <div className="w-full h-full">
       <SettingDiv>
         <SettingTitle>Notification Sound</SettingTitle>
-        <Select
-          onValueChange={(value) => {
-            const sound = sounds.find((s) => s.name === value);
-            if (sound) {
-              setSelectedSound(sound.src);
-              playSound(sound.src);
-            }
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Sound" />
-          </SelectTrigger>
-          <SelectContent>
-            {sounds.map((sound) => (
-              <SelectItem key={sound.src} value={sound.name}>
-                {sound.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center">
+          <Select
+            onValueChange={(value) => {
+              const sound = sounds.find((s) => s.name === value);
+              if (sound) {
+                setSelectedSound(sound.src);
+              }
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Sound" />
+            </SelectTrigger>
+            <SelectContent>
+              {sounds.map((sound) => (
+                <SelectItem key={sound.src} value={sound.name}>
+                  {sound.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <button
+            type="button"
+            className="ml-2 p-2 text-gray-500 hover:text-gray-700"
+            onClick={() => playSound(selectedSound)}
+            aria-label="Play selected sound"
+            disabled={!selectedSound} // Disable button if no sound is selected
+          >
+            <SpeakerHigh size={24} />
+          </button>
+        </div>
       </SettingDiv>
 
       <SettingDiv>
