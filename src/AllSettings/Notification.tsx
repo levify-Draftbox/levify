@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useCallback } from "react";
-import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react"; // Import the SpeakerHigh icon
+import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react"; 
 
 const sounds = [
   { name: "Bell", src: "/sounds/bell.wav" },
@@ -18,7 +18,7 @@ const sounds = [
 
 const Notification = () => {
   const [notiEnable, setNotiEnable] = useState(false);
-  const [selectedSound, setSelectedSound] = useState<string | null>(null); // Allow null initially
+  const [selectedSound, setSelectedSound] = useState<string | null>(null); 
 
   const playSound = useCallback((soundSrc: string | null) => {
     if (!soundSrc) {
@@ -35,12 +35,13 @@ const Notification = () => {
     <div className="w-full h-full">
       <SettingDiv>
         <SettingTitle>Notification Sound</SettingTitle>
-        <div className="flex items-center">
+        <div className="flex">
           <Select
             onValueChange={(value) => {
               const sound = sounds.find((s) => s.name === value);
               if (sound) {
                 setSelectedSound(sound.src);
+                playSound(sound.src); 
               }
             }}
           >
@@ -60,7 +61,7 @@ const Notification = () => {
             className="ml-2 p-2 text-gray-500 hover:text-gray-700"
             onClick={() => playSound(selectedSound)}
             aria-label="Play selected sound"
-            disabled={!selectedSound} // Disable button if no sound is selected
+            disabled={!selectedSound} 
           >
             <SpeakerHigh size={24} />
           </button>
