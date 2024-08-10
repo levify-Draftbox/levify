@@ -12,6 +12,7 @@ import Signup from "./Auth/Signup";
 import useInterServerModal from "./store/internalserver";
 import ResizeableModel from "./components/ui/ResizeableModel";
 import Inputs from "./page/Inputs";
+import Blocknote from "./components/BlockNote";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
@@ -39,17 +40,19 @@ function App() {
             />
 
             <Route
-            
+
               path="/"
               element={
                 NotLogin ? <Home /> : <Navigate to="/login" replace />
               }
             >
-              <Route index element={<Inbox />}  />
+              <Route index element={<Inbox />} />
               <Route path="input" element={<Inputs />} />
               {/* <Route path="/*" element={<Inbox />} /> */}
             </Route>
 
+            <Route path="/blocknote" element={<Blocknote />} />
+            
           </Routes>
 
           {open && (
