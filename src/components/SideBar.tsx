@@ -41,7 +41,7 @@ const SideBar = () => {
           </Link>
 
           <div className="mt-3">
-            <Button onClick={() => setIsComposerOpen(!isComposerOpen)} variant={"active"}>
+            <Button onClick={() => setIsComposerOpen(!isComposerOpen)} variant={"primary"}>
               New Mail
             </Button>
           </div>
