@@ -11,10 +11,10 @@ import ShortcutLoad from "./lib/Shortcut";
 import Signup from "./Auth/Signup";
 import useInterServerModal from "./store/internalserver";
 import ResizeableModel from "./components/ui/ResizeableModel";
+import Inputs from "./page/Inputs";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
-
   const NotLogin = !!localStorage.getItem("token");;
 
   ShortcutLoad();
@@ -46,7 +46,7 @@ function App() {
               }
             >
               <Route index element={<Inbox />}  />
-              <Route path="input" element={<>Hello</>} />
+              <Route path="input" element={<Inputs />} />
               {/* <Route path="/*" element={<Inbox />} /> */}
             </Route>
 

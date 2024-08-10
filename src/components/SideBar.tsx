@@ -39,7 +39,7 @@ const SideBar = () => {
           </Link>
 
           <div className="mt-3">
-            <Button size={"superActive"} variant={"superActive"}>
+            <Button variant={"primary"}>
               New Mail
             </Button>
           </div>

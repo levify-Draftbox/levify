@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { SelectTrigger } from "@radix-ui/react-select";
 import { Spinner } from "@/components/Spinner";
+import { Button } from "@/components/ui/button";
 interface SignupResponse {
   message: string;
   success: boolean;
@@ -181,6 +182,8 @@ const Signup = () => {
     setOtp(value);
   };
 
+  const [domain, setDomain] = useState("rellitel.ink")
+
   return (
     <div className="flex w-full flex-col h-screen">
       <div className="w-[230px] mx-10 my-2">
@@ -224,83 +227,38 @@ const Signup = () => {
               </div>
               <div className="flex justify-center mt-10">
                 <form className="w-[500px]" onSubmit={handleSignup}>
-                  <div className="mb-4 mt-5">
-                    <label
-                      htmlFor="username"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
-                    >
-                      Username
-                    </label>
-                    <div className="flex justify-center ">
-                      <div className="w-full">
-                        <Input
-                          type="text"
-                          id="username"
-                          value={formData.username}
-                          onChange={handleInputChange}
-                          className={`w-full p-3 !rounded-l-lg outline-none mt-2 ${errors.username ? "border-red-500" : ""
-                            }`}
-                          placeholder="Username"
-                          error={errors.username}
-                        />
-                      </div>
 
-                      <div className={`flex gap-2 h-10 px-3 mt-2 rounded-r-lg bg-input justify-center items-center cursor-pointer `}>
-                        <Select open={isOpen} onOpenChange={setIsOpen}>
-                          <SelectTrigger className="w-auto">
-                            <SelectValue placeholder="@draftbox.com" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="@draftbox.com">@draftbox.com</SelectItem>
-                            <SelectItem value="@draftbox.dev">
-                              @draftbox.dev
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <CaretDown size={15} onClick={toggleSelect} />
-                      </div>
-                    </div>
+                  <div className="mb-3 mt-5">
+                    <Input
+                      label="Username"
+                      type="text"
+                      id="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder="Username"
+                      error={errors.username}
 
+                      optionLabel="Domain Name"
+                      optionName="Domains"
+                      option={{
+                        "rellitel.ink": "@rellitel.ink",
+                        "rellit.email": "@rellit.email"
+                      }}
+                      optionValue={domain}
+                      onOptionChange={(d) => setDomain(d)}
+                    />
                   </div>
 
-                  <div className="mb-4 w-full">
-                    <label
-                      htmlFor="password"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
-                    >
-                      Password
-                    </label>
-                    <div className=" mt-1 flex w-full rounded-md">
-                      <div className="w-full">
-
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          id="password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          placeholder="Password"
-                          className={`rounded-l-lg w-full p-3  outline-none ${errors.password ? "border-red-500" : ""
-                            }`}
-                          error={errors.password}
-
-                        />
-                      </div>
-                      <div className="">
-
-                        <div
-                          className=" inset-y-0  h-10 right-0 px-3 bg-input rounded-r-lg flex items-center"
-                          onClick={() => setShowPassword(!showPassword)}
-
-                        >
-                          {showPassword ? (
-                            <EyeSlash size={20} />
-                          ) : (
-                            <Eye size={20} />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
+                  <div className="mb-3 w-full">
+                    <Input
+                      label="Password"
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Password"
+                      error={errors.password}
+                    />
                   </div>
 
                   <div className="mb-6">
@@ -316,28 +274,24 @@ const Signup = () => {
                     />
                   </div>
                   <div className="mt-2">
-                    <button
+                    <Button
                       type="submit"
-                      className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg hover:bg-core-lite"
-                      disabled={isLoading}
+                      variant={"primary"}
+                      loading={isLoading}
                     >
-                      {isLoading ? (
-                          <Spinner />
-                      ) : (
-                        "Create account"
-                      )}
-                    </button>
+                      Create Account
+                    </Button>
                   </div>
                   <div className="mt-4 text-center">
-                  <p className="text-sm">
-                    alredy have an account?{" "}
-                    <Link to="/login" className="text-core hover:underline">
-                      Log in here
-                    </Link>
-                  </p>
-                </div>
+                    <p className="text-sm">
+                      alredy have an account?{" "}
+                      <Link to="/login" className="text-core hover:underline">
+                        Log in here
+                      </Link>
+                    </p>
+                  </div>
                 </form>
-               
+
               </div>
             </div>
           </motion.div>
@@ -364,7 +318,7 @@ const Signup = () => {
                 )}
               </div>
               <form onSubmit={handleVerify}>
-                <div className="mb-4">
+                <div className="mb-3">
                   <Label
                     htmlFor="otp"
                     className="block text-sm font-medium text-gray-700 dark:text-white"
@@ -380,7 +334,7 @@ const Signup = () => {
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />  
+                        <InputOTPSlot index={2} />
                       </InputOTPGroup>
                       <InputOTPSeparator />
                       <InputOTPGroup>
@@ -406,17 +360,13 @@ const Signup = () => {
                       : "Resend OTP"}
                   </button>
                 </div>
-                <button
+                <Button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg mb-4 hover:bg-core-lite"
-                  disabled={timeRemaining === 0 || isLoading}
+                  variant={"primary"}
+                  loading={timeRemaining === 0 || isLoading}
                 >
-                  {isLoading ? (
-                      <Spinner />
-                  ) : (
-                    "Verify"
-                  )}
-                </button>
+                  Verify
+                </Button>
               </form>
             </div>
           </motion.div>
