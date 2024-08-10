@@ -11,7 +11,8 @@ import ShortcutLoad from "./lib/Shortcut";
 import Signup from "./Auth/Signup";
 import useInterServerModal from "./store/internalserver";
 import ResizeableModel from "./components/ui/ResizeableModel";
-import Editor from "./components/Editer";
+// import Editor from "./components/Editer";
+import Blocknote from "./components/BlockNote";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
@@ -61,7 +62,9 @@ function App() {
               <Route index element={<Inbox />} />
               <Route path="/*" element={<Inbox />} />
             </Route>
-          <Route path="/editor" element={<Editor />} />
+          {/* <Route path="/editor" element={<Editor />} /> */}
+          <Route path="/blocknote" element={<Blocknote />} />
+
           </Routes>
 
           {open && (
