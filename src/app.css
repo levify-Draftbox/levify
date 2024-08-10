@@ -143,7 +143,7 @@
     --ring: hsl(66, 100%, 86%);
 
     --button-base: rgba(255, 255, 255, 0.065);
-    --button-hover: rgba(255, 255, 255, 0.065);
+    --button-hover: rgba(255, 255, 255, 0.075);
     --button-active: rgba(255, 255, 255, 0.09);
 
     --input-base: rgba(255, 255, 255, 0.08);

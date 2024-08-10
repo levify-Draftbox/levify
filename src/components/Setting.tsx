@@ -94,7 +94,7 @@ const SettingSidebar = () => {
     <div className="flex flex-col gap-3 py-2">
       <Button
         onClick={handleButtonClick}
-        variant="superActive"
+        variant="primary"
         className=""
       >
         All Settings
@@ -113,7 +113,7 @@ const SettingSidebar = () => {
             </div>
           </div>
         </div>
-        <Button variant={"superActive"} className="capitalize">
+        <Button variant={"primary"} className="capitalize">
           Upgrade your plan
         </Button>
       </Card>

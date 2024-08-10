@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import api from "@/lib/api";
 import ResizeableModel from "@/components/ui/ResizeableModel";
-import { Spinner } from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 
 interface LoginResponse {
@@ -18,7 +15,6 @@ interface LoginResponse {
 
 const Login = () => {
   const { theme } = useTheme();
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<{
     username: string;
     password: string;
@@ -116,13 +112,13 @@ const Login = () => {
           >
             <div className="p-6 w-full h-full">
               <h1 className={`text-2xl font-[500] `}>
-                <p>error</p>
+                <p>Login Faild</p>
               </h1>
               <div className="text-sm mt-3 font-thin text-gray-700 dark:text-gray-200">
                 Incorrect username or password.
               </div>
               <div className="mt-4 flex justify-end items-end">
-                <Button variant={"superActive"} onClick={handelTryagain} className="w-32" >try again</Button>
+                <Button variant={"primary"} onClick={handelTryagain} className="w-32" >Try again</Button>
               </div>
             </div>
           </ResizeableModel>
@@ -145,96 +141,45 @@ const Login = () => {
               </div>
               <div className="w-full justify-center flex flex-col items-center mt-10">
                 <form className="w-[450px]" onSubmit={handleLogin}>
-                  {errors.general && (
-                    <p className="text-red-500 text-sm mb-4">
-                      <AnimatePresence>
-                        <motion.div
-                          initial={{
-                            opacity: 0,
-                            height: 0,
-                          }}
-                          animate={{
-                            opacity: 1,
-                            height: "auto",
-                          }}
-                          exit={{
-                            opacity: 0,
-                            height: 0,
-                          }}
-                          transition={{ ease: "easeOut", duration: 0.3 }}
-                        >
-                          <motion.span className="text-red-500 text-sm block mt-1">
-                            {errors.general}
-                          </motion.span>
-                        </motion.div>
-                      </AnimatePresence>
-                    </p>
-                  )}
-                  <div className="mb-4 mt-5">
-                    <Label
-                      htmlFor="username"
-                      className="block text-gray-700 dark:text-white"
-                    >
-                      Username
-                    </Label>
+
+                  <div className="my-3">
                     <Input
+                      label="Username"
                       type="text"
                       id="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg outline-none mt-2 ${errors.username ? "border-red-x" : ""
+                      className={`w-full outline-none ${errors.username ? "border-red-x" : ""
                         }`}
                       placeholder="Username"
                       error={errors.username}
                     />
                   </div>
-                  <div className="mb-4 w-full">
-                    <label
-                      htmlFor="password"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white"
-                    >
-                      Password
-                    </label>
+
+                  <div className="my-3">
                     <div className="mt-1 flex w-full rounded-md">
                       <div className="w-full">
                         <Input
-                          type={showPassword ? "text" : "password"}
+                          label="Password"
                           id="password"
+                          type="password"
                           value={formData.password}
                           onChange={handleInputChange}
                           placeholder="Password"
-                          className={`rounded-l-lg w-full p-3 outline-none ${errors.password ? "border-red-500" : ""
+                          className={`rounded-l-lg w-full outline-none ${errors.password ? "border-red-500" : ""
                             }`}
                           error={errors.password}
                         />
                       </div>
-                      <div className="">
-                        <div
-                          className="inset-y-0 h-10 right-0 px-3 bg-input rounded-r-lg flex items-center"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeSlash size={20} />
-                          ) : (
-                            <Eye size={20} />
-                          )}
-                        </div>
-                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-2">
-                    <button
-                      type="submit"
-                      className="w-full flex justify-center py-3 px-4 bg-core text-white rounded-lg hover:bg-core-lite"
-                      disabled={isLoading}
+                  <div className="mt-5">
+                    <Button
+                      loading={isLoading}
                     >
-                      {isLoading ? (
-                        <Spinner />
-                      ) : (
-                        "Login"
-                      )}
-                    </button>
+                      Login
+                    </Button>
                   </div>
                 </form>
                 <div className="mt-4 text-center">
