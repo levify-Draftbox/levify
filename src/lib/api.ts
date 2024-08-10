@@ -3,7 +3,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    window.location.hostname !== "localhost"
+    window.location.hostname == "localhost"
       ? "http://localhost:3030/api"
       : "https://api.dev.rellitel.ink/api", // Your API base URL
   timeout: 10000, // Request timeout in milliseconds
