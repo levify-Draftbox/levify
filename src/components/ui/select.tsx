@@ -22,8 +22,7 @@ const Select: React.FC<
       label &&
       <>
         <label htmlFor={label} className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white">{label}</label>
-      <div className="h-1">
-      </div>
+        <div className="h-1" />
       </>
     }
     <SelectRoot  {...props} />

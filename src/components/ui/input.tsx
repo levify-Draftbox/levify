@@ -10,6 +10,7 @@ export interface InputProps
   error?: string;
   label?: string;
   variant?: string;
+  inputClass?: string;
 
   option?: { [_: string]: string };
   optionLabel?: string
@@ -30,13 +31,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <label htmlFor={label} className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white">{label}</label>
         }
 
-        <div className={`${label ? "mt-1" : ""} bg-input overflow-hidden rounded-lg flex group border focus-within:!border-input-border !border-transparent`}>
+        <div
+          className={cn(
+            label ? "mt-1" : "",
+            "bg-input overflow-hidden rounded-lg flex group border focus-within:!border-input-border !border-transparent",
+            className
+          )
+          }>
           <input
             type={inputType}
             className={cn(
               Object.keys(props.option || {}).length > 0 ? "pr-1" : "pr-4",
-              "flex w-full bg-transparent !outline-none pl-4 py-2 text-sm file:border-0 file:bg-transparent text-gray-700 dark:text-white file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 ",
-              className
+              "flex w-full bg-transparent !outline-none pl-4 py-2 text-sm file:border-0 file:bg-transparent text-gray-700 dark:text-white file:text-sm file:font-medium placeholder:text-gray-400 dark:placeholder:text-gray-200 disabled:cursor-not-allowed disabled:opacity-50 ",
+              props.inputClass
             )}
             ref={ref}
             {...props}
@@ -77,32 +84,34 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               </SelectContent>
             </SelectRoot>
           }
-        </div>
+        </div >
 
         {
           <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  height: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                  height: "auto",
-                }}
-                exit={{
-                  opacity: 0,
-                  height: 0,
-                }}
-                transition={{ ease: "easeOut", duration: 0.3 }}
-              >
-                <motion.span className="text-red-500 text-sm  block mt-1">
-                  {error}
-                </motion.span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {
+              error && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                  }}
+                  transition={{ ease: "easeOut", duration: 0.3 }}
+                >
+                  <motion.span className="text-red-500 text-sm  block mt-1">
+                    {error}
+                  </motion.span>
+                </motion.div>
+              )
+            }
+          </AnimatePresence >
         }
       </>
     );

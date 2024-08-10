@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { PhoneInput } from "@/components/ui/phone";
 interface SignupResponse {
   message: string;
   success: boolean;
@@ -55,7 +56,7 @@ const Signup = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
+    setFormData({ ...formData, [id]: value });    
     setErrors({ ...errors, [id]: undefined });
   };
 
@@ -80,7 +81,7 @@ const Signup = () => {
 
     const mobileRegex = /^\+?[1-9]\d{1,14}$/;
     if (!formData.mobile.trim()) {
-      newErrors.mobile = "Mobile number is required";
+      newErrors.mobile = "Phone number is required";
     } else if (!mobileRegex.test(formData.mobile.trim())) {
       newErrors.mobile = "Invalid mobile number format";
     }
@@ -237,6 +238,7 @@ const Signup = () => {
                     <Input
                       label="Password"
                       id="password"
+                      type="password"
                       value={formData.password}
                       onChange={handleInputChange}
                       placeholder="Password"
@@ -245,14 +247,20 @@ const Signup = () => {
                   </div>
 
                   <div className="mb-6">
-                    <Input
-                      label="Mobile"
+                    <PhoneInput
+                      label="Phone No"
+                      placeholder="Phone No"
                       id="mobile"
+
+                      defaultCountry="IN"
                       value={formData.mobile}
-                      onChange={handleInputChange}
-                      placeholder="+91"
-                      className={`w-full p-3 rounded-lg outline-none mt-1 ${errors.mobile ? "border-red-500" : ""
-                        }`}
+                      onChange={(e: any) => handleInputChange({
+                        /* @ts-ignore */
+                        target: {
+                          id: "mobile",
+                          value: e
+                        }
+                      })}
                       error={errors.mobile}
                     />
                   </div>

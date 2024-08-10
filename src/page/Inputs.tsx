@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useState } from "react";
 
@@ -38,7 +39,7 @@ function Inputs(): React.ReactNode {
 
                 <div className="px-4 py-1">
                     <Input
-                    label="Email Address"
+                        label="Email Address"
                         type="text"
                         id="Email"
                         option={{
@@ -52,6 +53,10 @@ function Inputs(): React.ReactNode {
                         onOptionChange={(s) => setSelectValue(s)}
                         value={"qewe"}
                     />
+                </div>
+
+                <div className="px-4 py-1">
+                    <PhoneInput placeholder="Phone No" defaultCountry="IN" label="Phone No" />
                 </div>
 
                 <div className="px-4 py-3">
