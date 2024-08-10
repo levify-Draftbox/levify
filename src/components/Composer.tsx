@@ -3,27 +3,36 @@ import { createPortal } from "react-dom";
 import { Button } from "./ui/button";
 import { ArrowsInSimple, Minus, X } from "@phosphor-icons/react";
 import Blocknote from "./BlockNote";
+import Draggable from 'react-draggable';
 
-const Composer = ({ isOpen, onClose }) => {
-  const [showCc, setShowCc] = useState(false);
-  const [showBcc, setShowBcc] = useState(false);
+type ComposerProps = {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Composer: React.FC<ComposerProps> = ({ isOpen, onClose }) => {
+  const [showCc, setShowCc] = useState<boolean>(false);
+  const [showBcc, setShowBcc] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="flex inset-0 w-full z-20 items-center justify-center ">
+    <Draggable
+      axis="x"  // Restrict dragging to the x-axis
+      bounds="body" // Restrict dragging within the body
+    >
       <div className="h-[600px] w-[550px] shadow-xl bg-white border-2 rounded-lg absolute bottom-2 right-2">
-        <div className="w-full h-10 bg-core flex items-center justify-between pl-4 pr-2 rounded-t-lg">
+        <div className="w-full h-10 bg-core cursor-move flex items-center justify-between pl-4 pr-2 rounded-t-lg">
           <p className="text-white">New Message</p>
           <div className="">
             <Button variant={"toolbutton"}>
-              <Minus className="text-white " size={18} />
+              <Minus className="text-white" size={18} />
             </Button>
             <Button variant={"toolbutton"}>
-              <ArrowsInSimple className="text-white " size={18} />
+              <ArrowsInSimple className="text-white" size={18} />
             </Button>
             <Button variant={"toolbutton"} onClick={onClose}>
-              <X className="text-white " size={18} />
+              <X className="text-white" size={18} />
             </Button>
           </div>
         </div>
@@ -69,11 +78,11 @@ const Composer = ({ isOpen, onClose }) => {
             <input className="w-full p-2 outline-none " placeholder="subject" />
           </div>
         </div>
-        <div className=" w-full h-full mt-2 ">
+        <div className="w-full h-full mt-2">
           <Blocknote />
         </div>
       </div>
-    </div>,
+    </Draggable>,
     document.body
   );
 };
