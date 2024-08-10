@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
 import ResizeableModel from "@/components/ui/ResizeableModel";
-import { Spinner } from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 
 interface LoginResponse {
@@ -17,7 +15,6 @@ interface LoginResponse {
 
 const Login = () => {
   const { theme } = useTheme();
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<{
     username: string;
     password: string;
@@ -164,7 +161,6 @@ const Login = () => {
                       <div className="w-full">
                         <Input
                           label="Password"
-                          type={showPassword ? "text" : "password"}
                           id="password"
                           value={formData.password}
                           onChange={handleInputChange}

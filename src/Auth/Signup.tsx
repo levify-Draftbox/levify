@@ -1,7 +1,6 @@
 import React, { useState, useEffect, } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/Theme-provider";
-import { CaretDown, Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,14 +12,6 @@ import {
 } from "@/components/ui/input-otp";
 import axios from "axios";
 import api from "@/lib/api";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
-import { SelectTrigger } from "@radix-ui/react-select";
-import { Spinner } from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 interface SignupResponse {
   message: string;
@@ -36,7 +27,6 @@ interface VerifyResponse {
 
 const Signup = () => {
   const { theme } = useTheme();
-  const [showPassword, setShowPassword] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [token, setToken] = useState<string>("");
   const [formData, setFormData] = useState({
@@ -49,12 +39,6 @@ const Signup = () => {
   const [timeRemaining, setTimeRemaining] = useState(60);
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSelect = () => {
-    setIsOpen(!isOpen);
-  };
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -252,7 +236,6 @@ const Signup = () => {
                   <div className="mb-3 w-full">
                     <Input
                       label="Password"
-                      type={showPassword ? "text" : "password"}
                       id="password"
                       value={formData.password}
                       onChange={handleInputChange}
