@@ -5,7 +5,6 @@
 @tailwind utilities;
 
 @layer base {
-
   .purple {
     --core: #7c5cff;
     --core-lite: #8567ff;
@@ -59,6 +58,51 @@
   .fuchsia {
     --core: #FF00FF;
     --core-lite: #FF33FF;
+  }
+
+  .Indigo {
+    --core: #4F46E5;
+    --core-lite: #5B52F0;
+  }
+
+  .Emerald {
+    --core: #10B981;
+    --core-lite: #22C78D;
+  }
+
+  .Rose {
+    --core: #F43F5E;
+    --core-lite: #F75573;
+  }
+
+  .Sky {
+    --core: #0EA5E9;
+    --core-lite: #24B2F1;
+  }
+
+  .Amber {
+    --core: #F59E0B;
+    --core-lite: #F7AA26;
+  }
+
+  .Violet {
+    --core: #8B5CF6;
+    --core-lite: #9C6FFE;
+  }
+
+  .Fuchsia {
+    --core: #D946EF;
+    --core-lite: #E060F3;
+  }
+
+  .Lime {
+    --core: #84CC16;
+    --core-lite: #99D234;
+  }
+
+  .Cyan {
+    --core: #06B6D4;
+    --core-lite: #1CCBE1;
   }
 
   :root {
@@ -159,6 +203,10 @@
   }
 }
 
+button:hover {
+  --tw-ring-color: var(--hover-color);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -174,7 +222,6 @@ body {
     "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji",
     Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
 }
-
 
 html {
   height: 100vh;
@@ -202,7 +249,7 @@ html {
 
 /* Handle on hover */
 .scroll-bar::-webkit-scrollbar-thumb:hover {
-  background: var(--scroll-bar-bg-hover)
+  background: var(--scroll-bar-bg-hover);
 }
 
 /* spinner */
@@ -210,7 +257,6 @@ html {
   0% {
     transform: rotate(0deg);
   }
-
   100% {
     transform: rotate(360deg);
   }

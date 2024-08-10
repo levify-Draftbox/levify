@@ -42,21 +42,37 @@ const Appearance = () => {
 
         <SettingTitle>Colors</SettingTitle>
         <SettingDiv className="flex flex-wrap gap-4">
-          {Object.keys(ThemeColors).map((color, index) => (
-            <div
-              key={index}
-              className={`w-10 h-10 rounded-full ${
-                themeColor === color
-                  ? "ring-2 ring-gray-600 dark:ring-gray-200"
-                  : ""
-              }`}
-              style={{
-                background: ThemeColors[color as keyof typeof ThemeColors],
-              }}
-              onClick={() => setThemeColor(color as keyof typeof ThemeColors)}
-            ></div>
-          ))}
+          {Object.keys(ThemeColors).map((color, index) => {
+            const colorValue = ThemeColors[color as keyof typeof ThemeColors];
+            return (
+              <button
+                key={index}
+                className={`flex items-center space-x-2 p-3 w-52 gap-3 rounded-md transition-all duration-200
+          border-2 ${
+            themeColor === color
+              ? "ring-2"
+              : "border-gray-200 dark:border-gray-700 hover:ring-2"
+          }`}
+                style={
+                  {
+                    "--hover-color": colorValue,
+                    borderColor: themeColor === color ? colorValue : undefined,
+                  } as React.CSSProperties
+                }
+                onClick={() => setThemeColor(color as keyof typeof ThemeColors)}
+              >
+                <div
+                  className="w-10 h-10 rounded-full"
+                  style={{
+                    background: colorValue,
+                  }}
+                ></div>
+                <span className="text-sm capitalize">{color}</span>
+              </button>
+            );
+          })}
         </SettingDiv>
+
 
         <SettingTitle>Layout</SettingTitle>
         <SettingDiv className="flex mt-2 gap-4">
