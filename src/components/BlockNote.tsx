@@ -3,12 +3,20 @@ import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useState } from "react";
- 
-// import "./styles.css";
- 
+
 export default function App() {
   const [html, setHTML] = useState<string>("");
- 
+
+  const handleUpload = async (file: File) => {
+    return new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        resolve(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const editor = useCreateBlockNote({
     initialContent: [
       {
@@ -25,13 +33,14 @@ export default function App() {
         ],
       },
     ],
+    uploadFile: handleUpload
   });
- 
+
   const onChange = async () => {
     const html = await editor.blocksToHTMLLossy(editor.document);
     setHTML(html);
   };
- 
+
   return (
     <div className="wrapper">
       <div>Input (BlockNote Editor):</div>
@@ -47,4 +56,3 @@ export default function App() {
     </div>
   );
 }
- 
