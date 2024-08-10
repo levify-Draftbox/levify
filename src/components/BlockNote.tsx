@@ -4,7 +4,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useState } from "react";
 
-export default function App() {
+export default function Blocknote() {
   const [html, setHTML] = useState<string>("");
 
   const handleUpload = async (file: File) => {
@@ -33,7 +33,7 @@ export default function App() {
         ],
       },
     ],
-    uploadFile: handleUpload
+    uploadFile: handleUpload,
   });
 
   const onChange = async () => {
@@ -41,18 +41,12 @@ export default function App() {
     setHTML(html);
   };
 
+  console.log(html);
+  
+
   return (
-    <div className="wrapper">
-      <div>Input (BlockNote Editor):</div>
-      <div className="item">
-        <BlockNoteView editor={editor} onChange={onChange} />
-      </div>
-      <div>Output (HTML):</div>
-      <div className="item bordered ">
-        <pre>
-          <code>{html}</code>
-        </pre>
-      </div>
+    <div className="">
+        <BlockNoteView editor={editor} onChange={onChange}  theme={"light"}/>
     </div>
   );
 }
