@@ -13,7 +13,7 @@ const button = cva(
         primary:
           "items-center justify-center w-full bg-core hover:bg-core-lite active:bg-core shadow !text-[#fff]",
         secondary:
-          "w-full gap-2 px-3 justify-center items-center bg-button hover:bg-button-hover dark:hover:bg-button-hover  dark:active:bg-button-active  active:bg-button-active border border-button-border dark:border-none",
+          "w-full gap-2 justify-center items-center bg-button hover:bg-button-hover dark:hover:bg-button-hover  dark:active:bg-button-active  active:bg-button-active border border-button-border dark:border-none",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
