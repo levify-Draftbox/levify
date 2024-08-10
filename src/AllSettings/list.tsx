@@ -31,7 +31,7 @@ const SettingsList: {
     component: <Appearance />,
   },
   notification: {
-    name: "notification",
+    name: "Notification",
     description:
       "The notification section allows users to manage their alert preferences",
     component: <Notification />,

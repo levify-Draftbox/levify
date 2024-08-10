@@ -7,51 +7,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { BellRinging, BellSlash } from "@phosphor-icons/react";
 
-const Notification = () => {
+const sounds = [
+  { name: "Bell", src: "/sounds/bell.wav" },
+  { name: "Mixkit", src: "/sounds/mixkit.wav" },
+  { name: "Pop", src: "/sounds/pop.wav" },
+];
 
-  const [notiEnable, setNotiEnable] = useState(false)
+const Notification = () => {
+  const [notiEnable, setNotiEnable] = useState(false);
+  const [, setSelectedSound] = useState(sounds[0].src);
+
+  const playSound = useCallback((soundSrc: string | undefined) => {
+    const audio = new Audio(soundSrc);
+    audio.play().catch((error) => {
+      console.error("Error playing sound:", error);
+    });
+  }, []);
 
   return (
     <div className="w-full h-full">
-      <SettingDiv >
+      <SettingDiv>
         <SettingTitle>Notification Sound</SettingTitle>
-        <Select>
+        <Select
+          onValueChange={(value) => {
+            const sound = sounds.find((s) => s.name === value);
+            if (sound) {
+              setSelectedSound(sound.src);
+              playSound(sound.src);
+            }
+          }}
+        >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Enable" />
+            <SelectValue placeholder="Select Sound" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Enable">Enable</SelectItem>
-            <SelectItem value="disable">disable</SelectItem>
+            {sounds.map((sound) => (
+              <SelectItem key={sound.src} value={sound.name}>
+                {sound.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </SettingDiv>
 
-
-      <SettingDiv >
-        <SettingTitle>Desktop notifications Sound</SettingTitle>
+      <SettingDiv>
+        <SettingTitle>Desktop Notifications Sound</SettingTitle>
         <Button
           className="w-fit px-4"
           onClick={() => setNotiEnable(!notiEnable)}
           variant={!notiEnable ? "primary" : "secondary"}
         >
-          {!notiEnable ?
+          {!notiEnable ? (
             <div className="flex gap-1 items-center">
               <BellRinging size={16} />
               Enable
             </div>
-            :
+          ) : (
             <div className="flex gap-1 items-center">
               <BellSlash size={16} />
               Disable
             </div>
-          }
+          )}
         </Button>
-
       </SettingDiv>
-
     </div>
   );
 };
