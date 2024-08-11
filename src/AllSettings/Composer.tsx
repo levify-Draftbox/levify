@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import QuillEditor from "@/components/ui/Quill";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Plus } from "@phosphor-icons/react";
 
 const Composer = () => {
   const [content, setContent] = useState<string>("");
@@ -51,8 +52,23 @@ const Composer = () => {
             Edit and choose Signature that will be automatically added to your
             email message.
           </p>
+
+          <div className="py-3 cursor-pointer ">
+            <div className="flex gap-2 items-center text-core hover:text-core-lite">
+              <Plus size={20} />
+              <h3>Add new signature</h3>
+            </div>
+          </div>
+
           <div className="mt-2">
-            <Input type="text" placeholder="Edit signature name" />
+            <div className="flex gap-3">
+              <Input className="w-full" type="text" placeholder="Edit signature name" />
+              <div className="flex gap-2">
+                <Button variant={"secondary"}>Rename</Button>
+                <Button variant={"secondary"}>Delete</Button>
+
+              </div>
+            </div>
             <div className="mt-2">
               <QuillEditor
                 value={content}
