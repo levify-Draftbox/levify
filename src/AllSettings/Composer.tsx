@@ -62,11 +62,14 @@ const Composer = () => {
 
           <div className="mt-2">
             <div className="flex gap-3">
-              <Input className="w-full" type="text" placeholder="Edit signature name" />
+              <Input
+                className="w-full"
+                type="text"
+                placeholder="Edit signature name"
+              />
               <div className="flex gap-2">
                 <Button variant={"secondary"}>Rename</Button>
                 <Button variant={"secondary"}>Delete</Button>
-
               </div>
             </div>
             <div className="mt-2">
@@ -79,6 +82,10 @@ const Composer = () => {
           </div>
         </div>
       </SettingDiv>
+          <div className="mt-2 flex  gap-3">
+            <Button className="w-28" variant={"primary"}>Save</Button>
+            <Button className="w-28" variant={"secondary"}>Discard</Button>
+          </div>
 
       <SettingDiv>
         <SettingTitle>Reply</SettingTitle>
