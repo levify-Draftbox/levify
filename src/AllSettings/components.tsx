@@ -3,7 +3,7 @@ export const SettingTitle: React.FC<{
     className?: string
 }> = ({ children, className}) => {
     return (
-        <h2 className={`text-base ${className || ""} font-medium text-gray-700 dark:text-gray-200 mt-1 mb-3`}>
+        <h2 className={`text-base ${className || ""} font-bold text-gray-700 dark:text-gray-200 mt-1 mb-3`}>
             {children}
         </h2>
     )
@@ -14,7 +14,7 @@ export const SettingDiv: React.FC<{
     className?: string
 }> = ({ children, className}) => {
     return (
-        <div className={`mt-2 mb-8 ${className || ""} `}>
+        <div className={`mt-3  mb-8 ${className || ""} `}>
             {children}
         </div>
     )

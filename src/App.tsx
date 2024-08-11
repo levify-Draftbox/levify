@@ -13,10 +13,11 @@ import useInterServerModal from "./store/internalserver";
 import ResizeableModel from "./components/ui/ResizeableModel";
 import Inputs from "./page/Inputs";
 import Blocknote from "./components/BlockNote";
+import MyComponent from "./components/MyComponent";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
-  const NotLogin = !!localStorage.getItem("token");;
+  const NotLogin = !!localStorage.getItem("token");
 
   ShortcutLoad();
 
@@ -52,6 +53,8 @@ function App() {
             </Route>
 
             <Route path="/blocknote" element={<Blocknote />} />
+            <Route path="/quill" element={<MyComponent />} />
+
             
           </Routes>
 
