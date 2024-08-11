@@ -47,7 +47,7 @@ const Composer = () => {
         </div>
       </SettingDiv>
 
-      <SettingDiv className="mb-14">
+      <SettingDiv className="mb-16">
         <SettingTitle>Email Signature</SettingTitle>
         <div>
           <p className="text-sm">
