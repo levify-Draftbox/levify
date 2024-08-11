@@ -4,9 +4,10 @@ import { generateEmailArray } from "./test-email"
 import { useEffect, useState } from "react"
 import { SelectGroup, SelectItem, SelectRoot, SelectContent, SelectTrigger, SelectValue } from "../ui/select"
 import { Button } from "../ui/button"
-import { PaperPlaneTilt } from "@phosphor-icons/react"
+import { ArrowsOutSimple, ClockCountdown, Minus, PaperPlaneTilt, X } from "@phosphor-icons/react"
 import ScrollArea from "../ui/ScrollArea"
 import { useTheme } from "../Theme-provider"
+import { motion, AnimatePresence } from "framer-motion"
 
 // block editor
 import "@blocknote/core/fonts/inter.css";
@@ -14,6 +15,7 @@ import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import { locales } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
+import { Tooltip } from "../ui/tooltip"
 
 const Composer: React.FC<{}> = () => {
 
@@ -90,56 +92,89 @@ const ComposerModal: React.FC<{
     });
 
     return (
-        <div className="bg-background-secondary dark:bg-background text-gray-700 dark:text-gray-100 shadow-2xl dark:shadow-xl dark:shadow-gray-900 pointer-events-auto border border-border h-[600px] w-[600px] absolute right-0 bottom-0 mx-3 flex flex-col rounded-t-lg">
-            <div className="text-ellipsis whitespace-nowrap overflow-hidden text-[18px] px-8 pt-5 pb-1 font-medium text-base">
-                {subject.trim() != "" ? subject : "New Message"}
-            </div>
-            <div className="text-[15px] px-8 py-3 font border-border border-b">
-                <div className="flex gap-3">
-                    <span className="text-gray-400">From</span>
-                    <SelectRoot defaultValue="hello@rellitel.ink">
-                        <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
-                            <SelectValue className="" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem value={"hello@rellitel.ink"} dontShowCheck>hello@rellitel.ink</SelectItem>
-                                <SelectItem value={"hello@rellit.email"} dontShowCheck>hello@rellit.email</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </SelectRoot>
-                </div>
-            </div>
-            <div className="text-[15px] px-8 py-3 font border-border border-b">
-                <div className="flex gap-2">
-                    <span className="text-gray-400">To</span>
-                    <EmailSelector
-                        className="pt-[1px]"
-                        options={searchedEmail}
-                        inputOnChange={(s) => setSearchItem(s)}
-                    />
-                </div>
-            </div>
-            <div className="text-[15px] px-8 py-3 font border-border border-b">
-                <input type="text" className="w-full bg-transparent outline-none" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} />
-            </div>
-            <div className="flex-1 overflow-hidden composer-editor">
-                <ScrollArea noShadow>
-                    <div className={`py-3 `}>
-                        <BlockNoteView editor={editor} onChange={onChange} theme={theme as any}
-                            filePanel={false}
-                        >
-                        </BlockNoteView>
+        <AnimatePresence>
+            <motion.div
+                initial={{
+                    opacity: 0
+                }}
+                animate={{
+                    opacity: 1
+                }}
+                exit={{
+                    opacity: 0
+                }}
+                transition={{ ease: "easeInOut", duration: .15 }}
+            >
+                <div className="bg-background-secondary dark:bg-background text-gray-700 dark:text-gray-100 shadow-2xl dark:shadow-xl dark:shadow-gray-900 pointer-events-auto border border-border h-[600px] w-[600px] absolute right-0 bottom-0 mx-3 flex flex-col rounded-t-lg">
+                    <div className="text-[18px] px-8 pt-5 pb-1 font-medium text-base flex gap-2 justify-between">
+                        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+                            {subject.trim() != "" ? subject : "New Message"}
+                        </div>
+                        <div className="flex gap-3 items-center pr-3">
+                            <Tooltip tip="Minimize">
+                                <Minus size={20} className="cursor-pointer" />
+                            </Tooltip>
+                            <Tooltip tip="Full Screen">
+                                <ArrowsOutSimple size={20} className="cursor-pointer" />
+                            </Tooltip>
+                            <Tooltip tip="Close">
+                                <X size={20} className="cursor-pointer" />
+                            </Tooltip>
+                        </div>
                     </div>
-                </ScrollArea>
-            </div>
-            <div className="text-[15px] px-8 py-3 font border-border border-t">
-                <Button variant={"primary"} className="w-fit flex gap-1">
-                    <PaperPlaneTilt size={16} />
-                    Send
-                </Button>
-            </div>
-        </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-b">
+                        <div className="flex gap-3">
+                            <span className="text-gray-400">From</span>
+                            <SelectRoot defaultValue="hello@rellitel.ink">
+                                <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
+                                    <SelectValue className="" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value={"hello@rellitel.ink"} dontShowCheck>hello@rellitel.ink</SelectItem>
+                                        <SelectItem value={"hello@rellit.email"} dontShowCheck>hello@rellit.email</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </SelectRoot>
+                        </div>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-b">
+                        <div className="flex gap-2">
+                            <span className="text-gray-400">To</span>
+                            <EmailSelector
+                                className="pt-[1px]"
+                                options={searchedEmail}
+                                inputOnChange={(s) => setSearchItem(s)}
+                            />
+                        </div>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-b">
+                        <input type="text" className="w-full bg-transparent outline-none" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} />
+                    </div>
+                    <div className="flex-1 overflow-hidden composer-editor">
+                        <ScrollArea noShadow>
+                            <div className={`py-3 `}>
+                                <BlockNoteView editor={editor} onChange={onChange} theme={theme as any}
+                                    filePanel={false}
+                                >
+                                </BlockNoteView>
+                            </div>
+                        </ScrollArea>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-t flex gap-2">
+                        <Button variant={"primary"} className="w-fit flex gap-1">
+                            <PaperPlaneTilt size={16} />
+                            Send
+                        </Button>
+                        <Button variant={"toolbutton"}>
+                            <Tooltip tip="Schedule Email">
+                                <ClockCountdown size={20} />
+                            </Tooltip>
+                        </Button>
+                    </div>
+                </div>
+            </motion.div>
+        </AnimatePresence>
     )
 }
 
