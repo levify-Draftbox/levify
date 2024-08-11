@@ -11,33 +11,43 @@ const Appearance = () => {
     setSelectedImage(index);
   };
 
+  const ThemeOptions = {
+    system: "System",
+    dark: "Dark",
+    light: "Light",
+  };
+
   return (
     <div className="w-full h-full">
       <div>
         <SettingTitle>Theme</SettingTitle>
         <SettingDiv className="flex flex-wrap gap-4">
-          <div
-            className={`w-10 h-10 rounded-full border-[1px] border-gray-400 ${
-              theme === "system" && "ring-2 ring-gray-600 dark:ring-gray-200"
-            }`}
-            style={{
-              background: "linear-gradient(to left, black 50%, white 50%)",
-              rotate: "-45deg",
-            }}
-            onClick={() => setTheme("system")}
-          ></div>
-          <div
-            className={`w-10 h-10 rounded-full bg-black ${
-              theme === "dark" && "ring-2 ring-gray-600 dark:ring-gray-200"
-            }`}
-            onClick={() => setTheme("dark")}
-          ></div>
-          <div
-            className={`w-10 h-10 rounded-full border-[1px] border-gray-400 bg-white ${
-              theme === "light" && "ring-2 ring-gray-600 dark:ring-gray-200"
-            }`}
-            onClick={() => setTheme("light")}
-          ></div>
+          {Object.keys(ThemeOptions).map((themeOption, index) => {
+            const themeName = ThemeOptions[themeOption as keyof typeof ThemeOptions];
+            return (
+              <button
+                key={index}
+                className={`flex items-center space-x-2 p-3 w-40 gap-3 rounded-md transition-all duration-200
+                border-2 ${
+                  theme === themeOption
+                    ? "ring-2 ring-gray-600 dark:ring-gray-200"
+                    : "border-gray-200 dark:border-gray-700 hover:ring-2 hover:ring-gray-400"
+                }`}
+                onClick={() => setTheme(themeOption as keyof typeof ThemeOptions)}
+              >
+                <div
+                  className={`w-10 h-10 rounded-full ${
+                    themeOption === "system"
+                      ? "bg-gradient-to-l from-black to-white rotate-[-45deg]"
+                      : themeOption === "dark"
+                      ? "bg-black"
+                      : "bg-white border border-gray-400"
+                  }`}
+                ></div>
+                <span className="text-sm">{themeName}</span>
+              </button>
+            );
+          })}
         </SettingDiv>
 
         <SettingTitle>Colors</SettingTitle>
@@ -47,7 +57,7 @@ const Appearance = () => {
             return (
               <button
                 key={index}
-                className={`flex items-center space-x-2 p-3 w-52 gap-3 rounded-md transition-all duration-200
+                className={`flex items-center space-x-2 p-3 w-40 gap-3 rounded-md transition-all duration-200
           border-2 ${
             themeColor === color
               ? "ring-2"
