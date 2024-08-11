@@ -1,10 +1,3 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { SettingDiv, SettingTitle } from "./components";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -12,9 +5,12 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import QuillEditor from "@/components/ui/Quill";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "@phosphor-icons/react";
 
 const Composer = () => {
   const [content, setContent] = useState<string>("");
+  const [notiEnable, setNotiEnable] = useState(false);
 
   const handleChange = (value: string) => {
     setContent(value);
@@ -24,15 +20,17 @@ const Composer = () => {
     <div>
       <SettingDiv>
         <SettingTitle>Default Browser Composer</SettingTitle>
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Enable" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Enable">Enable</SelectItem>
-            <SelectItem value="disable">Disable</SelectItem>
-          </SelectContent>
-        </Select>
+        <Button
+          className="w-fit px-4"
+          onClick={() => setNotiEnable(!notiEnable)}
+          variant={!notiEnable ? "primary" : "secondary"}
+        >
+          {!notiEnable ? (
+            <div className="flex gap-1 items-center">Enable</div>
+          ) : (
+            <div className="flex gap-1 items-center">Disable</div>
+          )}
+        </Button>
       </SettingDiv>
 
       <SettingDiv>
@@ -47,15 +45,33 @@ const Composer = () => {
         </div>
       </SettingDiv>
 
-      <SettingDiv className="mb-16">
+      <SettingDiv className="!mb-16">
         <SettingTitle>Email Signature</SettingTitle>
         <div>
           <p className="text-sm">
             Edit and choose Signature that will be automatically added to your
             email message.
           </p>
+
+          <div className="py-3 cursor-pointer ">
+            <div className="flex gap-2 items-center text-core hover:text-core-lite">
+              <Plus size={20} />
+              <h3>Add new signature</h3>
+            </div>
+          </div>
+
           <div className="mt-2">
-            <Input type="text" placeholder="Edit signature name" />
+            <div className="flex gap-3">
+              <Input
+                className="w-full"
+                type="text"
+                placeholder="Edit signature name"
+              />
+              <div className="flex gap-2">
+                <Button variant={"secondary"}>Rename</Button>
+                <Button variant={"secondary"}>Delete</Button>
+              </div>
+            </div>
             <div className="mt-2">
               <QuillEditor
                 value={content}
@@ -66,6 +82,10 @@ const Composer = () => {
           </div>
         </div>
       </SettingDiv>
+          <div className="mt-2 flex  gap-3">
+            <Button className="w-28" variant={"primary"}>Save</Button>
+            <Button className="w-28" variant={"secondary"}>Discard</Button>
+          </div>
 
       <SettingDiv>
         <SettingTitle>Reply</SettingTitle>
