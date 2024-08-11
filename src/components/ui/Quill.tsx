@@ -1,6 +1,7 @@
 import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "./quill-dark-mode.css";
 
 interface QuillEditorProps {
   value: string;
@@ -29,9 +30,9 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ value, onChange, placeholder 
   };
 
   return (
-    <div>
+    <div className="quill-editor dark:text-white">
       <ReactQuill
-        className="h-[10rem]"
+        className="h-[10rem] dark:bg-gray-800"
         theme="snow"
         value={value}
         onChange={onChange}

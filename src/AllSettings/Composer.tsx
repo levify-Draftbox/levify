@@ -1,10 +1,3 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { SettingDiv, SettingTitle } from "./components";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -12,9 +5,11 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import QuillEditor from "@/components/ui/Quill";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const Composer = () => {
   const [content, setContent] = useState<string>("");
+  const [notiEnable, setNotiEnable] = useState(false);
 
   const handleChange = (value: string) => {
     setContent(value);
@@ -24,15 +19,17 @@ const Composer = () => {
     <div>
       <SettingDiv>
         <SettingTitle>Default Browser Composer</SettingTitle>
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Enable" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Enable">Enable</SelectItem>
-            <SelectItem value="disable">Disable</SelectItem>
-          </SelectContent>
-        </Select>
+        <Button
+          className="w-fit px-4"
+          onClick={() => setNotiEnable(!notiEnable)}
+          variant={!notiEnable ? "primary" : "secondary"}
+        >
+          {!notiEnable ? (
+            <div className="flex gap-1 items-center">Enable</div>
+          ) : (
+            <div className="flex gap-1 items-center">Disable</div>
+          )}
+        </Button>
       </SettingDiv>
 
       <SettingDiv>
@@ -47,7 +44,7 @@ const Composer = () => {
         </div>
       </SettingDiv>
 
-      <SettingDiv className="mb-16">
+      <SettingDiv className="!mb-16">
         <SettingTitle>Email Signature</SettingTitle>
         <div>
           <p className="text-sm">
