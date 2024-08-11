@@ -9,6 +9,7 @@ import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
 import Setting from "@/components/Setting";
 import useEscKeyStore from "@/store/escStack";
+import Composer from "@/components/composer";
 
 const Main = () => {
   const [viewSetting, setViewSetting] = useState(false);
@@ -36,9 +37,10 @@ const Main = () => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={87}>
-        <div className="w-full h-full bg-background-secondary">
+        <div className="w-full h-full bg-background-secondary flex flex-col relative">
           <SearchBar onSettingToggle={() => settingToggle()} />
           <Outlet />
+          <Composer />
         </div>
       </ResizablePanel>
       {viewSetting && (

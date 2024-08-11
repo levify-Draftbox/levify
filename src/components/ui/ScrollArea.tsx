@@ -4,10 +4,12 @@ export default function ScrollArea({
     children,
     className,
     border,
+    noShadow
 }: {
     children: React.ReactNode,
     className?: string,
-    border?: boolean
+    border?: boolean,
+    noShadow?: boolean
 }): React.ReactNode {
 
     const scrollSideBarDivRef = useRef<HTMLDivElement>(null);
@@ -35,11 +37,15 @@ export default function ScrollArea({
 
     return (
         <div className={`h-full relative ${border ? `border-dashed  ${!sideBarTop ? "border-t" : ""} ${!sideBarbottom ? "border-b" : ""}` : 0}`}>
-            <div className={`h-10 ${sideBarTop ? "" : "bg-gradient-to-b from-background to-transparent"} absolute top-0 w-full pointer-events-none`}></div>
+            {!noShadow &&
+                <div className={`h-10 ${sideBarTop ? "" : "bg-gradient-to-b from-background to-transparent"} absolute top-0 w-full pointer-events-none`}></div>
+            }
             <div className={`h-full overflow-auto scroll-bar ${className || ""}`} ref={scrollSideBarDivRef}>
                 {children}
             </div>
-            <div className={`h-10 ${sideBarbottom ? "" : "bg-gradient-to-t from-background to-transparent"} absolute bottom-0 w-full pointer-events-none`}></div>
+            {!noShadow &&
+                <div className={`h-10 ${sideBarbottom ? "" : "bg-gradient-to-t from-background to-transparent"} absolute bottom-0 w-full pointer-events-none`}></div>
+            }
         </div>
     )
 }

@@ -25,48 +25,48 @@ function App() {
     <HotkeysProvider initiallyActiveScopes={["settings"]}>
       <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
         <TooltipProvider>
-          <Routes>
+          <div className="transition-colors">
+            <Routes>
 
-            <Route
-              path="/login"
-              element={
-                NotLogin ? <Navigate to="/" replace /> : <Login />
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                NotLogin ? <Navigate to="/" replace /> : <Signup />
-              }
-            />
+              <Route
+                path="/login"
+                element={
+                  NotLogin ? <Navigate to="/" replace /> : <Login />
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  NotLogin ? <Navigate to="/" replace /> : <Signup />
+                }
+              />
 
-            <Route
+              <Route
+                path="/"
+                element={
+                  NotLogin ? <Home /> : <Navigate to="/login" replace />
+                }
+              >
+                <Route index element={<Inbox />} />
+                <Route path="input" element={<Inputs />} />
+                <Route path="/*" element={<Inbox />} />
+              </Route>
 
-              path="/"
-              element={
-                NotLogin ? <Home /> : <Navigate to="/login" replace />
-              }
-            >
-              <Route index element={<Inbox />} />
-              <Route path="input" element={<Inputs />} />
-              {/* <Route path="/*" element={<Inbox />} /> */}
-            </Route>
+              <Route path="/blocknote" element={<Blocknote />} />
+              <Route path="/quill" element={<MyComponent />} />
 
-            <Route path="/blocknote" element={<Blocknote />} />
-            <Route path="/quill" element={<MyComponent />} />
+            </Routes>
 
-            
-          </Routes>
+            {open && (
+              <ResizeableModel
+                onClose={() => toggleModal()}
+                key="interservererror"
+              >
+                Internal server error!
+              </ResizeableModel>
+            )}
 
-          {open && (
-            <ResizeableModel
-              onClose={() => toggleModal()}
-              key="interservererror"
-            >
-              Internal server error!
-            </ResizeableModel>
-          )}
-
+          </div>
         </TooltipProvider>
       </ThemeProvider>
     </HotkeysProvider>

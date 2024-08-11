@@ -6,14 +6,18 @@ import {
   DotsThree,
   SortAscending,
 } from "@phosphor-icons/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
-const ToolBar = () => {
+const ToolBar:React.FC<Partial<HTMLDivElement>> = ({className}) => {
   const [UpDown, setUpDown] = useState(false);
   return (
-    <div className="w-full h-11 border-b flex items-center justify-between px-5 selection:select-none">
+    <div className={cn(
+      "w-full h-11 border-b flex items-center justify-between px-5 selection:select-none",
+      className
+    )}>
       <div className="flex gap-3 items-center">
         <div className=" flex items-center p-1 rounded-lg gap-1 hover:bg-[rgba(0,0,0,0.06)]">
           {/* <input className="h-5 w-5" type="checkbox" /> */}
