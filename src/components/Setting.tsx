@@ -13,6 +13,7 @@ import ScrollArea from "./ui/ScrollArea";
 import { Spinner } from "./Spinner";
 import Kbd from "./ui/kbd";
 import { SignOut } from "@phosphor-icons/react";
+import { Switch } from "./ui/switch";
 
 const AllSettings = lazy(() => import("@/AllSettings"));
 
@@ -85,10 +86,10 @@ const SettingSidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    
+
     window.location.href = "/";
   };
-  
+
 
   return (
     <div className="flex flex-col gap-3 py-2">
@@ -257,29 +258,26 @@ const SettingSidebar = () => {
             <p>Keyboard shortcuts</p><Kbd className="">Alt</Kbd>
           </span>
           <label className="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-core"></div>
+            <Switch id="kbds" />
           </label>
         </div>
         <div className="flex justify-between cursor-pointer">
           <p>Beta Access</p>
           <label className="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-core"></div>
+            <Switch id="betaa" />
           </label>
         </div>
         <div className="flex justify-between cursor-pointer">
           <p>Composer Full Screen</p>
           <label className="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-core"></div>
+            <Switch id="composerfull" />
           </label>
         </div>
       </Card>
 
       <Button variant={"secondary"} onClick={handleLogout} className="">
-        <div className="flex items-center gap-2 "> 
-          <SignOut size={16}/>
+        <div className="flex items-center gap-2 ">
+          <SignOut size={16} />
           <p>Log out</p>
         </div>
       </Button>

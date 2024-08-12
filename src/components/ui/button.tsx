@@ -32,7 +32,7 @@ const button = cva(
         true: "is-active bg-button dark:bg-button-hover dark:active:bg-button-active !font-[500]",
       },
       size: {
-        default: "h-9 rounded-md !py-2",
+        default: "h-9 rounded-md !py-2 h-[38px]",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-xl",
         icon: "h-10 w-10",
@@ -80,7 +80,7 @@ const Button = React.forwardRef<
       disabled={props.loading}
     >
       {props.loading && (
-        <Spinner size={16} className="mr-2"/>
+        <Spinner size={16} className="mr-2 !border-t-white"/>
       )}
       {children}
     </Comp>
