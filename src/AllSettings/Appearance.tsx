@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from 'axios';
 import { SettingDiv, SettingTitle } from "./components";
 import { ThemeColors, useTheme } from "@/components/Theme-provider";
 
@@ -6,6 +7,9 @@ const Appearance = () => {
   const { setTheme, setThemeColor, theme, themeColor } = useTheme();
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleImageClick = (index: number) => {
     setSelectedImage(index);
@@ -17,13 +21,52 @@ const Appearance = () => {
     light: "Light",
   };
 
+  const settings = {
+    theme,
+    color: themeColor,
+    layout: selectedImage ? selectedImage.toString() : null,
+  };
+
+  const updateAppearanceSettings = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem('token');
+      console.log(token);
+      
+      const response = await axios.put(
+        'http://localhost:3030/api/setting/appearance',
+        settings,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log('Settings updated successfully:', response.data);
+    } catch (error: any) {
+      console.error('Error updating settings:', error);
+      setError('Failed to update settings. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log('Settings updated:', settings);
+    updateAppearanceSettings();
+  }, [theme, themeColor, selectedImage]);
+
   return (
     <div className="w-full h-full">
+      {isLoading && <p>Updating settings...</p>}
+      {error && <p className="text-red-500">{error}</p>}
       <div>
         <SettingTitle>Theme</SettingTitle>
         <SettingDiv className="flex flex-wrap gap-4">
           {Object.keys(ThemeOptions).map((themeOption, index) => {
-            const themeName = ThemeOptions[themeOption as keyof typeof ThemeOptions];
+            const themeName =
+              ThemeOptions[themeOption as keyof typeof ThemeOptions];
             return (
               <button
                 key={index}
@@ -33,7 +76,9 @@ const Appearance = () => {
                     ? "ring-2 ring-gray-600 dark:ring-gray-200"
                     : "border-gray-200 dark:border-gray-700 hover:ring-2 hover:ring-gray-400"
                 }`}
-                onClick={() => setTheme(themeOption as keyof typeof ThemeOptions)}
+                onClick={() =>
+                  setTheme(themeOption as keyof typeof ThemeOptions)
+                }
               >
                 <div
                   className={`w-10 h-10 rounded-full ${
@@ -82,7 +127,6 @@ const Appearance = () => {
             );
           })}
         </SettingDiv>
-
 
         <SettingTitle>Layout</SettingTitle>
         <SettingDiv className="flex mt-2 gap-4">
