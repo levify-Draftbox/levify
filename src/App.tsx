@@ -14,6 +14,7 @@ import ResizeableModel from "./components/ui/ResizeableModel";
 import Inputs from "./page/Inputs";
 import Blocknote from "./components/BlockNote";
 import MyComponent from "./components/MyComponent";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
@@ -25,6 +26,7 @@ function App() {
     <HotkeysProvider initiallyActiveScopes={["settings"]}>
       <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
         <TooltipProvider>
+
           <div className="transition-colors">
             <Routes>
 
@@ -67,6 +69,8 @@ function App() {
             )}
 
           </div>
+
+          <Toaster />
         </TooltipProvider>
       </ThemeProvider>
     </HotkeysProvider>
