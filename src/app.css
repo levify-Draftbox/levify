@@ -257,7 +257,21 @@ html {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
+}
+
+.bn-editor {
+  background: transparent !important;
+  padding-inline: 2rem !important;
+}
+
+.bn-button[aria-label="Add block"] {
+  display: none !important;
+}
+
+.bn-button[aria-label="Open block menu"]{
+  margin-right: 4px;
 }

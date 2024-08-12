@@ -18,12 +18,13 @@ import { Progress } from "@/components/ui/progress";
 
 import { Link } from "react-router-dom";
 import ScrollArea from "./ui/ScrollArea";
-import Composer from "./Composer";
+import useComposerStore from "@/store/composer";
 
 const SideBar = () => {
   const { theme } = useTheme();
   const [moreLess, setmoreLess] = useState(false);
-  const [isComposerOpen, setIsComposerOpen] = useState(false);
+
+  const { newComposer } = useComposerStore()
 
   return (
     <div className="flex flex-col justify-between h-full dark:bg-transparent selection:select-none">
@@ -41,15 +42,10 @@ const SideBar = () => {
           </Link>
 
           <div className="mt-3">
-            <Button onClick={() => setIsComposerOpen(!isComposerOpen)} variant={"primary"}>
-              New Mail
+            <Button onClick={() => newComposer()} variant={"primary"}>
+              New Message
             </Button>
           </div>
-
-          <Composer
-        isOpen={isComposerOpen}
-        onClose={() => setIsComposerOpen(false)}
-      />
 
         </div>
       </div>
