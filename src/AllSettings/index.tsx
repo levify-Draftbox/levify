@@ -131,7 +131,6 @@ const AllSettings = () => {
 
   useEffect(() => {
     const sEvent = (e: any) => {
-      console.log(1);
 
       const { scrollTop /* , scrollHeight, clientHeight  */ } = e.target;
       setChildTop(scrollTop === 0);
