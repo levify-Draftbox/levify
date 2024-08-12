@@ -13,7 +13,7 @@ type ComposerStore = {
     setActive: (id: string) => void,
     incIndex: (id: string) => void,
 
-    composers: { [_: string]: ComposerStates | undefined },
+    composers: { [_: string]: Partial<ComposerStates> | undefined },
     activeid: string,
     currentZ: number
 }
@@ -50,10 +50,12 @@ const useComposerStore = create<ComposerStore>()((set, get) => ({
 
     setComposer: (id, s) => {
         const composers = get().composers
-        composers[id] ? composers[id] = {
-            ...composers[id],
-            ...s
-        } : undefined
+        if (composers[id]) {
+            composers[id] = {
+                ...composers[id],
+                ...s
+            }
+        }
         set(s => ({ ...s, composers: composers }))
     },
 
@@ -63,10 +65,12 @@ const useComposerStore = create<ComposerStore>()((set, get) => ({
 
     incIndex: (id: string) => {
         const composers = get().composers
-        composers[id] ? composers[id] = {
-            ...composers[id],
-            z: get().currentZ + 1
-        } : undefined
+        if (composers[id]) {
+            composers[id] = {
+                ...composers[id],
+                z: get().currentZ + 1
+            }
+        }
         set(s => ({ ...s, composers: composers, currentZ: s.currentZ + 1 }))
     },
 
