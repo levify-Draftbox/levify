@@ -7,7 +7,8 @@ import { Button } from "../ui/button"
 import { ArrowsInSimple, ArrowsOutSimple, ClockCountdown, Minus, PaperPlaneTilt, X } from "@phosphor-icons/react"
 import ScrollArea from "../ui/ScrollArea"
 import { useTheme } from "../Theme-provider"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, VariantLabels, AnimationControls, TargetAndTransition } from "framer-motion"
+import { useLocation } from 'react-router-dom';
 
 // block editor
 import "@blocknote/core/fonts/inter.css";
@@ -17,16 +18,28 @@ import { locales } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { Tooltip } from "../ui/tooltip"
 
+type StyleProps = boolean | VariantLabels | AnimationControls | TargetAndTransition
+
 const Composer: React.FC<{}> = () => {
 
     const { composers } = useComposerStore()
 
+    const location = useLocation();
+    useEffect(() => {
+        if (!location.pathname.includes("composer")) {
+
+        }
+    }, [location]);
+
+
     return (
         <div className="absolute h-full w-full pointer-events-none">
             {Object.keys(composers).map((cid, i) => {
-                return (
-                    <ComposerModal key={i} composerId={Number(cid)} />
-                )
+                if (composers[cid]) {
+                    return (
+                        <ComposerModal key={i} composerId={cid} />
+                    )
+                }
             })}
         </div>
     )
@@ -48,8 +61,20 @@ function searchEmails(query: string): EmailOption[] {
 }
 
 const ComposerModal: React.FC<{
-    composerId: number
-}> = ({ }) => {
+    composerId: string
+}> = ({ composerId }) => {
+    const {
+        removeComposer,
+        composers: allComposer,
+        setComposer,
+        activeid: composerActive,
+        setActive,
+        incIndex,
+    } = useComposerStore()
+    const composer = allComposer[composerId]
+
+    const [open, setOpen] = useState(true)
+
     const { theme } = useTheme()
     const [subject, setSubject] = useState("")
 
@@ -91,102 +116,177 @@ const ComposerModal: React.FC<{
         uploadFile: handleUpload,
     });
 
-    const [fullScreen, setFullScreen] = useState(false)
+    const commonStyle: StyleProps = {
+        ...composerActive == composerId ? { filter: "brightness(100%)" } : { filter: "brightness(90%)" },
+    }
+
+    const boxStyle: StyleProps = {
+        opacity: 1,
+        width: 600,
+        margin: "0 15px",
+
+        ...commonStyle,
+    }
+
+    const fullScreenStyle: StyleProps = {
+        width: "100%",
+        height: "100%",
+        margin: "0",
+        opacity: 1,
+        border: "none",
+        right: 0,
+
+        ...commonStyle,
+    }
+
+    const [isDragging, setIsDragging] = useState(false);
+    const [rightPos, setRightPos] = useState(0);
+
+    const handleMouseMove = (e: any) => {
+        if (!isDragging) return;
+        setRightPos(prevRightPos => prevRightPos - e.movementX);
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    useEffect(() => {
+        if (isDragging) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        } else {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isDragging]);
+
 
     return (
         <AnimatePresence>
-            <motion.div
-                initial={{
-                    opacity: 0,
-                    width: 600
-                }}
-                animate={fullScreen ? {
-                    width: "100%",
-                    height: "100%",
-                    margin: "0",
-                    opacity: 1,
-                    border: "none"
-                } : {
-                    opacity: 1,
-                    width: 600,
-                    margin: "0 12px",
-                }}
-                exit={{
-                    opacity: 0
-                }}
-                transition={{ ease: "easeInOut", duration: .15 }}
-                className="bg-background-secondary dark:bg-background text-gray-700 dark:text-gray-100 shadow-2xl dark:shadow-xl dark:shadow-gray-900 pointer-events-auto border border-border h-[600px] w-full absolute right-0 bottom-0 flex flex-col rounded-t-lg"
-            >
-                <div className="text-[18px] px-8 pt-5 pb-1 font-medium text-base flex gap-2 justify-between">
-                    <div className="text-ellipsis whitespace-nowrap overflow-hidden">
-                        {subject.trim() != "" ? subject : "New Message"}
-                    </div>
-                    <div className="flex gap-3 items-center pr-3">
-                        <Tooltip tip="Minimize">
-                            <Minus size={20} className="cursor-pointer" />
-                        </Tooltip>
-                        <Tooltip tip={!fullScreen ? "Full Screen" : "Toggle Full Screen"}>
-                            {!fullScreen ?
-                                <ArrowsOutSimple size={20} className="cursor-pointer" onClick={() => setFullScreen(true)} />
-                                : <ArrowsInSimple size={20} className="cursor-pointer" onClick={() => setFullScreen(false)} />
-                            }
-                        </Tooltip>
-                        <Tooltip tip="Close">
-                            <X size={20} className="cursor-pointer" />
-                        </Tooltip>
-                    </div>
-                </div>
-                <div className="text-[15px] px-8 py-3 font border-border border-b">
-                    <div className="flex gap-3">
-                        <span className="text-gray-400">From</span>
-                        <SelectRoot defaultValue="hello@rellitel.ink">
-                            <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
-                                <SelectValue className="" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectItem value={"hello@rellitel.ink"} dontShowCheck>hello@rellitel.ink</SelectItem>
-                                    <SelectItem value={"hello@rellit.email"} dontShowCheck>hello@rellit.email</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </SelectRoot>
-                    </div>
-                </div>
-                <div className="text-[15px] px-8 py-3 font border-border border-b">
-                    <div className="flex gap-2">
-                        <span className="text-gray-400">To</span>
-                        <EmailSelector
-                            className="pt-[1px]"
-                            options={searchedEmail}
-                            inputOnChange={(s) => setSearchItem(s)}
-                        />
-                    </div>
-                </div>
-                <div className="text-[15px] px-8 py-3 font border-border border-b">
-                    <input type="text" className="w-full bg-transparent outline-none" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} />
-                </div>
-                <div className="flex-1 overflow-hidden composer-editor">
-                    <ScrollArea noShadow>
-                        <div className={`py-3 `}>
-                            <BlockNoteView editor={editor} onChange={onChange} theme={theme as any}
-                                filePanel={false}
+            {open &&
+                <motion.div
+
+                    style={{
+                        marginInline: 15,
+                        right: rightPos,
+                        bottom: 0,
+                        width: 600,
+                        zIndex: composer?.z as number,
+                    }}
+
+                    initial={{ opacity: 0, }}
+                    exit={{ opacity: 0 }}
+                    animate={composer?.fullScreen ? fullScreenStyle : boxStyle}
+
+                    transition={{ ease: "easeInOut", duration: .15 }}
+                    className="bg-background-secondary dark:bg-background text-gray-700 dark:text-gray-100 shadow-2xl dark:shadow-xl dark:shadow-gray-900 pointer-events-auto border border-border h-[600px] w-full absolute flex flex-col rounded-t-lg"
+
+                    onMouseDown={() => {
+                        setActive(composerId)
+                        incIndex(composerId)
+                    }}
+                    onFocus={() => {
+                        setActive(composerId)
+                        incIndex(composerId)
+                    }}
+                    onClick={() => {
+                        setActive(composerId)
+                        incIndex(composerId)
+                    }}
+                >
+                    <div className="text-[18px] px-8 pt-5 pb-1 font-medium text-base flex gap-2 justify-between select-none"
+                        onMouseDown={() => setIsDragging(true)}
+                    >
+                        <div className="text-ellipsis flex whitespace-nowrap overflow-hidden">
+                            <motion.div
+                                initial={{ display: "none", opacity: 0 }}
+                                animate={composer?.fullScreen ? { display: "block", width: "auto", opacity: 1 } : { display: "block", width: 0, opacity: 0 }}
+                                transition={{ ease: "easeIn", duration: .4 }}
                             >
-                            </BlockNoteView>
+                                Composer -
+                            </motion.div>
+                            &nbsp;
+                            <span className="flex-1 text-ellipsis overflow-hidden whitespace-nowrap">
+                                {subject.trim() != "" ? subject : "New Message"} {composerId}
+                            </span>
                         </div>
-                    </ScrollArea>
-                </div>
-                <div className="text-[15px] px-8 py-3 font border-border border-t flex gap-2">
-                    <Button variant={"primary"} className="w-fit flex gap-1">
-                        <PaperPlaneTilt size={16} />
-                        Send
-                    </Button>
-                    <Button variant={"toolbutton"}>
-                        <Tooltip tip="Schedule Email">
-                            <ClockCountdown size={20} />
-                        </Tooltip>
-                    </Button>
-                </div>
-            </motion.div>
+                        <div className="flex gap-3 items-center pr-3">
+                            <Tooltip tip="Minimize">
+                                <Minus size={20} className="cursor-pointer" />
+                            </Tooltip>
+                            <Tooltip tip={!composer?.fullScreen ? "Full Screen" : "Toggle Full Screen"}>
+                                {!composer?.fullScreen ?
+                                    <ArrowsOutSimple size={20} className="cursor-pointer" onClick={() => setComposer(composerId, { fullScreen: true })} />
+                                    : <ArrowsInSimple size={20} className="cursor-pointer" onClick={() => setComposer(composerId, { fullScreen: false })} />
+                                }
+                            </Tooltip>
+                            <Tooltip tip="Close">
+                                <X size={20} className="cursor-pointer" onClick={() => {
+                                    setOpen(false)
+                                    setTimeout(() => {
+                                        removeComposer(composerId)
+                                    }, 150)
+                                }} />
+                            </Tooltip>
+                        </div>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-b">
+                        <div className="flex gap-3">
+                            <span className="text-gray-400">From</span>
+                            <SelectRoot defaultValue="hello@rellitel.ink">
+                                <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
+                                    <SelectValue className="" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value={"hello@rellitel.ink"} dontShowCheck>hello@rellitel.ink</SelectItem>
+                                        <SelectItem value={"hello@rellit.email"} dontShowCheck>hello@rellit.email</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </SelectRoot>
+                        </div>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-b">
+                        <div className="flex gap-2">
+                            <span className="text-gray-400">To</span>
+                            <EmailSelector
+                                className="pt-[1px]"
+                                options={searchedEmail}
+                                inputOnChange={(s) => setSearchItem(s)}
+                            />
+                        </div>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-b">
+                        <input type="text" className="w-full bg-transparent outline-none" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} />
+                    </div>
+                    <div className="flex-1 overflow-hidden composer-editor">
+                        <ScrollArea noShadow>
+                            <div className={`py-3 `}>
+                                <BlockNoteView editor={editor} onChange={onChange} theme={theme as any}
+                                    filePanel={false}
+                                >
+                                </BlockNoteView>
+                            </div>
+                        </ScrollArea>
+                    </div>
+                    <div className="text-[15px] px-8 py-3 font border-border border-t flex gap-2">
+                        <Button variant={"primary"} className="w-fit flex gap-1">
+                            <PaperPlaneTilt size={16} />
+                            Send
+                        </Button>
+                        <Button variant={"toolbutton"}>
+                            <Tooltip tip="Schedule Email">
+                                <ClockCountdown size={20} />
+                            </Tooltip>
+                        </Button>
+                    </div>
+                </motion.div>
+            }
         </AnimatePresence>
     )
 }

@@ -3,7 +3,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    window.location.hostname == "localhost"
+    window.location.hostname !== "localhost"
       ? "http://localhost:3030/api"
       : "https://api.dev.rellitel.ink/api", // Your API base URL
   timeout: 10000, // Request timeout in milliseconds
@@ -33,15 +33,19 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (
-      (error.response && error.response.status === 401) ||
-      (error.response && error.response.status === 403)
-    ) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    } else if (error.response && error.response.status === 500) {
-      const toggleModal = useInterServerModal.getState().toggleModal
-      toggleModal()
+    if (error.response) {
+      if (
+        (error.response.status === 401) ||
+        (error.response.status === 403)
+      ) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      } else if (error.response.status === 500) {
+        const toggleModal = useInterServerModal.getState().toggleModal
+        toggleModal()
+      }
+    } else {
+      alert("Server errro")
     }
     return Promise.reject(error);
   }

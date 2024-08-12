@@ -33,6 +33,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div
           className={cn(
+            "h-[38px]",
             label ? "mt-1" : "",
             "bg-input overflow-hidden rounded-lg flex group border focus-within:!border-input-border !border-transparent",
             className
