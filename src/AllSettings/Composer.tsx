@@ -225,12 +225,12 @@ const Composer = () => {
       </SettingDiv>
 
       <div className="mt-2 flex gap-3">
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button className="w-28" variant={"primary"} onClick={handleSave}>
+        <motion.div>
+          <Button className="w-28 hover:bg-core-lite" variant={"primary"} onClick={handleSave}>
             Save
           </Button>
         </motion.div>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <motion.div>
           <Button className="w-28" variant={"secondary"}>
             Discard
           </Button>
