@@ -7,8 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useCallback } from "react";
-import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react"; 
+import { useState, useCallback, useEffect } from "react";
+import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react";
+import { useSettingsStore } from "@/store/SettingStore";
+import { Spinner } from "@/components/Spinner";
 
 const sounds = [
   { name: "Bell", src: "/sounds/bell.wav" },
@@ -17,8 +19,19 @@ const sounds = [
 ];
 
 const Notification = () => {
+  const { allSetting, updateSetting } = useSettingsStore();
+
   const [notiEnable, setNotiEnable] = useState(false);
-  const [selectedSound, setSelectedSound] = useState<string | null>(null); 
+  const [selectedSound, setSelectedSound] = useState<string | null>(null);
+  const [isSoundLoading, setIsSoundLoading] = useState(false);
+  const [isNotiLoading, setIsNotiLoading] = useState(false);
+
+  useEffect(() => {
+    if (allSetting.notification) {
+      setNotiEnable(allSetting.notification.desktopNotificationSound || false);
+      setSelectedSound(allSetting.notification.notificationSound || null);
+    }
+  }, [allSetting.notification]);
 
   const playSound = useCallback((soundSrc: string | null) => {
     if (!soundSrc) {
@@ -31,19 +44,44 @@ const Notification = () => {
     });
   }, []);
 
+  const updateAppearance = async (obj: any, loadingSetter: (loading: boolean) => void) => {
+    loadingSetter(true);
+    try {
+      await updateSetting("notification", obj);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+    } finally {
+      loadingSetter(false);
+    }
+  };
+
+  const handleSoundChange = async (value: string) => {
+    const sound = sounds.find((s) => s.name === value);
+    if (sound) {
+      setSelectedSound(sound.src);
+      playSound(sound.src);
+      await updateAppearance({ notificationSound: sound.src }, setIsSoundLoading);
+    }
+  };
+
+  const handleNotificationToggle = async () => {
+    const newNotiEnable = !notiEnable;
+    setNotiEnable(newNotiEnable);
+    await updateAppearance({ desktopNotificationSound: newNotiEnable }, setIsNotiLoading);
+  };
+
   return (
     <div className="w-full h-full">
       <SettingDiv>
         <SettingTitle>Notification Sound</SettingTitle>
-        <div className="flex">
+        <div className="flex items-center">
           <Select
-            onValueChange={(value) => {
-              const sound = sounds.find((s) => s.name === value);
-              if (sound) {
-                setSelectedSound(sound.src);
-                playSound(sound.src); 
-              }
-            }}
+            onValueChange={handleSoundChange}
+            value={
+              selectedSound
+                ? sounds.find((s) => s.src === selectedSound)?.name
+                : undefined
+            }
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Sound" />
@@ -56,12 +94,15 @@ const Notification = () => {
               ))}
             </SelectContent>
           </Select>
+          
+          {isSoundLoading && <span className="ml-2"><Spinner /></span>}
+          
           <button
             type="button"
             className="ml-2 p-2 text-gray-500 hover:text-gray-700"
             onClick={() => playSound(selectedSound)}
             aria-label="Play selected sound"
-            disabled={!selectedSound} 
+            disabled={!selectedSound || isSoundLoading}
           >
             <SpeakerHigh size={24} />
           </button>
@@ -70,23 +111,27 @@ const Notification = () => {
 
       <SettingDiv>
         <SettingTitle>Desktop Notifications Sound</SettingTitle>
-        <Button
-          className="w-fit px-4"
-          onClick={() => setNotiEnable(!notiEnable)}
-          variant={!notiEnable ? "primary" : "secondary"}
-        >
-          {!notiEnable ? (
-            <div className="flex gap-1 items-center">
-              <BellRinging size={16} />
-              Enable
-            </div>
-          ) : (
-            <div className="flex gap-1 items-center">
-              <BellSlash size={16} />
-              Disable
-            </div>
-          )}
-        </Button>
+        <div className="flex items-center">
+          <Button
+            className="w-fit px-4"
+            onClick={handleNotificationToggle}
+            variant={notiEnable ? "primary" : "secondary"}
+            disabled={isNotiLoading}
+          >
+            {notiEnable ? (
+              <div className="flex gap-1 items-center">
+                <BellRinging size={16} />
+                Enabled
+              </div>
+            ) : (
+              <div className="flex gap-1 items-center">
+                <BellSlash size={16} />
+                Disabled
+              </div>
+            )}
+          </Button>
+          {isNotiLoading && <span className="ml-2"><Spinner /></span>}
+        </div>
       </SettingDiv>
     </div>
   );
