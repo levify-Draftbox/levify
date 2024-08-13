@@ -1,6 +1,5 @@
 import React, { useState, useEffect, } from "react";
 import { Link } from "react-router-dom";
-import { useTheme } from "@/components/Theme-provider";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +26,7 @@ interface VerifyResponse {
 }
 
 const Signup = () => {
-  const { theme } = useTheme();
+  let theme = "dark"
   const [isVerifying, setIsVerifying] = useState(false);
   const [token, setToken] = useState<string>("");
   const [formData, setFormData] = useState({

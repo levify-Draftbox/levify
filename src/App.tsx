@@ -2,7 +2,6 @@ import "./app.css";
 
 import Home from "./Layout/Main";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ThemeProvider } from "./components/Theme-provider";
 import Login from "./Auth/Login";
 import Inbox from "./page/Inbox";
 import { TooltipProvider } from "./components/ui/tooltip";
@@ -16,17 +15,65 @@ import Blocknote from "./components/BlockNote";
 import MyComponent from "./components/MyComponent";
 import { Toaster } from "./components/ui/toaster";
 import useComposerStore from "./store/composer";
+import { useSettingsStore } from "./store/SettingStore";
+import { useEffect } from "react";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
   const NotLogin = !!localStorage.getItem("token");
   const {allowComposer} = useComposerStore()
+  const {allSetting} = useSettingsStore()
+
 
   ShortcutLoad();
 
+  useEffect(() => {
+    const root = window.document.body;
+
+    root.classList.remove("light", "dark");
+
+    if (!allSetting?.appearance?.theme || (allSetting?.appearance?.theme === "system")) {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+
+      root.classList.add(systemTheme);
+      return;
+    }
+
+    root.classList.add(allSetting?.appearance?.theme);
+  }, [allSetting?.appearance?.theme]);
+
+  useEffect(() => {
+    const root = window.document.body;
+    root.classList.remove(
+      "purple",
+      "red",
+      "blue",
+      "yellow",
+      "green",
+      "pink",
+      "coral",
+      "teal",
+      "rust",
+      "cerulean",
+      "fuchsia",
+      "Indigo",
+      "Emerald",
+      "Rose",
+      "Sky",
+      "Amber",
+      "Violet",
+      "Fuchsia",
+      "Lime",
+      "Cyan"
+    );
+    root.classList.add(allSetting?.appearance?.color || "purple");
+  }, [allSetting?.appearance?.color]);
+
   return (
     <HotkeysProvider initiallyActiveScopes={["settings"]}>
-      <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
         <TooltipProvider>
 
           <div className="transition-colors">
@@ -77,7 +124,6 @@ function App() {
 
           <Toaster />
         </TooltipProvider>
-      </ThemeProvider>
     </HotkeysProvider>
   );
 }

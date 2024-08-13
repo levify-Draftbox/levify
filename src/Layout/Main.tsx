@@ -11,12 +11,14 @@ import Setting from "@/components/Setting";
 import useEscKeyStore from "@/store/escStack";
 import Composer from "@/components/composer";
 import useComposerStore from "@/store/composer";
+import { useSettingsStore } from "@/store/SettingStore";
 
 const Main = () => {
   const [viewSetting, setViewSetting] = useState(false);
   const { pushEsc, popEsc } = useEscKeyStore()
   const mainLayout = useRef<HTMLDivElement>(null)
-  const { setParantSize, setAllowComposer} = useComposerStore()
+  const { setParantSize, setAllowComposer } = useComposerStore()
+  const { fetchAllSettings } = useSettingsStore()
 
   const settingToggle = () => {
     if (viewSetting) {
@@ -30,7 +32,8 @@ const Main = () => {
 
   useEffect(() => {
     setAllowComposer()
-    
+    fetchAllSettings()
+
     window.addEventListener("resize", setLayoutSize)
     window.addEventListener("load", setLayoutSize)
     return () => {

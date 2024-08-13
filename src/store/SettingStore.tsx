@@ -2,10 +2,8 @@ import create from "zustand";
 import api from "@/lib/api";
 
 interface SettingsState {
-  appearance: Record<string, unknown>;
-  notification: Record<string, unknown>;
-  privacy: Record<string, unknown>;
-  compose: Record<string, unknown>;
+  allSetting: { [_: string]: any }
+
   fetchAllSettings: () => Promise<void>;
   updateSetting: (
     type: string,
@@ -13,35 +11,26 @@ interface SettingsState {
   ) => Promise<void>;
 }
 
-let updateInProgress = false; 
+let updateInProgress = false;
 
 export const useSettingsStore = create<SettingsState>((set) => ({
-  appearance: {},
-  notification: {},
-  privacy: {},
-  compose: {},
+  allSetting: {},
   fetchAllSettings: async () => {
     try {
+      
       const response = await api.get("/setting/all");
 
-      console.log(response);
-      
-      if (response.data.success) {
-        set({
-          appearance: response.data.settings.appearance || {},
-          notification: response.data.settings.notification || {},
-          privacy: response.data.settings.privacy || {},
-          compose: response.data.settings.compose || {},
-        });
-      } else {
-        console.error("Failed to fetch settings:", response.data.message);
-      }
+
+        set(s => ({
+          ...s,
+          allSetting: response.data.setting
+        }));
+
     } catch (error) {
       console.error("Failed to fetch settings:", error);
     }
   },
-  updateSetting: async (type, newSettings) => {
-    // Prevent concurrent updates
+  updateSetting: async (type: string, newSettings) => {
     if (updateInProgress) return;
 
     updateInProgress = true;
@@ -57,7 +46,13 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       if (response.data.success) {
         set((state) => ({
           ...state,
-          [type]: { ...state[type], ...newSettings },
+          allSetting: {
+            ...state.allSetting,
+            [type]: {
+              ...state.allSetting[type],
+              ...newSettings
+            }
+          }
         }));
       } else {
         console.error(

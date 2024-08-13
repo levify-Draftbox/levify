@@ -1,4 +1,3 @@
-import { useTheme } from "./Theme-provider";
 import { Button } from "./ui/button";
 import {
   Archive,
@@ -19,9 +18,10 @@ import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import ScrollArea from "./ui/ScrollArea";
 import useComposerStore from "@/store/composer";
+import { useSettingsStore } from "@/store/SettingStore";
 
 const SideBar = () => {
-  const { theme } = useTheme();
+  const { allSetting } = useSettingsStore();
   const [moreLess, setmoreLess] = useState(false);
 
   const { newComposer } = useComposerStore()
@@ -32,12 +32,12 @@ const SideBar = () => {
         <div className="w-full flex flex-col mt-1">
           <Link to="/inbox" className="cursor-pointer my-1 mx-2">
             <img className="w-full" alt="DraftBox Mail" src={
-              theme === "system" ?
+              allSetting?.appearance?.theme === "system" ?
                 !window.matchMedia("(prefers-color-scheme: dark)")
                   .matches
                   ? "  /logo-light.svg" : "/logo-dark.svg"
                 :
-                theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
+                allSetting?.appearance?.theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
             } />
           </Link>
 

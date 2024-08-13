@@ -6,7 +6,6 @@ import { SelectGroup, SelectItem, SelectRoot, SelectContent, SelectTrigger, Sele
 import { Button } from "../ui/button"
 import { ArrowsInSimple, ArrowsOutSimple, ClockCountdown, Minus, PaperPlaneTilt, X } from "@phosphor-icons/react"
 import ScrollArea from "../ui/ScrollArea"
-import { useTheme } from "../Theme-provider"
 import { motion, AnimatePresence, VariantLabels, AnimationControls, TargetAndTransition } from "framer-motion"
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -18,6 +17,7 @@ import { locales } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { Tooltip } from "../ui/tooltip"
 import { cn } from "@/lib/utils"
+import { useSettingsStore } from "@/store/SettingStore"
 
 type StyleProps = boolean | VariantLabels | AnimationControls | TargetAndTransition
 
@@ -69,6 +69,7 @@ const ComposerModal: React.FC<{
 
     const location = useLocation();
     const router = useNavigate()
+    
     useEffect(() => {
         if (!location.pathname.includes("composer"))
             setComposer(composerId, { fullScreen: false })
@@ -78,7 +79,7 @@ const ComposerModal: React.FC<{
 
     const [open, setOpen] = useState(true)
 
-    const { theme } = useTheme()
+    const { allSetting } = useSettingsStore()
     const [subject, setSubject] = useState("")
 
     const [searchItem, setSearchItem] = useState("")
@@ -298,7 +299,7 @@ const ComposerModal: React.FC<{
                     <div className="flex-1 overflow-hidden composer-editor">
                         <ScrollArea noShadow>
                             <div className={`py-3 `}>
-                                <BlockNoteView editor={editor} onChange={onChange} theme={theme as any}
+                                <BlockNoteView editor={editor} onChange={onChange} theme={allSetting?.appearance?.theme as any}
                                     filePanel={false}
                                 >
                                 </BlockNoteView>

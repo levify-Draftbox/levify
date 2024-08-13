@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTheme } from "@/components/Theme-provider";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
@@ -14,7 +13,7 @@ interface LoginResponse {
 }
 
 const Login = () => {
-  const { theme } = useTheme();
+  let theme = "dark"
   const [formData, setFormData] = useState<{
     username: string;
     password: string;

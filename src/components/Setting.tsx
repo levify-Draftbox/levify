@@ -8,7 +8,8 @@ import {
   ResizableHandle,
   ResizablePanel,
 } from "./ui/resizable";
-import { ThemeColors, useTheme } from "./Theme-provider";
+import { ThemeColors } from
+ "./Theme";
 import ScrollArea from "./ui/ScrollArea";
 import { Spinner } from "./Spinner";
 import Kbd from "./ui/kbd";
@@ -60,8 +61,6 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
 
 const SettingSidebar = () => {
 
-  const { setTheme, setThemeColor, theme, themeColor } = useTheme();
-
   const [toggleLayout, setToggleLayout] = useState(false);
   const [toggleDensity, setToggleDensity] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,6 +89,11 @@ const SettingSidebar = () => {
     window.location.href = "/";
   };
 
+
+  let theme = ""
+  let themeColor = ""
+  const setTheme = (_: string) => { }
+  const setColorTheme = (_: string) => { }
 
   return (
     <div className="flex flex-col gap-3 py-2">
@@ -244,7 +248,7 @@ const SettingSidebar = () => {
                   style={{
                     background: ThemeColors[color as keyof typeof ThemeColors]
                   }}
-                  onClick={() => setThemeColor(color as keyof typeof ThemeColors)}
+                  onClick={() => setColorTheme(color as keyof typeof ThemeColors)}
                 ></div>
               ))}
             </div>
