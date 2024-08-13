@@ -6,14 +6,17 @@ import {
 import SideBar from "../components/SideBar";
 import { Outlet } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Setting from "@/components/Setting";
 import useEscKeyStore from "@/store/escStack";
 import Composer from "@/components/composer";
+import useComposerStore from "@/store/composer";
 
 const Main = () => {
   const [viewSetting, setViewSetting] = useState(false);
   const { pushEsc, popEsc } = useEscKeyStore()
+  const mainLayout = useRef<HTMLDivElement>(null)
+  const { setParantSize, setAllowComposer} = useComposerStore()
 
   const settingToggle = () => {
     if (viewSetting) {
@@ -24,6 +27,18 @@ const Main = () => {
       pushEsc("setting-bar", () => setViewSetting(false))
     }
   }
+
+  useEffect(() => {
+    setAllowComposer()
+    
+    window.addEventListener("resize", setLayoutSize)
+    window.addEventListener("load", setLayoutSize)
+    return () => {
+      window.removeEventListener("resize", setLayoutSize)
+      window.removeEventListener("load", setLayoutSize)
+    }
+  }, [])
+  const setLayoutSize = () => setParantSize(mainLayout.current?.clientWidth || 800)
 
   return (
     <ResizablePanelGroup
@@ -36,13 +51,18 @@ const Main = () => {
         </div>
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel defaultSize={87}>
-        <div className="w-full h-full bg-background-secondary flex flex-col relative">
+
+      <ResizablePanel defaultSize={87} onResize={setLayoutSize}>
+        <div className="w-full h-full bg-background-secondary flex flex-col relative"
+          ref={mainLayout}
+        >
           <SearchBar onSettingToggle={() => settingToggle()} />
           <Outlet />
           <Composer />
         </div>
+
       </ResizablePanel>
+
       {viewSetting && (
         <Setting onSettingToggle={() => settingToggle()} />
       )}

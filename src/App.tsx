@@ -15,10 +15,12 @@ import Inputs from "./page/Inputs";
 import Blocknote from "./components/BlockNote";
 import MyComponent from "./components/MyComponent";
 import { Toaster } from "./components/ui/toaster";
+import useComposerStore from "./store/composer";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
   const NotLogin = !!localStorage.getItem("token");
+  const {allowComposer} = useComposerStore()
 
   ShortcutLoad();
 
@@ -51,6 +53,9 @@ function App() {
               >
                 <Route index element={<Inbox />} />
                 <Route path="input" element={<Inputs />} />
+                  <Route path="composer" element={
+                    allowComposer ? <></> : <Navigate to="/" replace />
+                  } />
                 <Route path="/*" element={<Inbox />} />
               </Route>
 

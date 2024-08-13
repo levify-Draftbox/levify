@@ -4,21 +4,32 @@ type ComposerStates = {
     x: Number
     z: Number
     fullScreen: boolean
+    minimize: boolean
 }
 
 type ComposerStore = {
+    composers: { [_: string]: Partial<ComposerStates> | undefined },
+    activeid: string,
+    currentZ: number,
+    parentSize: number,
+    allowComposer: boolean,
+
     newComposer: () => void
     removeComposer: (id: string) => void
     setComposer: (id: string, s: Partial<ComposerStates>) => void,
     setActive: (id: string) => void,
     incIndex: (id: string) => void,
-
-    composers: { [_: string]: Partial<ComposerStates> | undefined },
-    activeid: string,
-    currentZ: number
+    setParantSize: (size: number) => void,
+    setAllowComposer: () => void
 }
 
 const useComposerStore = create<ComposerStore>()((set, get) => ({
+    composers: {},
+    activeid: "",
+    currentZ: 499,
+    parentSize: 800,
+    allowComposer: false,
+
     newComposer: async () => {
         const composers = get().composers
         let total = 0
@@ -63,6 +74,7 @@ const useComposerStore = create<ComposerStore>()((set, get) => ({
         set(s => ({ ...s, activeid: id }))
     },
 
+
     incIndex: (id: string) => {
         const composers = get().composers
         if (composers[id]) {
@@ -79,9 +91,20 @@ const useComposerStore = create<ComposerStore>()((set, get) => ({
         composers[id] = undefined
         set(s => ({ ...s, composers: composers }))
     },
-    composers: {},
-    activeid: "",
-    currentZ: 499
+
+
+    setParantSize: (size: number) => {
+        set(s => ({
+            ...s,
+            parentSize: size
+        }))
+    },
+
+    setAllowComposer: () => {
+        set(s => ({
+            ...s, allowComposer: true
+        }))
+    }
 }))
 
 export default useComposerStore

@@ -8,7 +8,7 @@ import { ArrowsInSimple, ArrowsOutSimple, ClockCountdown, Minus, PaperPlaneTilt,
 import ScrollArea from "../ui/ScrollArea"
 import { useTheme } from "../Theme-provider"
 import { motion, AnimatePresence, VariantLabels, AnimationControls, TargetAndTransition } from "framer-motion"
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // block editor
 import "@blocknote/core/fonts/inter.css";
@@ -17,20 +17,13 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { locales } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { Tooltip } from "../ui/tooltip"
+import { cn } from "@/lib/utils"
 
 type StyleProps = boolean | VariantLabels | AnimationControls | TargetAndTransition
 
 const Composer: React.FC<{}> = () => {
 
     const { composers } = useComposerStore()
-
-    const location = useLocation();
-    useEffect(() => {
-        if (!location.pathname.includes("composer")) {
-
-        }
-    }, [location]);
-
 
     return (
         <div className="absolute h-full w-full pointer-events-none">
@@ -70,8 +63,18 @@ const ComposerModal: React.FC<{
         activeid: composerActive,
         setActive,
         incIndex,
+        parentSize,
     } = useComposerStore()
     const composer = allComposer[composerId]
+
+    const location = useLocation();
+    const router = useNavigate()
+    useEffect(() => {
+        if (!location.pathname.includes("composer"))
+            setComposer(composerId, { fullScreen: false })
+        else if (composerActive == composerId)
+            setComposer(composerId, { fullScreen: true })
+    }, [location]);
 
     const [open, setOpen] = useState(true)
 
@@ -84,7 +87,6 @@ const ComposerModal: React.FC<{
     useEffect(() => {
         setSearchedEmail(searchEmails(searchItem));
     }, [searchItem])
-
 
     // block
     const [_, setHTML] = useState<string>("");
@@ -120,31 +122,25 @@ const ComposerModal: React.FC<{
         ...composerActive == composerId ? { filter: "brightness(100%)" } : { filter: "brightness(90%)" },
     }
 
-    const boxStyle: StyleProps = {
-        opacity: 1,
-        width: 600,
-        margin: "0 15px",
-
-        ...commonStyle,
-    }
-
-    const fullScreenStyle: StyleProps = {
-        width: "100%",
-        height: "100%",
-        margin: "0",
-        opacity: 1,
-        border: "none",
-        right: 0,
-
-        ...commonStyle,
-    }
-
     const [isDragging, setIsDragging] = useState(false);
     const [rightPos, setRightPos] = useState(0);
 
+    const [maxRight, setMaxRight] = useState(parentSize - 600 - 12 * 2)
+    useEffect(() => setMaxRight(parentSize - 600 - 12 * 2), [parentSize])
+    useEffect(() => setRightPos(rightPos >= maxRight ? maxRight : rightPos), [maxRight])
+
     const handleMouseMove = (e: any) => {
         if (!isDragging) return;
-        setRightPos(prevRightPos => prevRightPos - e.movementX);
+        setRightPos(prevRightPos => {
+            return prevRightPos - e.movementX <= 0 ? 0 : (
+                prevRightPos - e.movementX >= maxRight ? maxRight : prevRightPos - e.movementX
+            )
+        });
+        setComposer(composerId, {
+            x: rightPos - e.movementX <= 0 ? 0 : (
+                rightPos - e.movementX >= maxRight ? maxRight : rightPos - e.movementX
+            )
+        })
     };
 
     const handleMouseUp = () => {
@@ -166,24 +162,45 @@ const ComposerModal: React.FC<{
     }, [isDragging]);
 
 
+    const boxStyle: StyleProps = {
+        opacity: 1,
+        width: 600,
+        margin: "0 12px",
+        bottom: composer?.fullScreen ? 0 : (composer?.minimize ? -600 + 60 : 0),
+
+        ...commonStyle,
+    }
+
+    const fullScreenStyle: StyleProps = {
+        width: "100%",
+        height: "100%",
+        margin: "0",
+        opacity: 1,
+        border: "none",
+        right: 0,
+        bottom: composer?.fullScreen ? 0 : (composer?.minimize ? -600 + 48 : 0),
+
+        ...commonStyle,
+    }
+
     return (
         <AnimatePresence>
             {open &&
                 <motion.div
 
                     style={{
-                        marginInline: 15,
+                        marginInline: 12,
                         right: rightPos,
                         bottom: 0,
                         width: 600,
-                        zIndex: composer?.z as number,
+                        zIndex: composer?.fullScreen ? 1000 : composer?.z as number,
                     }}
 
                     initial={{ opacity: 0, }}
                     exit={{ opacity: 0 }}
                     animate={composer?.fullScreen ? fullScreenStyle : boxStyle}
 
-                    transition={{ ease: "easeInOut", duration: .15 }}
+                    transition={{ ease: "easeInOut", duration: .2 }}
                     className="bg-background-secondary dark:bg-background text-gray-700 dark:text-gray-100 shadow-2xl dark:shadow-xl dark:shadow-gray-900 pointer-events-auto border border-border h-[600px] w-full absolute flex flex-col rounded-t-lg"
 
                     onMouseDown={() => {
@@ -199,14 +216,17 @@ const ComposerModal: React.FC<{
                         incIndex(composerId)
                     }}
                 >
-                    <div className="text-[18px] px-8 pt-5 pb-1 font-medium text-base flex gap-2 justify-between select-none"
+                    <div className={cn(
+                        { [!isDragging ? "cursor-move" : "cursor-grabbing"]: !composer?.fullScreen },
+                        "text-[18px] px-8 pt-5 pb-1 font-medium text-base flex gap-2 justify-between select-none"
+                    )}
                         onMouseDown={() => setIsDragging(true)}
                     >
                         <div className="text-ellipsis flex whitespace-nowrap overflow-hidden">
                             <motion.div
                                 initial={{ display: "none", opacity: 0 }}
                                 animate={composer?.fullScreen ? { display: "block", width: "auto", opacity: 1 } : { display: "block", width: 0, opacity: 0 }}
-                                transition={{ ease: "easeIn", duration: .4 }}
+                                transition={{ ease: "easeInOut", duration: .4 }}
                             >
                                 Composer -
                             </motion.div>
@@ -217,17 +237,28 @@ const ComposerModal: React.FC<{
                         </div>
                         <div className="flex gap-3 items-center pr-3">
                             <Tooltip tip="Minimize">
-                                <Minus size={20} className="cursor-pointer" />
+                                <Minus size={20} className="cursor-pointer" onClick={() => {
+                                    setComposer(composerId, { minimize: composer?.fullScreen ? true : !composer?.minimize, fullScreen: false })
+                                    if (location.pathname.includes("composer")) router(-1)
+                                }} />
                             </Tooltip>
                             <Tooltip tip={!composer?.fullScreen ? "Full Screen" : "Toggle Full Screen"}>
                                 {!composer?.fullScreen ?
-                                    <ArrowsOutSimple size={20} className="cursor-pointer" onClick={() => setComposer(composerId, { fullScreen: true })} />
-                                    : <ArrowsInSimple size={20} className="cursor-pointer" onClick={() => setComposer(composerId, { fullScreen: false })} />
+                                    <ArrowsOutSimple size={20} className="cursor-pointer" onClick={() => {
+                                        setComposer(composerId, { fullScreen: true })
+                                        router("/composer")
+                                    }} />
+                                    : <ArrowsInSimple size={20} className="cursor-pointer" onClick={() => {
+                                        setComposer(composerId, { fullScreen: false })
+                                        if (location.pathname.includes("composer")) router(-1)
+                                    }} />
                                 }
                             </Tooltip>
                             <Tooltip tip="Close">
                                 <X size={20} className="cursor-pointer" onClick={() => {
                                     setOpen(false)
+                                    if (location.pathname.includes("composer")) router(-1)
+
                                     setTimeout(() => {
                                         removeComposer(composerId)
                                     }, 150)
