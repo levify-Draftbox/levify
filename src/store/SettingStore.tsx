@@ -33,6 +33,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   updateSetting: async (type: string, newSettings) => {
     if (updateInProgress) return;
 
+    console.log(type);
+    
+
     updateInProgress = true;
     try {
       const token = localStorage.getItem("token");
