@@ -13,7 +13,7 @@ import ResizeableModel from "./components/ui/ResizeableModel";
 import Inputs from "./page/Inputs";
 import Blocknote from "./components/BlockNote";
 import MyComponent from "./components/MyComponent";
-import { Toaster } from "./components/ui/toaster";
+import { Toaster } from "./components/ui/sonner";
 import useComposerStore from "./store/composer";
 import { useSettingsStore } from "./store/SettingStore";
 import { useEffect } from "react";

@@ -1,5 +1,5 @@
 import useComposerStore from "@/store/composer"
-import EmailSelector, { EmailOption } from "./email-input"
+import EmailSelector, { EmailOption, emailRegex } from "./email-input"
 import { generateEmailArray } from "./test-email"
 import { useEffect, useState } from "react"
 import { SelectGroup, SelectItem, SelectRoot, SelectContent, SelectTrigger, SelectValue } from "../ui/select"
@@ -18,6 +18,9 @@ import "@blocknote/mantine/style.css";
 import { Tooltip } from "../ui/tooltip"
 import { cn } from "@/lib/utils"
 import { useSettingsStore } from "@/store/SettingStore"
+import { htmlToText } from "html-to-text"
+import { toast } from "sonner"
+import api from "@/lib/api"
 
 type StyleProps = boolean | VariantLabels | AnimationControls | TargetAndTransition
 
@@ -69,7 +72,7 @@ const ComposerModal: React.FC<{
 
     const location = useLocation();
     const router = useNavigate()
-    
+
     useEffect(() => {
         if (!location.pathname.includes("composer"))
             setComposer(composerId, { fullScreen: false })
@@ -80,7 +83,6 @@ const ComposerModal: React.FC<{
     const [open, setOpen] = useState(true)
 
     const { allSetting } = useSettingsStore()
-    const [subject, setSubject] = useState("")
 
     const [searchItem, setSearchItem] = useState("")
     const [searchedEmail, setSearchedEmail] = useState<EmailOption[]>([])
@@ -89,8 +91,7 @@ const ComposerModal: React.FC<{
         setSearchedEmail(searchEmails(searchItem));
     }, [searchItem])
 
-    // block
-    const [_, setHTML] = useState<string>("");
+    const [emailHtml, setHTML] = useState<string>("");
     const onChange = async () => {
         const html = await editor.blocksToHTMLLossy(editor.document);
         setHTML(html);
@@ -115,7 +116,7 @@ const ComposerModal: React.FC<{
             },
         },
 
-        // initialContent: [],
+        initialContent: [{ "id": "b2102490-c742-4bc5-9f1a-f40ae92e3777", "type": "paragraph", "props": { "textColor": "default", "backgroundColor": "default", "textAlignment": "left" }, "content": [], "children": [] }, { "id": "43464316-31fc-4257-82e8-8f08d78ed7af", "type": "paragraph", "props": { "textColor": "default", "backgroundColor": "default", "textAlignment": "left" }, "content": [], "children": [] }, { "id": "28ca1da0-f19e-4af7-af2c-ffcd9d9a1433", "type": "paragraph", "props": { "textColor": "default", "backgroundColor": "default", "textAlignment": "left" }, "content": [{ "type": "text", "text": "Email send from ", "styles": { "textColor": "red" } }, { "type": "link", "href": "http://dev.rellitel.ink/", "content": [{ "type": "text", "text": "DraftBox Beta", "styles": { "textColor": "red" } }] }, { "type": "text", "text": ", So don't trust!", "styles": { "textColor": "red" } }], "children": [] }, { "id": "85259461-c0fe-4a9d-967c-3ea27689a998", "type": "paragraph", "props": { "textColor": "default", "backgroundColor": "default", "textAlignment": "left" }, "content": [], "children": [] }],
         uploadFile: handleUpload,
     });
 
@@ -183,6 +184,79 @@ const ComposerModal: React.FC<{
 
         ...commonStyle,
     }
+
+    const [from, setFrom] = useState("dev.hello@myworkspacel.ink")
+    const [to, setTo] = useState<{ email: string }[]>([])
+    const [subject, setSubject] = useState("")
+    const [loading, setIsLoading] = useState(false)
+
+    const sendMail = () => {
+        setIsLoading(true)
+
+        let onlyToArr = to.map(t => t.email)
+
+        if (to.length == 0) {
+            toast.info(`Enter To first!`)
+            setIsLoading(false)
+            return
+        }
+
+        if (subject.trim() == "") {
+            toast.info(`Enter Subject fist!`)
+            setIsLoading(false)
+            return
+        }
+
+        let formPyload = new FormData()
+        formPyload.append("from", from)
+
+        let errOnEmail = false
+        onlyToArr.map(e => {
+            if (!emailRegex.test(e)) {
+                errOnEmail = true
+                toast.error(`Invalid Email in To ${e}`)
+            } else {
+                formPyload.append("to", e)
+            }
+        })
+        if (errOnEmail) {
+            setIsLoading(false)
+            return
+        }
+
+
+        const text = htmlToText(emailHtml, {
+            wordwrap: 130
+        });
+
+        formPyload.append("subject", subject)
+        formPyload.append("html", emailHtml)
+        formPyload.append("text", text)
+
+        api.post("/message/send-mail", formPyload, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(_ => {
+            toast.success("Email send successful!");
+            closeComposer()
+        }).catch(_ => {
+            toast.error("Email send error!");
+        }).finally(() => {
+            setIsLoading(false)
+        })
+
+    }
+
+    const closeComposer = () => {
+        setOpen(false)
+        if (location.pathname.includes("composer")) router(-1)
+
+        setTimeout(() => {
+            removeComposer(composerId)
+        }, 150)
+    }
+
 
     return (
         <AnimatePresence>
@@ -256,28 +330,21 @@ const ComposerModal: React.FC<{
                                 }
                             </Tooltip>
                             <Tooltip tip="Close">
-                                <X size={20} className="cursor-pointer" onClick={() => {
-                                    setOpen(false)
-                                    if (location.pathname.includes("composer")) router(-1)
-
-                                    setTimeout(() => {
-                                        removeComposer(composerId)
-                                    }, 150)
-                                }} />
+                                <X size={20} className="cursor-pointer" onClick={() => closeComposer()} />
                             </Tooltip>
                         </div>
                     </div>
                     <div className="text-[15px] px-8 py-3 font border-border border-b">
                         <div className="flex gap-3">
                             <span className="text-gray-400">From</span>
-                            <SelectRoot defaultValue="hello@rellitel.ink">
+                            <SelectRoot value={from} onValueChange={(v) => setFrom(v)} disabled={loading}>
                                 <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
                                     <SelectValue className="" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem value={"hello@rellitel.ink"} dontShowCheck>hello@rellitel.ink</SelectItem>
-                                        <SelectItem value={"hello@rellit.email"} dontShowCheck>hello@rellit.email</SelectItem>
+                                        <SelectItem value={"dev.hello@myworkspacel.ink"} dontShowCheck>dev.hello@myworkspacel.ink</SelectItem>
+                                        <SelectItem value={"dev.hello@cockatielone.biz"} dontShowCheck>dev.hello@cockatielone.biz</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </SelectRoot>
@@ -287,14 +354,18 @@ const ComposerModal: React.FC<{
                         <div className="flex gap-2">
                             <span className="text-gray-400">To</span>
                             <EmailSelector
+                                disabled={loading}
+                                inputClassName="disabled:!cursor-not-allowed"
                                 className="pt-[1px]"
                                 options={searchedEmail}
                                 inputOnChange={(s) => setSearchItem(s)}
+                                onChange={(v) => setTo(v)}
+                                value={to}
                             />
                         </div>
                     </div>
                     <div className="text-[15px] px-8 py-3 font border-border border-b">
-                        <input type="text" className="w-full bg-transparent outline-none" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} />
+                        <input disabled={loading} type="text" className="w-full bg-transparent outline-none disabled:!cursor-not-allowed" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} />
                     </div>
                     <div className="flex-1 overflow-hidden composer-editor">
                         <ScrollArea noShadow>
@@ -307,11 +378,13 @@ const ComposerModal: React.FC<{
                         </ScrollArea>
                     </div>
                     <div className="text-[15px] px-8 py-3 font border-border border-t flex gap-2">
-                        <Button variant={"primary"} className="w-fit flex gap-1">
-                            <PaperPlaneTilt size={16} />
+                        <Button variant={"primary"} loading={loading} className="w-fit flex gap-1" onClick={() => sendMail()}>
+                            {!loading &&
+                                < PaperPlaneTilt size={16} />
+                            }
                             Send
                         </Button>
-                        <Button variant={"toolbutton"}>
+                        <Button variant={"toolbutton"} disabled={loading}>
                             <Tooltip tip="Schedule Email">
                                 <ClockCountdown size={20} />
                             </Tooltip>
