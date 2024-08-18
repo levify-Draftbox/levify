@@ -1,11 +1,11 @@
-import create from "zustand";
+import { create } from "zustand";
 import api from "@/lib/api";
 
 interface SettingsState {
   allSetting: { [_: string]: any }
-
-  fetchAllSettings: () => Promise<void>;
-  updateSetting: (
+  emails: string[]
+  fetchAllProfiles: () => Promise<void>;
+  updateSettings: (
     type: string,
     newSettings: Record<string, unknown>
   ) => Promise<void>;
@@ -13,28 +13,28 @@ interface SettingsState {
 
 let updateInProgress = false;
 
-export const useSettingsStore = create<SettingsState>((set) => ({
+export const useProfileStore = create<SettingsState>()((set) => ({
   allSetting: {},
-  fetchAllSettings: async () => {
+  emails: [],
+  fetchAllProfiles: async () => {
     try {
-      
       const response = await api.get("/setting/all");
-
-
-        set(s => ({
-          ...s,
-          allSetting: response.data.setting
-        }));
+      console.log(response.data);
+      set(s => ({
+        ...s,
+        allSetting: response.data.setting,
+        emails: response.data.emails
+      }));
 
     } catch (error) {
       console.error("Failed to fetch settings:", error);
     }
   },
-  updateSetting: async (type: string, newSettings) => {
+  updateSettings: async (type: string, newSettings) => {
     if (updateInProgress) return;
 
     console.log(type);
-    
+
 
     updateInProgress = true;
     try {

@@ -9,16 +9,16 @@ import SearchBar from "@/components/SearchBar";
 import { useEffect, useRef, useState } from "react";
 import Setting from "@/components/Setting";
 import useEscKeyStore from "@/store/escStack";
-import Composer from "@/components/composer";
+import Composer from "@/composer";
 import useComposerStore from "@/store/composer";
-import { useSettingsStore } from "@/store/SettingStore";
+import { useProfileStore } from "@/store/profile";
 
 const Main = () => {
   const [viewSetting, setViewSetting] = useState(false);
   const { pushEsc, popEsc } = useEscKeyStore()
   const mainLayout = useRef<HTMLDivElement>(null)
   const { setParantSize, setAllowComposer } = useComposerStore()
-  const { fetchAllSettings } = useSettingsStore()
+  const { fetchAllProfiles } = useProfileStore()
 
   const settingToggle = () => {
     if (viewSetting) {
@@ -32,7 +32,7 @@ const Main = () => {
 
   useEffect(() => {
     setAllowComposer()
-    fetchAllSettings()
+    fetchAllProfiles()
 
     window.addEventListener("resize", setLayoutSize)
     window.addEventListener("load", setLayoutSize)

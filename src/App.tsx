@@ -15,14 +15,14 @@ import Blocknote from "./components/BlockNote";
 import MyComponent from "./components/MyComponent";
 import { Toaster } from "./components/ui/sonner";
 import useComposerStore from "./store/composer";
-import { useSettingsStore } from "./store/SettingStore";
+import { useProfileStore } from "./store/profile";
 import { useEffect } from "react";
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
   const NotLogin = !!localStorage.getItem("token");
-  const {allowComposer} = useComposerStore()
-  const {allSetting} = useSettingsStore()
+  const { allowComposer } = useComposerStore()
+  const { allSetting } = useProfileStore()
 
 
   ShortcutLoad();
@@ -74,56 +74,56 @@ function App() {
 
   return (
     <HotkeysProvider initiallyActiveScopes={["settings"]}>
-        <TooltipProvider>
+      <TooltipProvider>
 
-          <div className="transition-colors">
-            <Routes>
+        <div className="transition-colors">
+          <Routes>
 
-              <Route
-                path="/login"
-                element={
-                  NotLogin ? <Navigate to="/" replace /> : <Login />
-                }
-              />
-              <Route
-                path="/signup"
-                element={
-                  NotLogin ? <Navigate to="/" replace /> : <Signup />
-                }
-              />
+            <Route
+              path="/login"
+              element={
+                NotLogin ? <Navigate to="/" replace /> : <Login />
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                NotLogin ? <Navigate to="/" replace /> : <Signup />
+              }
+            />
 
-              <Route
-                path="/"
-                element={
-                  NotLogin ? <Home /> : <Navigate to="/login" replace />
-                }
-              >
-                <Route index element={<Inbox />} />
-                <Route path="input" element={<Inputs />} />
-                  <Route path="composer" element={
-                    allowComposer ? <></> : <Navigate to="/" replace />
-                  } />
-                <Route path="/*" element={<Inbox />} />
-              </Route>
+            <Route
+              path="/"
+              element={
+                NotLogin ? <Home /> : <Navigate to="/login" replace />
+              }
+            >
+              <Route index element={<Inbox />} />
+              <Route path="input" element={<Inputs />} />
+              <Route path="composer" element={
+                allowComposer ? <></> : <Navigate to="/" replace />
+              } />
+              <Route path="/*" element={<Inbox />} />
+            </Route>
 
-              <Route path="/blocknote" element={<Blocknote />} />
-              <Route path="/quill" element={<MyComponent />} />
+            <Route path="/blocknote" element={<Blocknote />} />
+            <Route path="/quill" element={<MyComponent />} />
 
-            </Routes>
+          </Routes>
 
-            {open && (
-              <ResizeableModel
-                onClose={() => toggleModal()}
-                key="interservererror"
-              >
-                Internal server error!
-              </ResizeableModel>
-            )}
+          {open && (
+            <ResizeableModel
+              onClose={() => toggleModal()}
+              key="interservererror"
+            >
+              Internal server error!
+            </ResizeableModel>
+          )}
 
-          </div>
+        </div>
 
-          <Toaster />
-        </TooltipProvider>
+        <Toaster />
+      </TooltipProvider>
     </HotkeysProvider>
   );
 }

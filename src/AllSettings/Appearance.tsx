@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSettingsStore } from '@/store/SettingStore';
+import { useProfileStore } from '@/store/profile';
 import { SettingDiv, SettingTitle } from './components';
 import { Spinner } from '@/components/Spinner';
 import { cn } from '@/lib/utils';
@@ -7,7 +7,7 @@ import { ThemeColors } from '@/components/Theme';
 
 const Appearance = () => {
 
-  const { allSetting, updateSetting } = useSettingsStore();
+  const { allSetting, updateSettings } = useProfileStore();
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [_, setError] = useState<string | null>(null);
@@ -27,7 +27,7 @@ const Appearance = () => {
     setIsLoading(true);
     setError(null);
     try {
-      await updateSetting('appearance', obj);
+      await updateSettings('appearance', obj);
     } catch (error) {
       console.error('Error updating settings:', error);
       setError('Failed to update settings. Please try again.');

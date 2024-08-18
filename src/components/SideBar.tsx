@@ -18,10 +18,10 @@ import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import ScrollArea from "./ui/ScrollArea";
 import useComposerStore from "@/store/composer";
-import { useSettingsStore } from "@/store/SettingStore";
+import { useProfileStore } from "@/store/profile";
 
 const SideBar = () => {
-  const { allSetting } = useSettingsStore();
+  const { allSetting } = useProfileStore();
   const [moreLess, setmoreLess] = useState(false);
 
   const { newComposer } = useComposerStore()

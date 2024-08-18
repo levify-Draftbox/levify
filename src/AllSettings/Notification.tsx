@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useState, useCallback, useEffect } from "react";
 import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react";
-import { useSettingsStore } from "@/store/SettingStore";
+import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
 
 const sounds = [
@@ -19,7 +19,7 @@ const sounds = [
 ];
 
 const Notification = () => {
-  const { allSetting, updateSetting } = useSettingsStore();
+  const { allSetting, updateSettings } = useProfileStore();
 
   const [notiEnable, setNotiEnable] = useState(false);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
@@ -47,7 +47,7 @@ const Notification = () => {
   const updateAppearance = async (obj: any, loadingSetter: (loading: boolean) => void) => {
     loadingSetter(true);
     try {
-      await updateSetting("notification", obj);
+      await updateSettings("notification", obj);
     } catch (error) {
       console.error("Error updating settings:", error);
     } finally {
