@@ -56,14 +56,14 @@ const SideBar = () => {
               head_row: "",
               row: "w-full mt-2 bg-transparent",
               // column: "h-full mt-2 bg-transparent",
-              day: "text-xs w-full h-8 rounded-sm",
+              day: "text-xs w-7 h-7 rounded-sm",
             }}
           />
         </div>
         </div>
       </div>
 
-      <div className="w-[600px] flex flex-col p-1 pb-4">
+      <div className="w-full flex flex-col p-1 pb-4">
         <div className="w-full pt-3 px-1">
           <Progress value={10} />
           <div className="text-xs flex justify-between  mt-2">
