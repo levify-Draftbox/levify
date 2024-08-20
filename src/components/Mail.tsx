@@ -8,9 +8,11 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
+import { EmailObject } from "@/page/Inbox";
 
-const Mail = () => {
+const Mail: React.FC<Partial<EmailObject>> = ({ b_subject, b_from, from_profile }) => {
   const [IsHovered, setIsHovered] = useState(false);
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -19,22 +21,22 @@ const Mail = () => {
           onMouseLeave={() => setIsHovered(false)}
           className="w-full h-[50px] border-b py-3 px-4 flex justify-between items-center hover:shadow-lg cursor-pointer"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-8 h-8 border-2 rounded-md flex items-center justify-center">
-              <p>R</p>
+          <div className="flex flex-1 items-center gap-4">
+            <div className="w-8 h-8 border overflow-hidden rounded-md flex items-center justify-center">
+              <img src={from_profile} className="h-full w-full" />
             </div>
+
             <Button variant={"star"} size={"toolsize"}>
               <Star size={15} />
             </Button>
-            <p>Rellite</p>
-            <p className="text-sm text-core bg-">official</p>
+            <p className="w-[23%] overflow-hidden">{b_from}</p>
             <p className="ml-32 ">
-              Discover all the features of your Rellite account
+              {b_subject}
             </p>
           </div>
-          <div>
+          <div className="w-[10%] text-right">
             {IsHovered ? (
-              <div className="flex">
+              <div className="flex justify-end">
                 <Button variant={"toolbutton"}>
                   <Envelope size={17} />
                 </Button>
@@ -61,8 +63,6 @@ const Mail = () => {
         <ContextMenuItem>Subscription</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-
-
   );
 };
 
