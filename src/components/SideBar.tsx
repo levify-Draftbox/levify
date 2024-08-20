@@ -6,25 +6,30 @@ import {
   CaretDown,
   CaretRight,
   FileText,
+  Gear,
   PaperPlaneRight,
   Star,
   TrashSimple,
   Tray,
   WarningOctagon,
 } from "@phosphor-icons/react";
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
 import { Link } from "react-router-dom";
 import ScrollArea from "./ui/ScrollArea";
 import useComposerStore from "@/store/composer";
 import { useProfileStore } from "@/store/profile";
+import Modal from "./ui/Modal";
+import { Spinner } from "./Spinner";
+const AllSettings = lazy(() => import("@/AllSettings"));
 
 const SideBar = () => {
   const { allSetting } = useProfileStore();
   const [moreLess, setmoreLess] = useState(false);
 
   const { newComposer } = useComposerStore()
+  const [settingOpen, setSettingOpen] = useState(false)
 
   return (
     <div className="flex flex-col justify-between h-full dark:bg-transparent selection:select-none">
@@ -35,7 +40,7 @@ const SideBar = () => {
               allSetting?.appearance?.theme === "system" ?
                 !window.matchMedia("(prefers-color-scheme: dark)")
                   .matches
-                  ? "  /logo-light.svg" : "/logo-dark.svg"
+                  ? "/logo-light.svg" : "/logo-dark.svg"
                 :
                 allSetting?.appearance?.theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
             } />
@@ -127,6 +132,13 @@ const SideBar = () => {
       </div>
 
       <div className="w-full flex flex-col p-1 pb-4">
+        <Button
+          variant={"secondary"}
+          onClick={() => setSettingOpen(true)}
+        >
+          <Gear />
+          Setting
+        </Button>
         <div className="w-full pt-3 px-1">
           <Progress value={10} />
           <div className="text-xs flex justify-between  mt-2">
@@ -138,7 +150,20 @@ const SideBar = () => {
           </div>
         </div>
       </div>
-    </div >
+
+      {settingOpen && (
+        <Modal key="full-settings" onClose={() => setSettingOpen(false)}>
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-full w-full">
+              <Spinner size={50} borderWidth={4} />
+            </div>
+          }>
+            <AllSettings />
+          </Suspense>
+        </Modal>
+      )}
+
+    </div>
   );
 };
 

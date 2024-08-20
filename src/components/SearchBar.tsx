@@ -1,12 +1,12 @@
-import { Bell, Gear, MagnifyingGlass } from "@phosphor-icons/react";
+import { Bell, MagnifyingGlass } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { Tooltip } from "./ui/tooltip";
 
 type SearchBarProp = {
-  onSettingToggle: () => void
+  
 }
 
-const SearchBar = ({ onSettingToggle }: SearchBarProp) => {
+const SearchBar = ({  }: SearchBarProp) => {
   return (
     <div className="flex justify-between w-full h-[52px] border-b">
       <div></div>
@@ -22,14 +22,8 @@ const SearchBar = ({ onSettingToggle }: SearchBarProp) => {
         <div className="flex items-center gap-2">
 
           <Tooltip tip="Notification">
-            <Button variant={"toolbutton"} className="" onClick={() => onSettingToggle()}>
+            <Button variant={"toolbutton"} className="" onClick={() => undefined}>
               <Bell size={20} />
-            </Button>
-          </Tooltip>
-
-          <Tooltip tip="Settings">
-            <Button variant={"toolbutton"} className="" onClick={() => onSettingToggle()}>
-              <Gear size={20} />
             </Button>
           </Tooltip>
 

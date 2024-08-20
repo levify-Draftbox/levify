@@ -1,6 +1,8 @@
+// deprecated
+
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { lazy, ReactNode, Suspense, useState } from "react";
+import { ReactNode, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import Modal from "@/components/ui/Modal";
 import { ChevronRight } from "lucide-react";
@@ -11,12 +13,9 @@ import {
 import { ThemeColors } from
  "./Theme";
 import ScrollArea from "./ui/ScrollArea";
-import { Spinner } from "./Spinner";
 import Kbd from "./ui/kbd";
 import { SignOut } from "@phosphor-icons/react";
 import { Switch } from "./ui/switch";
-
-const AllSettings = lazy(() => import("@/AllSettings"));
 
 type SearchBarProp = {
   onSettingToggle: () => void;
@@ -77,10 +76,6 @@ const SettingSidebar = () => {
 
   const handleImageClick = (index: number) => {
     setSelectedImage(index);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
   };
 
   const handleLogout = () => {
@@ -328,17 +323,7 @@ const SettingSidebar = () => {
         </a>
       </div>
 
-      {isModalOpen && (
-        <Modal key="full-settings" onClose={handleCloseModal}>
-          <Suspense fallback={
-            <div className="flex items-center justify-center h-full w-full">
-              <Spinner size={50} borderWidth={4} />
-            </div>
-          }>
-            <AllSettings />
-          </Suspense>
-        </Modal>
-      )}
+      
 
       {isAppModalOpen && (
         <Modal key="upgread" onClose={handleAppModel}>

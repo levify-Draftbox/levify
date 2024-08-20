@@ -2,7 +2,9 @@ import ToolBar from "@/components/ToolBar";
 import api from "@/lib/api";
 import { useVirtual } from 'react-virtual';
 import React, { useEffect, useRef, useState } from "react";
-import Mail from "@/components/Mail";
+import MailRow from "@/components/MailRow";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Button } from "@/components/ui/button";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -13,6 +15,7 @@ export type EmailObject = {
   to: string[];
   b_datetime: string;
   b_from: string;
+  b_from_name: string;
   b_to: string[];
   b_cc: string[];
   b_subject: string;
@@ -41,8 +44,11 @@ const Inbox = () => {
       );
     }
 
-    const email = emailList[index]; 
-    return <Mail b_subject={email.b_subject} b_from={email.b_from} from_profile={email.from_profile} />
+    const email = emailList[index];
+    return <MailRow onClick={() => {
+      setEmailOpen(true)
+      setOpenEmailId(index)
+    }} {...email} />
   };
 
   const rowVirtualizer = useVirtual({
@@ -79,48 +85,114 @@ const Inbox = () => {
     }
   }, [rowVirtualizer.virtualItems, hasMore, isLoading, emailList.length]);
 
+  const [emailOpen, setEmailOpen] = useState(false)
+  const [openEmailId, setOpenEmailId] = useState(0)
+
   return (
     <div className="w-full flex flex-col flex-1 overflow-hidden">
       <ToolBar className={""} />
-      <div className="bg-inbox-bg overflow-hidden flex-1">
-        <div
-          className="scroll-bar"
-          ref={parentRef}
-          style={{
-            height: `100%`,
-            width: `100%`,
-            overflow: 'auto',
-          }}
-        >
-          <div
-            className="scroll-bar"
-            style={{
-              height: `${rowVirtualizer.totalSize}px`,
-              width: '100%',
-              position: 'relative',
-            }}
-          >
-            {rowVirtualizer.virtualItems.map(virtualRow => (
+
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="max-w-full !flex-1 !h-full"
+      >
+        <ResizablePanel className="!overflow-hidden h-full">
+          <div className="bg-inbox-bg !overflow-hidden h-full">
+            <div
+              className="scroll-bar"
+              ref={parentRef}
+              style={{
+                height: `100%`,
+                width: `100%`,
+                overflow: 'auto',
+              }}
+            >
               <div
-                key={virtualRow.index}
-                ref={virtualRow.measureRef}
+                className="scroll-bar"
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
+                  height: `${rowVirtualizer.totalSize}px`,
                   width: '100%',
-                  transform: `translateY(${virtualRow.start}px)`,
+                  position: 'relative',
                 }}
               >
-                {renderEmail(virtualRow.index)}
+                {rowVirtualizer.virtualItems.map(virtualRow => (
+                  <div
+                    key={virtualRow.index}
+                    ref={virtualRow.measureRef}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  >
+                    {renderEmail(virtualRow.index)}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-        </div>
-      </div>
+            </div>
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle />
+
+        {
+          emailOpen &&
+          <>
+            <ResizablePanel minSize={30} maxSize={55} defaultSize={20} >
+              <MailViewer key={openEmailId} email={emailList[openEmailId]} />
+            </ResizablePanel>
+          </>
+        }
+
+      </ResizablePanelGroup>
     </div>
   );
 };
+
+const MailViewer: React.FC<{ email: EmailObject, key: number }> = ({ email, key }) => {
+
+  const [viewMode, setViewMode] = useState(email.b_html && email.b_html != "" ? "html" : "text")
+  const htmlView = useRef<HTMLIFrameElement>(null)
+
+  useEffect(() => {
+    if (htmlView.current) {
+      let d = htmlView.current.contentWindow?.document ||
+        htmlView.current.contentDocument;
+
+      d?.open();
+      d?.write(email.b_html);
+      d?.close();
+    }
+  }, [viewMode, key])
+
+  return (
+    <div className="p-2">
+      <h1>From: {email.b_from_name || ""} {email.from}</h1>
+      <h1>To: {email.to.join(",")}</h1>
+
+      <hr className="my-2" />
+
+      <Button className="w-fit" variant={viewMode == "html" ? "secondary" : "primary"} onClick={() => setViewMode(v => v == "html" ? "text" : "html")}>
+        <span className="capitalize">
+          {viewMode == "html" ? "Text" : "HTML"}
+        </span>
+      </Button>
+
+      <hr className="my-2" />
+      {
+        viewMode == "text" ?
+          <pre className="text-sm">
+            {email.b_text}
+          </pre>
+          :
+          <iframe className="bg-white w-full h-[500px]" ref={htmlView} />
+      }
+
+    </div>
+  )
+}
 
 export default Inbox;

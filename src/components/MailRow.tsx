@@ -9,28 +9,36 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import { EmailObject } from "@/page/Inbox";
+import moment from "moment"
+import { cn } from "@/lib/utils";
 
-const Mail: React.FC<Partial<EmailObject>> = ({ b_subject, b_from, from_profile }) => {
+const Mail: React.FC<Partial<{
+  onClick: () => void
+} & EmailObject>> = ({ onClick, b_subject, b_from, from_profile, b_datetime, unread, b_from_name }) => {
   const [IsHovered, setIsHovered] = useState(false);
 
   return (
     <ContextMenu>
       <ContextMenuTrigger>
         <div
+          onClick={() => onClick && onClick()}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className="w-full h-[50px] border-b py-3 px-4 flex justify-between items-center hover:shadow-lg cursor-pointer"
+          className={cn(
+            "w-full h-[50px] border-b py-3 px-4 flex justify-between items-center hover:shadow-lg cursor-pointer text-[15px] font-thin",
+            unread ? "font-medium" : ""
+          )}
         >
           <div className="flex flex-1 items-center gap-4">
-            <div className="w-8 h-8 border overflow-hidden rounded-md flex items-center justify-center">
+            <div className="w-7 h-7 border overflow-hidden rounded-md flex items-center justify-center">
               <img src={from_profile} className="h-full w-full" />
             </div>
 
             <Button variant={"star"} size={"toolsize"}>
               <Star size={15} />
             </Button>
-            <p className="w-[23%] overflow-hidden">{b_from}</p>
-            <p className="ml-32 ">
+            <p className="w-[18%] overflow-hidden">{getUserName(b_from_name, b_from as string)}</p>
+            <p className="font-thin">
               {b_subject}
             </p>
           </div>
@@ -51,11 +59,14 @@ const Mail: React.FC<Partial<EmailObject>> = ({ b_subject, b_from, from_profile 
                 </Button>
               </div>
             ) : (
-              <p className="text-sm ">Yesterday</p>
+              <p className="text-sm font-thin">
+                {moment(new Date(b_datetime || "")).fromNow()}
+              </p>
             )}
           </div>
         </div>
       </ContextMenuTrigger>
+
       <ContextMenuContent>
         <ContextMenuItem>Profile</ContextMenuItem>
         <ContextMenuItem>Billing</ContextMenuItem>
@@ -65,5 +76,11 @@ const Mail: React.FC<Partial<EmailObject>> = ({ b_subject, b_from, from_profile 
     </ContextMenu>
   );
 };
+
+function getUserName(fromName: string | undefined, fromEmail: string): string {
+  if (fromName) return fromName
+  return fromEmail.split("@")[0]
+}
+
 
 export default Mail;

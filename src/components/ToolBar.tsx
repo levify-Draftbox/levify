@@ -1,7 +1,5 @@
 import {
   CaretDown,
-  CaretLeft,
-  CaretRight,
   CaretUp,
   DotsThree,
   SortAscending,
@@ -15,7 +13,7 @@ const ToolBar:React.FC<Partial<HTMLDivElement>> = ({className}) => {
   const [UpDown, setUpDown] = useState(false);
   return (
     <div className={cn(
-      "w-full h-11 border-b flex items-center justify-between px-5 selection:select-none",
+      "min-h-[44px] h-[44px] w-full border-b flex items-center justify-between px-5 selection:select-none",
       className
     )}>
       <div className="flex gap-3 items-center">
@@ -56,16 +54,6 @@ const ToolBar:React.FC<Partial<HTMLDivElement>> = ({className}) => {
         <Button variant={"toolbutton"} className="!py-1 !px-3" size={"toolsize"}>
           <SortAscending size={20} />
         </Button>
-
-        <div className="flex items-center gap-4 ml-2 text-[rgba(0,0,0,0.6)] dark:text-[rgba(250,250,250,0.8)]">
-          <Button variant={"toolbutton"}>
-            <CaretLeft size={14} />
-          </Button>
-          <p>1/1</p>
-          <Button variant={"toolbutton"}>
-            <CaretRight size={14} />
-          </Button>
-        </div>
       </div>
     </div>
   );
