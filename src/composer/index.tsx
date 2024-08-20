@@ -42,11 +42,13 @@ const Composer: React.FC<{}> = () => {
 
 const emails: EmailOption[] = [
     { email: "hello@parthka.dev" },
-    { email: "hello@raviitlaiya.info" },
+    { email: "hello@raviitaliya.info" },
     { email: "parthka.2005@gmail.com" },
     { email: "parthka.2005@proton.me" },
     { email: "pthreeh@outlook.com" },
-    { email: "parthka.2005@yandex.com" },
+    { email: "raviitaliya@proton.me" },
+    { email: "raviitaliyaa@outlook.com" },
+
 ]
 function searchEmails(query: string): EmailOption[] {
     if (query.trim() === "") {
