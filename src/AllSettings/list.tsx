@@ -1,8 +1,8 @@
 import Appearance from "./Appearance";
 import Composer from "./Composer";
-import Dashboard from "./dashboard";
 import Notification from "./Notification";
 import Privacy from "./Privacy";
+import Profile from "./Profile";
 
 type SettingsListType = {
   name: string;
@@ -13,9 +13,9 @@ type SettingsListType = {
 const SettingsList: {
   [_: string]: SettingsListType;
 } = {
-  dashboard: {
-    name: "Dashboard",
-    component: <Dashboard />,
+  profile: {
+    name: "Profile",
+    component: <Profile />,
   },
   plan: {
     name: "Your Plan",

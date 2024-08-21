@@ -11,7 +11,7 @@ import {
   Globe,
   LockKeyOpen,
   PaintRoller,
-  SquaresFour,
+  UserCircle,
 } from "@phosphor-icons/react";
 // import { Key, User, Globe, PaintRoller, Shield } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react";
@@ -51,10 +51,10 @@ const AllSettings = () => {
             Account
           </p>
           <SidebarNavLink
-            icon={<SquaresFour size={18} />}
-            setting={"dashboard"}
+            icon={<UserCircle size={18} />}
+            setting={"profile"}
           >
-            Dashbord
+            Profile
           </SidebarNavLink>
           <SidebarNavLink icon={<BoxArrowUp size={18} />} setting={"plan"}>
             Your Plan
