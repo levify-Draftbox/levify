@@ -10,6 +10,7 @@ import Composer from "@/composer";
 import useComposerStore from "@/store/composer";
 import { useProfileStore } from "@/store/profile";
 import SearchBar from "@/components/SearchBar";
+import { connectWS } from "@/lib/ws";
 
 const Main = () => {
   const mainLayout = useRef<HTMLDivElement>(null)
@@ -19,6 +20,7 @@ const Main = () => {
   useEffect(() => {
     setAllowComposer()
     fetchAllProfiles()
+    connectWS()
 
     window.addEventListener("resize", setLayoutSize)
     window.addEventListener("load", setLayoutSize)
@@ -28,6 +30,7 @@ const Main = () => {
     }
   }, [])
   const setLayoutSize = () => setParantSize(mainLayout.current?.clientWidth || 800)
+
 
   return (
     <ResizablePanelGroup

@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MailRow from "@/components/MailRow";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
+import { sendToWs, setUnReadFunc } from "@/lib/ws";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -35,6 +36,18 @@ const Inbox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
 
+  useEffect(() => setUnReadFunc((d) => {
+    const { email_id, unread } = d as { email_id: number, unread: boolean }
+    setUnread(email_id, unread)
+  }), [])
+
+  const setUnread = (email_id: number, unread: boolean) => {
+    setEmailList(e => e.map(e => {
+      e.unread = e.id == email_id ? unread : e.unread
+      return e
+    }))
+  }
+
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
       return (
@@ -48,6 +61,7 @@ const Inbox = () => {
     return <MailRow onClick={() => {
       setEmailOpen(true)
       setOpenEmailId(index)
+      setUnread(email.id, false)
     }} {...email} />
   };
 
@@ -165,6 +179,15 @@ const MailViewer: React.FC<{ email: EmailObject, key: number }> = ({ email, key 
       d?.open();
       d?.write(email.b_html);
       d?.close();
+
+      sendToWs(JSON.stringify({
+        event: "unread",
+        data: {
+          email_id: email.id,
+          unread: false
+        }
+      }))
+
     }
   }, [viewMode, key])
 

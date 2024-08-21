@@ -38,8 +38,8 @@ const Mail: React.FC<Partial<{
               <Star size={15} />
             </Button>
             <p className="w-[18%] overflow-hidden">{getUserName(b_from_name, b_from as string)}</p>
-            <p className="font-thin">
-              {b_subject}
+            <p className="font-thin flex items-center">
+              {unread && <div className="w-[10px] h-[10px] bg-core rounded-full mr-3"></div>} {b_subject}
             </p>
           </div>
           <div className="w-[10%] text-right">
