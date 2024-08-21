@@ -69,7 +69,7 @@ const Appearance = () => {
               <button
                 key={index}
                 className={cn(
-                  `flex items-center space-x-2 p-3 w-40 gap-3 rounded-md transition-all duration-200 border`,
+                  `flex items-center space-x-2 p-2 w-36 gap-3 rounded-md transition-all duration-200 border`,
                   {
                     "border-core":
                       allSetting?.appearance?.theme === themeOption,
@@ -100,7 +100,7 @@ const Appearance = () => {
               <button
                 key={index}
                 className={cn(
-                  `flex items-center space-x-2 p-3 w-40 gap-3 rounded-md transition-all duration-200 border`,
+                  `flex items-center space-x-2 p-2 w-36 gap-3 rounded-md transition-all duration-200 border`,
                   {
                     "border-core": allSetting?.appearance?.color === color,
                   }
