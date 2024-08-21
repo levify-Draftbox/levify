@@ -59,7 +59,7 @@ import {
           <div className="w-full h-full bg-background-secondary flex flex-col relative"
             ref={mainLayout}
           >
-            <SearchBar onSettingToggle={() => settingToggle()} />
+            <SearchBar />
             <Outlet />
             <Composer />
           </div>
