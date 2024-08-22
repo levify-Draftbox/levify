@@ -63,7 +63,19 @@ const Inbox = () => {
       if (mode == "append") {
         setEmailList(l => [mail, ...l])
         if (notify) {
-          toast.success("One new mail recive")
+          if (document.hasFocus()){
+            toast.success(`New message from: ${mail.b_from}`, {
+              description: mail.b_subject
+            })
+          } else {
+            let n = new Notification(`From: ${mail.b_from}`, {
+              body: mail.b_subject,
+              icon: "/favicon.png",
+            })
+            n.onclick = () => {
+              console.log("Click");
+            }
+          }
           playSound()
         }
       } else {

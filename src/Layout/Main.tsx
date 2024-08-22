@@ -20,9 +20,11 @@ const Main = () => {
   let theme = "dark";
 
   useEffect(() => {
-    setAllowComposer();
-    fetchAllProfiles();
-    connectWS();
+    if (Notification.permission !== 'granted') Notification.requestPermission()
+
+    setAllowComposer()
+    fetchAllProfiles()
+    connectWS()
 
     window.addEventListener("resize", setLayoutSize);
     window.addEventListener("load", setLayoutSize);
