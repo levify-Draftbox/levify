@@ -2,11 +2,8 @@ import { Bell, MagnifyingGlass } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { Tooltip } from "./ui/tooltip";
 
-type SearchBarProp = {
-  
-}
 
-const SearchBar = ({  }: SearchBarProp) => {
+const SearchBar = () => {
   return (
     <div className="flex justify-between w-full h-[52px] border-b">
       <div></div>

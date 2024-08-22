@@ -24,7 +24,7 @@ type SidebarNavLinkProp = {
 };
 
 const AllSettings = () => {
-  const [activeSetting, setActiveSetting] = useState("dashboard");
+  const [activeSetting, setActiveSetting] = useState("profile");
 
   const SidebarNavLink = (p: SidebarNavLinkProp) => {
     return (
