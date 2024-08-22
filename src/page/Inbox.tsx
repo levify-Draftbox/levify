@@ -179,17 +179,18 @@ const MailViewer: React.FC<{ email: EmailObject, key: number }> = ({ email, key 
       d?.open();
       d?.write(email.b_html);
       d?.close();
-
-      sendToWs(JSON.stringify({
-        event: "unread",
-        data: {
-          email_id: email.id,
-          unread: false
-        }
-      }))
-
     }
   }, [viewMode, key])
+
+  useEffect(() => {
+    sendToWs(JSON.stringify({
+      event: "unread",
+      data: {
+        email_id: email.id,
+        unread: false
+      }
+    }))
+  }, [])
 
   return (
     <div className="p-2">
