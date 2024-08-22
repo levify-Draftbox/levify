@@ -18,6 +18,8 @@ const Main = () => {
   const { fetchAllProfiles, load } = useProfileStore()
 
   useEffect(() => {
+    if (Notification.permission !== 'granted') Notification.requestPermission()
+
     setAllowComposer()
     fetchAllProfiles()
     connectWS()
