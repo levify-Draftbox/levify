@@ -21,6 +21,9 @@ export function connectWS() {
                 case "unread":
                     unReadFunc(e.data)
                     break
+                case "notify":
+                    notifyFunc(e.data)
+                    break
                 default:
                     break
             }
@@ -33,6 +36,11 @@ export function connectWS() {
 let unReadFunc: (_: any) => void = () => console.log("unread event");
 export function setUnReadFunc(func: (_: any) => void) {
     unReadFunc = func
+}
+
+let notifyFunc: (_: any) => void = () => console.log("notify");
+export function setNotifyFunc(func: (_: any) => void) {
+    notifyFunc = func
 }
 
 export function sendToWs(data: string) {

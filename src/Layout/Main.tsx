@@ -15,7 +15,7 @@ import { connectWS } from "@/lib/ws";
 const Main = () => {
   const mainLayout = useRef<HTMLDivElement>(null)
   const { setParantSize, setAllowComposer } = useComposerStore()
-  const { fetchAllProfiles } = useProfileStore()
+  const { fetchAllProfiles, load } = useProfileStore()
 
   useEffect(() => {
     setAllowComposer()
@@ -33,29 +33,32 @@ const Main = () => {
 
 
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className="min-h-screen max-h-screen max-w-full"
-    >
-      <ResizablePanel minSize={13} maxSize={20} defaultSize={13}>
-        <div className="h-full">
-          <SideBar />
-        </div>
-      </ResizablePanel>
-      
-      <ResizableHandle />
+    load ?
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="min-h-screen max-h-screen max-w-full"
+      >
+        <ResizablePanel minSize={13} maxSize={20} defaultSize={13}>
+          <div className="h-full">
+            <SideBar />
+          </div>
+        </ResizablePanel>
 
-      <ResizablePanel defaultSize={87} onResize={setLayoutSize}>
-        <div className="w-full h-full bg-background-secondary flex flex-col relative"
-          ref={mainLayout}
-        >
-          <SearchBar />
-          <Outlet />
-          <Composer />
-        </div>
-      </ResizablePanel>
+        <ResizableHandle />
 
-    </ResizablePanelGroup>
+        <ResizablePanel defaultSize={87} onResize={setLayoutSize}>
+          <div className="w-full h-full bg-background-secondary flex flex-col relative"
+            ref={mainLayout}
+          >
+            <SearchBar />
+            <Outlet />
+            <Composer />
+          </div>
+        </ResizablePanel>
+
+      </ResizablePanelGroup>
+      :
+      <>Loading...</>
   );
 };
 

@@ -5,7 +5,9 @@ import React, { useEffect, useRef, useState } from "react";
 import MailRow from "@/components/MailRow";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { sendToWs, setUnReadFunc } from "@/lib/ws";
+import { sendToWs, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
+import { toast } from "sonner";
+import { useProfileStore } from "@/store/profile";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -35,11 +37,40 @@ const Inbox = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const { allSetting } = useProfileStore()
 
-  useEffect(() => setUnReadFunc((d) => {
-    const { email_id, unread } = d as { email_id: number, unread: boolean }
-    setUnread(email_id, unread)
-  }), [])
+  function playSound() {
+    const notificationSound = new Audio(allSetting?.notification?.notificationSound);
+    notificationSound.play().catch(error => {
+      console.error('Error playing sound:', error);
+    });
+  };
+
+  useEffect(() => {
+    setUnReadFunc((d) => {
+      const { email_id, unread } = d as { email_id: number, unread: boolean }
+      setUnread(email_id, unread)
+    })
+
+    setNotifyFunc(d => {
+      let { mode, notify, mail } = d as {
+        mode: "append" | "remove",
+        notify: boolean,
+        mail: EmailObject
+      }
+
+      if (mode == "append") {
+        setEmailList(l => [mail, ...l])
+        if (notify) {
+          toast.success("One new mail recive")
+          playSound()
+        }
+      } else {
+        // TODO:
+      }
+    })
+  }, [])
+
 
   const setUnread = (email_id: number, unread: boolean) => {
     setEmailList(e => e.map(e => {

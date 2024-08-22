@@ -4,6 +4,7 @@ import api from "@/lib/api";
 interface SettingsState {
   allSetting: { [_: string]: any }
   emails: string[]
+  load: boolean
   fetchAllProfiles: () => Promise<void>;
   updateSettings: (
     type: string,
@@ -16,13 +17,15 @@ let updateInProgress = false;
 export const useProfileStore = create<SettingsState>()((set) => ({
   allSetting: {},
   emails: [],
+  load: false,
   fetchAllProfiles: async () => {
     try {
       const response = await api.get("/setting/all");
       set(s => ({
         ...s,
         allSetting: response.data.setting,
-        emails: response.data.emails
+        emails: response.data.emails,
+        load: true,
       }));
 
     } catch (error) {
@@ -39,7 +42,7 @@ export const useProfileStore = create<SettingsState>()((set) => ({
     try {
       const token = localStorage.getItem("token");
       console.log(newSettings);
-      
+
       const response = await api.put(`/setting/${type}`, newSettings, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,7 +50,7 @@ export const useProfileStore = create<SettingsState>()((set) => ({
         },
       });
       console.log(response);
-      
+
 
       if (response.data.success) {
         set((state) => ({
