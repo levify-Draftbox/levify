@@ -49,10 +49,7 @@ const AllSettings = () => {
           <p className="text-xs px-3 py-1 font-medium text-gray-500 dark:text-gray-400">
             Account
           </p>
-          <SidebarNavLink
-            icon={<UserCircle size={18} />}
-            setting={"profile"}
-          >
+          <SidebarNavLink icon={<UserCircle size={18} />} setting={"profile"}>
             Profile
           </SidebarNavLink>
           <SidebarNavLink icon={<BoxArrowUp size={18} />} setting={"plan"}>
@@ -130,7 +127,6 @@ const AllSettings = () => {
 
   useEffect(() => {
     const sEvent = (e: any) => {
-
       const { scrollTop /* , scrollHeight, clientHeight  */ } = e.target;
       setChildTop(scrollTop === 0);
       // setChildBottom(scrollTop + clientHeight >= scrollHeight);

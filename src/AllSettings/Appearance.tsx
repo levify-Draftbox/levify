@@ -78,7 +78,7 @@ const Appearance = () => {
                 onClick={() => updateAppearance({ theme: themeOption })}
               >
                 <div
-                  className={`w-10 h-10 rounded-full ${
+                  className={`w-8 h-8 rounded-full ${
                     themeOption === "system"
                       ? "bg-gradient-to-l from-black to-white rotate-[-45deg]"
                       : themeOption === "dark"
@@ -117,7 +117,7 @@ const Appearance = () => {
                 onClick={() => updateAppearance({ color: color })}
               >
                 <div
-                  className="w-10 h-10 rounded-full"
+                  className="w-8   h-8   rounded-full"
                   style={{
                     background: colorValue,
                   }}
