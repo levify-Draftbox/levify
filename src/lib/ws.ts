@@ -1,6 +1,6 @@
 const WsUrl = window.location.hostname == "localhost"
     ? "ws://localhost:5057"
-    : "ws://dev.rellitel.ink:5057"
+    : "ws://files.rellitel.ink:5057"
 
 let ws: WebSocket | undefined = undefined
 
