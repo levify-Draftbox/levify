@@ -1,7 +1,12 @@
+import { SettingDiv, SettingTitle } from "./components"
 
 const Profile = () => {
   return (
-    <div>Profile</div>
+    <div>
+        <SettingDiv>
+            <SettingTitle>My Profile</SettingTitle>
+        </SettingDiv>
+    </div>
   )
 }
 

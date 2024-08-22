@@ -13,7 +13,6 @@ import {
   PaintRoller,
   UserCircle,
 } from "@phosphor-icons/react";
-// import { Key, User, Globe, PaintRoller, Shield } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react";
 import SettingsList from "./list";
 import { ModalSidebarLayout } from "@/components/ui/Modal";

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { sendToWs, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/profile";
+import { Spinner } from "@/components/Spinner";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -82,8 +83,8 @@ const Inbox = () => {
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
       return (
-        <div style={{ padding: '10px', textAlign: 'center' }}>
-          Loading...
+        <div className="mt-6 flex justify-center w-full">
+          <Spinner size={30}/>
         </div>
       );
     }

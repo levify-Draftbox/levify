@@ -15,6 +15,7 @@ const SettingsList: {
 } = {
   profile: {
     name: "Profile",
+    description: "Update your personal details and account settings here.",
     component: <Profile />,
   },
   plan: {
