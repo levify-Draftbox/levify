@@ -239,7 +239,8 @@ const MailViewer: React.FC<{ email: EmailObject, key: number }> = ({ email, key 
   return (
     <div className="p-2">
       <h1>From: {email.b_from_name || ""} {email.from}</h1>
-      <h1>To: {email.to.join(",")}</h1>
+      <h1>To: {email.b_to.join(",")}</h1>
+      <h1>Cc: {email.b_cc.join(",")}</h1>
 
       <hr className="my-2" />
 
