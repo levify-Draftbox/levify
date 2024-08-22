@@ -3,7 +3,7 @@ export const SettingTitle: React.FC<{
     className?: string
 }> = ({ children, className}) => {
     return (
-        <h2 className={`text-base ${className || ""} font-bold text-gray-700 dark:text-gray-200 mt-1 mb-3`}>
+        <h2 className={`text-base ${className || ""} font-bold text-gray-700 dark:text-gray-200 pt-3 mb-3`}>
             {children}
         </h2>
     )

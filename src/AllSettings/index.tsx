@@ -146,7 +146,7 @@ const AllSettings = () => {
       {SettingsList[activeSetting] ? (
         <div className="h-full flex flex-col">
           <div
-            className={`flex flex-col sticky top-0  bg-background-secondary py-5 px-10 gap-1 ${
+            className={`flex flex-col sticky top-0  bg-background-secondary py-5 px-14 gap-1 ${
               !childTop ? "border-b" : ""
             } z-[9]`}
           >
@@ -161,7 +161,7 @@ const AllSettings = () => {
           </div>
 
           <div
-            className="px-10 py-2 overflow-auto scroll-bar flex-1"
+            className="px-14 py-2 overflow-auto scroll-bar flex-1"
             ref={scrollChildDivRef}
           >
             {SettingsList[activeSetting].component}
