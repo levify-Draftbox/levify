@@ -20,7 +20,7 @@ export const useProfileStore = create<SettingsState>()((set) => ({
   load: false,
   fetchAllProfiles: async () => {
     try {
-      const response = await api.get("/setting/all");
+      const response = await api.get("/profile/all");
       set(s => ({
         ...s,
         allSetting: response.data.setting,
@@ -43,7 +43,7 @@ export const useProfileStore = create<SettingsState>()((set) => ({
       const token = localStorage.getItem("token");
       console.log(newSettings);
 
-      const response = await api.put(`/setting/${type}`, newSettings, {
+      const response = await api.put(`/profile/${type}`, newSettings, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
