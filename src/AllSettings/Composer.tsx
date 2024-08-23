@@ -1,10 +1,10 @@
+import { useEffect, useState, useRef } from "react";
 import { SettingDiv, SettingTitle } from "./components";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import QuillEditor from "@/components/ui/Quill";
-import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";
 import {
@@ -15,22 +15,62 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
+import { useProfileStore } from "@/store/profile";
+import { Spinner } from "@/components/Spinner";
 
 const Composer = () => {
+  const { allSetting, updateSettings } = useProfileStore();
+
   const [content, setContent] = useState<string>("");
   const [notiEnable, setNotiEnable] = useState(false);
+  const [size, setSize] = useState(false);
   const [isAddingSignature, setIsAddingSignature] = useState(false);
   const [signatureName, setSignatureName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedReply, setSelectedReply] = useState("replyOne");
   const [signatures, setSignatures] = useState<
     Array<{ name: string; content: string }>
   >([]);
   const [selectedSignature, setSelectedSignature] = useState<string | null>(
     null
   );
+
   const inputRef = useRef<HTMLInputElement>(null);
 
-  console.log(signatures);
-  
+  useEffect(() => {
+    if (allSetting.compose) {
+      const {
+        useDefaultBrowserComposer,
+        composerFullScreen,
+        signature,
+        replay,
+      } = allSetting.compose;
+
+      setNotiEnable(!!useDefaultBrowserComposer);
+      setSize(composerFullScreen);
+      setSignatures(signature || []);
+      setSelectedReply(replay || "replyOne");
+    }
+  }, [allSetting]);
+
+  interface ComposerSettings extends Record<string, unknown> {
+    useDefaultBrowserComposer?: boolean;
+    composerFullScreen?: boolean;
+    signature?: { name: string; content: string }[];
+    reply?: string;
+  }
+
+  const updateComposer = async (obj: ComposerSettings) => {
+    setIsLoading(true);
+
+    try {
+      await updateSettings("compose", obj);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (value: string) => {
     setContent(value);
@@ -68,9 +108,10 @@ const Composer = () => {
       }
 
       setSignatures(updatedSignatures);
-      console.log("Saved Signature Data:", newSignature);
       setIsAddingSignature(false);
       setSelectedSignature(signatureName);
+
+      updateComposer({ signature: updatedSignatures });
     } else {
       console.log("Please provide both a signature name and content");
     }
@@ -94,6 +135,8 @@ const Composer = () => {
       setSelectedSignature(null);
       setSignatureName("");
       setContent("");
+
+      updateComposer({ signature: updatedSignatures });
     }
   };
 
@@ -110,13 +153,32 @@ const Composer = () => {
     }
   }, [isAddingSignature]);
 
+  const handleBrowserComposer = () => {
+    const newNotiEnable = !notiEnable;
+
+    setNotiEnable(newNotiEnable);
+    updateComposer({ useDefaultBrowserComposer: newNotiEnable });
+  };
+
+  const handleSize = () => {
+    const newSize = !size;
+    setSize(newSize);
+    updateComposer({ composerFullScreen: newSize });
+  };
+
+  const handleReplyChange = (value: string) => {
+    setSelectedReply(value);
+    updateComposer({ replay: value });
+  };
+
   return (
     <div>
+      {isLoading && <Spinner className="absolute" />}
       <SettingDiv>
         <SettingTitle>Default Browser Composer</SettingTitle>
         <Button
           className="w-fit px-4"
-          onClick={() => setNotiEnable(!notiEnable)}
+          onClick={handleBrowserComposer}
           variant={!notiEnable ? "primary" : "secondary"}
         >
           {!notiEnable ? (
@@ -131,7 +193,11 @@ const Composer = () => {
         <SettingTitle>Compose size</SettingTitle>
         <div className="flex gap-10 cursor-pointer">
           <div className="flex items-center space-x-2">
-            <Switch id="airplane-mode" />
+            <Switch
+              id="airplane-mode"
+              checked={size}
+              onCheckedChange={handleSize}
+            />
             <Label htmlFor="airplane-mode" className="font-normal">
               Compose full screen
             </Label>
@@ -229,7 +295,11 @@ const Composer = () => {
 
       <div className="mt-2 flex gap-3">
         <motion.div>
-          <Button className="w-28 hover:bg-core-lite" variant={"primary"} onClick={handleSave}>
+          <Button
+            className="w-28 hover:bg-core-lite"
+            variant={"primary"}
+            onClick={handleSave}
+          >
             Save
           </Button>
         </motion.div>
@@ -240,20 +310,22 @@ const Composer = () => {
         </motion.div>
       </div>
 
-      <SettingDiv>
-        <SettingTitle>Reply</SettingTitle>
-        <SettingDiv>
-          <RadioGroup defaultValue="Reply-one">
-            <div className="flex items-center space-x-3">
-              <RadioGroupItem value="Reply-one" id="Reply-one" />
-              <Label htmlFor="Reply-one">Reply One</Label>
-            </div>
-            <div className="flex items-center space-x-3">
-              <RadioGroupItem value="Reply All" id="Reply All" />
-              <Label htmlFor="Reply All">Reply All</Label>
-            </div>
-          </RadioGroup>
-        </SettingDiv> 
+      <SettingDiv className="mt-10">
+        <SettingTitle>Reply mode</SettingTitle>
+        <RadioGroup
+          value={selectedReply}
+          onValueChange={handleReplyChange}
+          className="flex gap-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="replyOne" id="replyOne" />
+            <Label htmlFor="replyOne">Reply to one</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="replyAll" id="replyAll" />
+            <Label htmlFor="replyAll">Reply to all</Label>
+          </div>
+        </RadioGroup>
       </SettingDiv>
     </div>
   );

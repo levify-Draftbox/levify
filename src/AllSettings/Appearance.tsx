@@ -9,7 +9,6 @@ const Appearance = () => {
   const { allSetting, updateSettings } = useProfileStore();
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (allSetting?.appearance?.layout === "Horizontal") {
@@ -40,12 +39,10 @@ const Appearance = () => {
 
   const updateAppearance = async (obj: AppearanceSettings) => {
     setIsLoading(true);
-    setError(null);
     try {
       await updateSettings("appearance", obj);
     } catch (error) {
       console.error("Error updating settings:", error);
-      setError("Failed to update settings. Please try again.");
     } finally {
       setIsLoading(false);
     }
