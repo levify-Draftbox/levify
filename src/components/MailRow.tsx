@@ -25,7 +25,7 @@ const Mail: React.FC<Partial<{
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className={cn(
-            "w-full h-[50px] border-b py-3 px-4 flex justify-between items-center hover:shadow-lg cursor-pointer text-[15px] font-thin",
+            "w-full h-[50px] border-b py-3 px-4 flex justify-between items-center hover:shadow-md cursor-pointer text-[15px] font-thin",
             unread ? "font-medium" : ""
           )}
         >
