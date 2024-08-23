@@ -29,6 +29,9 @@ const Composer = () => {
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
+  console.log(signatures);
+  
+
   const handleChange = (value: string) => {
     setContent(value);
   };

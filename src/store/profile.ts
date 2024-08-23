@@ -2,9 +2,10 @@ import { create } from "zustand";
 import api from "@/lib/api";
 
 interface SettingsState {
-  allSetting: { [_: string]: any }
-  emails: string[]
-  load: boolean
+  allSetting: { [_: string]: any };
+  emails: string[];
+  profile: { [_: string]: any };
+  load: boolean;
   fetchAllProfiles: () => Promise<void>;
   updateSettings: (
     type: string,
@@ -16,18 +17,19 @@ let updateInProgress = false;
 
 export const useProfileStore = create<SettingsState>()((set) => ({
   allSetting: {},
+  profile: {},
   emails: [],
   load: false,
   fetchAllProfiles: async () => {
     try {
       const response = await api.get("/profile/all");
-      set(s => ({
+      set((s) => ({
         ...s,
         allSetting: response.data.setting,
         emails: response.data.emails,
+        profile: response.data.profile,
         load: true,
       }));
-
     } catch (error) {
       console.error("Failed to fetch settings:", error);
     }
@@ -36,7 +38,6 @@ export const useProfileStore = create<SettingsState>()((set) => ({
     if (updateInProgress) return;
 
     console.log(type);
-
 
     updateInProgress = true;
     try {
@@ -49,8 +50,6 @@ export const useProfileStore = create<SettingsState>()((set) => ({
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
-
 
       if (response.data.success) {
         set((state) => ({
@@ -59,9 +58,9 @@ export const useProfileStore = create<SettingsState>()((set) => ({
             ...state.allSetting,
             [type]: {
               ...state.allSetting[type],
-              ...newSettings
-            }
-          }
+              ...newSettings,
+            },
+          },
         }));
       } else {
         console.error(

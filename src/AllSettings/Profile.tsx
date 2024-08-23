@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SettingDiv, SettingTitle } from "./components";
 import { Input } from "@/components/ui/input";
@@ -25,9 +25,12 @@ const Profile = () => {
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [chengePassword, setchengePassword] = useState<boolean>(false);
-
   const { emails: userEmails } = useProfileStore();
-  console.log(userEmails);
+  const { profile } = useProfileStore();
+
+  useEffect(() => {
+
+  }, [profile]);
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -244,12 +247,20 @@ const Profile = () => {
           </div>
 
           {chengePassword && (
-            <ResizeableModel size={{ width: "500px" }} onClose={()=>{}} key="password">
+            <ResizeableModel
+              size={{ width: "500px" }}
+              onClose={() => {}}
+              key="password"
+            >
               <div className=" py-6 px-6">
                 <div className=" ">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-medium">Change password</h3>
-                    <Button variant={"toolbutton"} className="h-8" onClick={() => setchengePassword(!chengePassword)}>
+                    <Button
+                      variant={"toolbutton"}
+                      className="h-8"
+                      onClick={() => setchengePassword(!chengePassword)}
+                    >
                       <X size={18} />
                     </Button>
                   </div>
