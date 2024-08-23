@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SettingDiv, SettingTitle } from "./components";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
+import Cropper, { Area } from "react-easy-crop";
 import {
   Select,
   SelectContent,
@@ -15,18 +16,25 @@ import { useProfileStore } from "@/store/profile";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import getCroppedImg from "@/lib/cropImage"; // You'll need to implement this utility
+import ResizeableModel from "@/components/ui/ResizeableModel";
 
 const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const { emails: userEmails } = useProfileStore();
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
 
-  const [Email] = useState(userEmails[0]);
-  const [defaultEmail] = useState("");
-
-  console.log(Email);
-
-  console.log(defaultEmail);
+  const onCropComplete = useCallback(
+    (croppedArea: Area, croppedAreaPixels: Area) => {
+      setCroppedArea(croppedAreaPixels);
+      console.log(croppedArea);
+    },
+    []
+  );
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -34,20 +42,32 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
+        setShowMenu(false);
       };
       reader.readAsDataURL(file);
     }
-    setShowMenu(false);
+  };
+
+  const handleCropImage = async () => {
+    if (image && croppedArea) {
+      const croppedImage = await getCroppedImg(image, croppedArea);
+      setCroppedImage(croppedImage);
+      setImage("");
+    }
+  };
+
+  const handleDiscard = () => {
+    setImage("");
   };
 
   const handleGravatar = () => {
     const gravatarUrl = "https://www.gravatar.com/avatar/YOUR_HASH";
-    setImage(gravatarUrl);
+    setCroppedImage(gravatarUrl);
     setShowMenu(false);
   };
 
   const handleRemovePhoto = () => {
-    setImage(null);
+    setCroppedImage("");
     setShowMenu(false);
   };
 
@@ -62,9 +82,9 @@ const Profile = () => {
             <div className="flex w-fit">
               <Tooltip tip="Your Profile">
                 <img
-                  src={image || ""}
+                  src={croppedImage || ""}
                   alt="Profile"
-                  className="w-14 h-14 object-cover object-top  rounded-full"
+                  className="w-14 h-14  rounded-full"
                 />
               </Tooltip>
             </div>
@@ -89,7 +109,7 @@ const Profile = () => {
                 <ul>
                   <li>
                     <button
-                      className="block text-sm px-4 py-2 hover:bg-secondary v w-full text-left"
+                      className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
                       onClick={() =>
                         document.getElementById("fileInput")?.click()
                       }
@@ -105,7 +125,7 @@ const Profile = () => {
                       From Gravatar
                     </button>
                   </li>
-                  {image && (
+                  {croppedImage && (
                     <li>
                       <button
                         className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
@@ -129,6 +149,38 @@ const Profile = () => {
           </div>
         </SettingDiv>
 
+        {image && (
+          <ResizeableModel key="qwdiuq" onClose={handleDiscard}>
+            <div className="relative h-[600px] w-[900px]">
+              <Cropper
+                image={image}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+            <div className="flex justify-end gap-4 px-3">
+              <Button
+                className="w-fit"
+                variant={"primary"}
+                onClick={handleCropImage}
+              >
+                Save
+              </Button>
+              <Button
+                className="w-fit"
+                variant="secondary"
+                onClick={handleDiscard}
+              >
+                Discard
+              </Button>
+            </div>
+          </ResizeableModel>
+        )}
+
         <SettingTitle>Name and Email</SettingTitle>
         <div className="border"></div>
         <SettingDiv>
@@ -141,17 +193,15 @@ const Profile = () => {
             <label htmlFor="">Default email</label>
             <Select>
               <SelectTrigger className="w-72">
-                <SelectValue placeholder="Select a email" />
+                <SelectValue placeholder="Select an email" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {userEmails.map((e, i) => {
-                    return (
-                      <SelectItem key={i} value={e} dontShowCheck>
-                        {e}
-                      </SelectItem>
-                    );
-                  })}
+                  {userEmails.map((e, i) => (
+                    <SelectItem key={i} value={e} dontShowCheck>
+                      {e}
+                    </SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -172,14 +222,14 @@ const Profile = () => {
         <SettingDiv>
           <div>
             <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Chenge password
+              Change password
             </h2>
             <div className="flex items-center justify-between">
               <p className="text-xs  text-slate-400">
                 Add an additional layer of security to your account during login
               </p>
               <Button variant={"secondary"} className="w-fit">
-                chenge password
+                Change password
               </Button>
             </div>
           </div>
