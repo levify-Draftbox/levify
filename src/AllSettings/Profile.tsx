@@ -18,12 +18,17 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import getCroppedImg from "@/lib/cropImage"; // You'll need to implement this utility
 import ResizeableModel from "@/components/ui/ResizeableModel";
+import { X } from "@phosphor-icons/react";
 
 const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [chengePassword, setchengePassword] = useState<boolean>(false);
+
   const { emails: userEmails } = useProfileStore();
+  console.log(userEmails);
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
@@ -104,7 +109,7 @@ const Profile = () => {
               <motion.div
                 initial={{ y: -30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="absolute mt-2 bg-white border rounded-md border-gray-300 shadow-lg dark:bg-black"
+                className="absolute mt-2 border bg-white rounded-md border-gray-300 shadow-lg dark:bg-black"
               >
                 <ul>
                   <li>
@@ -228,11 +233,45 @@ const Profile = () => {
               <p className="text-xs  text-slate-400">
                 Add an additional layer of security to your account during login
               </p>
-              <Button variant={"secondary"} className="w-fit">
+              <Button
+                variant={"secondary"}
+                onClick={() => setchengePassword(!chengePassword)}
+                className="w-fit"
+              >
                 Change password
               </Button>
             </div>
           </div>
+
+          {chengePassword && (
+            <ResizeableModel size={{ width: "500px" }} onClose={()=>{}} key="password">
+              <div className=" py-6 px-6">
+                <div className=" ">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium">Change password</h3>
+                    <Button variant={"toolbutton"} className="h-8" onClick={() => setchengePassword(!chengePassword)}>
+                      <X size={18} />
+                    </Button>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Password must contain at least one uppercase letter, one
+                    special character, one number, and be at least 6 characters
+                    long
+                  </p>
+                </div>
+                <div className=" mt-4">
+                  <Input type="password" label="Enter your current password" />
+                  <Input type="password" label="Enter a new password" />
+                  <Input type="password" label="Confirm your new password" />
+                  <div className="mt-4 w-full flex justify-end">
+                    <Button className="w-fit " variant={"primary"}>
+                      Change password
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </ResizeableModel>
+          )}
           <SettingDiv>
             <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
               2-Step Verification
