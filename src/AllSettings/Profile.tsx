@@ -22,7 +22,7 @@ const Profile = () => {
   const { emails: userEmails } = useProfileStore();
 
   const [Email] = useState(userEmails[0]);
-  const [defaultEmail,] = useState("");
+  const [defaultEmail] = useState("");
 
   console.log(Email);
 
@@ -55,6 +55,8 @@ const Profile = () => {
     <div>
       <SettingDiv>
         <SettingTitle>My Profile</SettingTitle>
+        <div className="border"></div>
+
         <SettingDiv>
           <div className="flex items-center gap-6">
             <div className="flex w-fit">
@@ -128,11 +130,16 @@ const Profile = () => {
         </SettingDiv>
 
         <SettingTitle>Name and Email</SettingTitle>
+        <div className="border"></div>
         <SettingDiv>
-          <Input type="text" label="Full name" className="w-72" />
+          <div className="flex justify-between items-center">
+            <label htmlFor="ravi">Full name</label>
+            <Input id="ravi" type="text" className="w-72" />
+          </div>
 
-          <SettingDiv>
-            <Select label="Defaul Email">
+          <SettingDiv className="flex items-center justify-between mt-5">
+            <label htmlFor="">Default email</label>
+            <Select>
               <SelectTrigger className="w-72">
                 <SelectValue placeholder="Select a email" />
               </SelectTrigger>
@@ -150,31 +157,41 @@ const Profile = () => {
             </Select>
           </SettingDiv>
 
-          <SettingDiv>
-            <p className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-white">
-              Name in mail
-            </p>
-            <div className="mt-5 flex gap-3">
-              <Switch id="nikname" />
-              <Label htmlFor="nikname" className="font-normal">
-                Show Nickname in email
-              </Label>
-            </div>
-          </SettingDiv>
+          <label htmlFor="nikname">Name in mail</label>
+          <div className=" flex items-center justify-between">
+            <Label htmlFor="nikname" className="font-normal text-slate-400">
+              Show Nickname in email
+            </Label>
+            <Switch id="nikname" />
+          </div>
         </SettingDiv>
 
         <SettingTitle>Password and Security</SettingTitle>
+        <div className="border"></div>
+
         <SettingDiv>
-          <Input type="password" className="w-72" label="Change Password" />
+          <div>
+            <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+              Chenge password
+            </h2>
+            <div className="flex items-center justify-between">
+              <p className="text-xs  text-slate-400">
+                Add an additional layer of security to your account during login
+              </p>
+              <Button variant={"secondary"} className="w-fit">
+                chenge password
+              </Button>
+            </div>
+          </div>
           <SettingDiv>
             <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
               2-Step Verification
             </h2>
-            <div className="mt-4 flex items-center gap-3">
-              <Switch id="nikname" />
+            <div className="mt-4 flex items-center justify-between gap-3">
               <p className="text-xs  text-slate-400">
                 Add an additional layer of security to your account during login
               </p>
+              <Switch id="nikname" />
             </div>
 
             <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
