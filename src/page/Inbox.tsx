@@ -63,7 +63,7 @@ const Inbox = () => {
       if (mode == "append") {
         setEmailList(l => [mail, ...l])
         if (notify) {
-          if (document.hasFocus()){
+          if (document.hasFocus()) {
             toast.success(`New message from: ${mail.b_from}`, {
               description: mail.b_subject
             })
@@ -96,7 +96,7 @@ const Inbox = () => {
     if (index >= emailList.length) {
       return (
         <div className="mt-6 flex justify-center w-full">
-          <Spinner size={30}/>
+          <Spinner size={30} />
         </div>
       );
     }
@@ -104,7 +104,7 @@ const Inbox = () => {
     const email = emailList[index];
     return <MailRow onClick={() => {
       setEmailOpen(true)
-      setOpenEmailId(index)
+      setOpenEmail(email)
       setUnread(email.id, false)
     }} {...email} />
   };
@@ -144,7 +144,7 @@ const Inbox = () => {
   }, [rowVirtualizer.virtualItems, hasMore, isLoading, emailList.length]);
 
   const [emailOpen, setEmailOpen] = useState(false)
-  const [openEmailId, setOpenEmailId] = useState(0)
+  const [openEmail, setOpenEmail] = useState<EmailObject>()
 
   return (
     <div className="w-full flex flex-col flex-1 overflow-hidden">
@@ -200,7 +200,7 @@ const Inbox = () => {
           emailOpen &&
           <>
             <ResizablePanel minSize={30} maxSize={55} defaultSize={20} >
-              <MailViewer key={openEmailId} email={emailList[openEmailId]} />
+              <MailViewer key={openEmail?.id || 0} email={openEmail as EmailObject} />
             </ResizablePanel>
           </>
         }
