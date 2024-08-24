@@ -28,7 +28,7 @@ const Composer = () => {
   const [signatureName, setSignatureName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedReply, setSelectedReply] = useState("replyOne");
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [, setIsFirstLoad] = useState(true);
   const [signatures, setSignatures] = useState<
     Array<{ name: string; content: string }>
   >([]);
@@ -252,14 +252,7 @@ const Composer = () => {
           <div className="mt-2">
             <AnimatePresence mode="wait">
               {signatures.length > 0 && !isAddingSignature ? (
-                <motion.div
-                  key="select"
-                  initial={isFirstLoad ? { opacity: 0, y: -20 } : false}
-                  animate={isFirstLoad ? { opacity: 1, y: 0 } : {}}
-                  exit={isFirstLoad ? { opacity: 0, y: 20 } : {}}
-                  transition={{ duration: 0.3 }}
-                  className="flex gap-3"
-                >
+                <motion.div className="flex gap-3">
                   <Select
                     onValueChange={handleSelectSignature}
                     value={selectedSignature || undefined}
@@ -285,13 +278,7 @@ const Composer = () => {
                   </div>
                 </motion.div>
               ) : (
-                <motion.div
-                  key="input"
-                  initial={isFirstLoad ? { opacity: 0, y: -20 } : false}
-                  animate={isFirstLoad ? { opacity: 1, y: 0 } : {}}
-                  exit={isFirstLoad ? { opacity: 0, y: 20 } : {}}
-                  transition={{ duration: 0.3 }}
-                >
+                <motion.div key="input">
                   <Input
                     ref={inputRef}
                     className="w-full"
