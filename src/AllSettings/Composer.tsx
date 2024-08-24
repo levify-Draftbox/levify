@@ -28,6 +28,7 @@ const Composer = () => {
   const [signatureName, setSignatureName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedReply, setSelectedReply] = useState("replyOne");
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [signatures, setSignatures] = useState<
     Array<{ name: string; content: string }>
   >([]);
@@ -50,6 +51,14 @@ const Composer = () => {
       setSize(composerFullScreen);
       setSignatures(signature || []);
       setSelectedReply(replay || "replyOne");
+
+      // Set the first signature as the selected one when the component mounts
+      if (signature && signature.length > 0) {
+        setSelectedSignature(signature[0].name);
+        setSignatureName(signature[0].name);
+        setContent(signature[0].content);
+      }
+      setIsFirstLoad(false);
     }
   }, [allSetting]);
 
@@ -123,6 +132,23 @@ const Composer = () => {
     if (signature) {
       setSignatureName(signature.name);
       setContent(signature.content);
+    }
+  };
+
+  const handleDiscard = () => {
+    setSignatureName("");
+    setContent("");
+    setIsAddingSignature(false);
+
+    // Reset selected signature to the previously selected one if exists
+    if (selectedSignature) {
+      const signature = signatures.find(
+        (sig) => sig.name === selectedSignature
+      );
+      if (signature) {
+        setSignatureName(signature.name);
+        setContent(signature.content);
+      }
     }
   };
 
@@ -228,9 +254,9 @@ const Composer = () => {
               {signatures.length > 0 && !isAddingSignature ? (
                 <motion.div
                   key="select"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
+                  initial={isFirstLoad ? { opacity: 0, y: -20 } : false}
+                  animate={isFirstLoad ? { opacity: 1, y: 0 } : {}}
+                  exit={isFirstLoad ? { opacity: 0, y: 20 } : {}}
                   transition={{ duration: 0.3 }}
                   className="flex gap-3"
                 >
@@ -261,9 +287,9 @@ const Composer = () => {
               ) : (
                 <motion.div
                   key="input"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
+                  initial={isFirstLoad ? { opacity: 0, y: -20 } : false}
+                  animate={isFirstLoad ? { opacity: 1, y: 0 } : {}}
+                  exit={isFirstLoad ? { opacity: 0, y: 20 } : {}}
                   transition={{ duration: 0.3 }}
                 >
                   <Input
@@ -277,6 +303,7 @@ const Composer = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
             <motion.div
               className="mt-2"
               initial={{ opacity: 0 }}
@@ -304,7 +331,11 @@ const Composer = () => {
           </Button>
         </motion.div>
         <motion.div>
-          <Button className="w-28" variant={"secondary"}>
+          <Button
+            className="w-28"
+            variant={"secondary"}
+            onClick={handleDiscard}
+          >
             Discard
           </Button>
         </motion.div>
