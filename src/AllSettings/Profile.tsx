@@ -315,7 +315,7 @@ const Profile = () => {
           {changePassword && (
             <ResizeableModel
               size={{ width: "500px" }}
-              onClose={() => {}}
+              onClose={() => setChangePassword(false)}
               key="password"
               modalKey="password"
             >
