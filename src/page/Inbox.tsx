@@ -95,7 +95,7 @@ const Inbox = () => {
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
       return (
-        <div className="mt-6 flex justify-center w-full">
+        <div className="my-6 flex justify-center w-full">
           <Spinner size={30} />
         </div>
       );

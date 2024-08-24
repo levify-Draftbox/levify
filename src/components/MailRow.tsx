@@ -11,7 +11,7 @@ import { EmailObject } from "@/page/Inbox";
 import moment from "moment"
 import { cn } from "@/lib/utils";
 
-const Mail: React.FC<Partial<{
+const MailRow: React.FC<Partial<{
   onClick: () => void
 } & EmailObject>> = ({ onClick, b_subject, b_from, from_profile, b_datetime, unread, b_from_name, b_text }) => {
   return (
@@ -34,7 +34,7 @@ const Mail: React.FC<Partial<{
               <Star size={15} />
             </Button>
             <div className="min-w-[130px] w-[18%]">
-            <p className="w-full overflow-hidden">{getUserName(b_from_name, b_from as string)}</p>
+              <p className="w-full overflow-hidden">{getUserName(b_from_name, b_from as string)}</p>
             </div>
             <p className="max-w-[60%] font-thin flex items-center whitespace-nowrap overflow-hidden">
               {unread && <div className="w-[10px] h-[10px] bg-core rounded-full mr-3"></div>}
@@ -82,4 +82,4 @@ function getUserName(fromName: string | undefined, fromEmail: string): string {
 }
 
 
-export default Mail;
+export default MailRow;
