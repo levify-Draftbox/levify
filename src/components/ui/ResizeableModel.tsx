@@ -4,20 +4,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./resizable";
 import ScrollArea from "./ScrollArea";
 import useEscKeyStore from "@/store/escStack";
+import { cn } from "@/lib/utils";
 
 type ModalProps = {
   onClose: () => void;
   children: ReactNode;
   key: string;
+  modalKey?: string;
   size?: {
     width?: string;
     height?: string;
   };
 };
 
-const ResizeableModel: FC<ModalProps> = ({ onClose, children, key, size }) => {
+const ResizeableModel: FC<ModalProps> = ({ onClose, children, key, modalKey, size }) => {
   const { pushEsc, popEsc } = useEscKeyStore()
-  useEffect(() => pushEsc(`modal-${key}`, () => setIsVisible(false)), [])
+  useEffect(() => pushEsc(`modal-${modalKey || key}`, () => setIsVisible(false)), [])
 
   const [isVisible, setIsVisible] = useState(true);
   const portalRoot = document.querySelector("#reactPortal");
@@ -54,11 +56,16 @@ const ResizeableModel: FC<ModalProps> = ({ onClose, children, key, size }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ ease: "easeInOut", duration: 0.15 }}
-          className="z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop dark:bg-opacity-80 "
+          className={cn(
+            `modal--backdrop-${modalKey || key}`,
+            "z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 dark:bg-opacity-80"
+          )}
           onClick={(e) => {
             if (
-              (e.target as HTMLElement).classList.contains("modal--backdrop")
+              (e.target as HTMLElement).classList.contains(`modal--backdrop-${modalKey || key}`)
             ) {
+              console.log(111);
+
               handleCloseModal();
             }
           }}

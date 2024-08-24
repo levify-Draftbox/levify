@@ -16,9 +16,8 @@ import { useProfileStore } from "@/store/profile";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import getCroppedImg from "@/lib/cropImage"; // You'll need to implement this utility
+import getCroppedImg from "@/lib/cropImage";
 import ResizeableModel from "@/components/ui/ResizeableModel";
-import { X } from "@phosphor-icons/react";
 
 const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -158,7 +157,7 @@ const Profile = () => {
         </SettingDiv>
 
         {image && (
-          <ResizeableModel key="qwdiuq" onClose={handleDiscard}>
+          <ResizeableModel modalKey="image-crop" key="image-crop" onClose={handleDiscard}>
             <div className="relative h-[600px] w-[900px]">
               <Cropper
                 image={image}
@@ -249,20 +248,16 @@ const Profile = () => {
           {chengePassword && (
             <ResizeableModel
               size={{ width: "500px" }}
-              onClose={() => {}}
+              onClose={() => {
+                setchengePassword(false)
+              }}
               key="password"
+              modalKey="password"
             >
               <div className=" py-6 px-6">
                 <div className=" ">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-medium">Change password</h3>
-                    <Button
-                      variant={"toolbutton"}
-                      className="h-8"
-                      onClick={() => setchengePassword(!chengePassword)}
-                    >
-                      <X size={18} />
-                    </Button>
                   </div>
                   <p className="text-xs text-slate-400 mt-1">
                     Password must contain at least one uppercase letter, one
@@ -283,6 +278,7 @@ const Profile = () => {
               </div>
             </ResizeableModel>
           )}
+
           <SettingDiv>
             <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
               2-Step Verification
