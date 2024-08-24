@@ -325,13 +325,6 @@ const Profile = () => {
                 <div className=" ">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-medium">Change password</h3>
-                    <Button
-                      variant={"toolbutton"}
-                      className="h-8"
-                      onClick={() => setchengePassword(!chengePassword)}
-                    >
-                      <X size={18} />
-                    </Button>
                   </div>
                   <p className="text-xs text-slate-400 mt-1">
                     Password must contain at least one uppercase letter, one
