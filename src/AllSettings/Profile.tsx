@@ -52,6 +52,8 @@ const Profile = () => {
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
       setCroppedArea(croppedAreaPixels);
+      console.log(croppedArea);
+      
     },
     []
   );
