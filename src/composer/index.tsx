@@ -419,11 +419,10 @@ const ComposerModal: React.FC<{
                 }
                 transition={{ ease: "easeInOut", duration: 0.4 }}
               >
-                Composer -
+                Composer -&nbsp;
               </motion.div>
-              &nbsp;
               <span className="flex-1 text-ellipsis overflow-hidden whitespace-nowrap">
-                {subject.trim() != "" ? subject : "New Message"} {composerId}
+                {subject.trim() != "" ? subject : "New Message"}
               </span>
             </div>
             <div className="flex gap-3 items-center pr-3">
