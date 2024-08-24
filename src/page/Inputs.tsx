@@ -3,11 +3,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import React, { useState } from "react";
+import useloadInboxModal from "@/store/loadinbox";
+import React, { useEffect, useState } from "react";
 
 function Inputs(): React.ReactNode {
 
     const [selectValue, setSelectValue] = useState("hello")
+    const {setLoad: loadInbox} = useloadInboxModal()
+
+    useEffect(() => {
+        loadInbox()
+    }, [])
 
     return (
         <>

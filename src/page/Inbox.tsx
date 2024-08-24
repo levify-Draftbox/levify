@@ -9,6 +9,7 @@ import { sendToWs, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
+import useloadInboxModal from "@/store/loadinbox";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -39,6 +40,8 @@ const Inbox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const { allSetting } = useProfileStore()
+
+  const { setLoad: setLoadInbox } = useloadInboxModal()
 
   function playSound() {
     const notificationSound = new Audio(allSetting?.notification?.notificationSound);
@@ -128,6 +131,7 @@ const Inbox = () => {
       setEmailList(prevEmails => [...prevEmails, ...res.data.emails]);
       setHasMore(res.data.hasMore);
       setPage(prevPage => prevPage + 1);
+      setLoadInbox()
     } catch (error) {
       console.error('Error fetching emails:', error);
     } finally {
