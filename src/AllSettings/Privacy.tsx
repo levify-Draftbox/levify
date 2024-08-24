@@ -1,18 +1,46 @@
+import { useState, useEffect } from "react";
 import { SettingDiv, SettingTitle } from "./components";
+import { useProfileStore } from "@/store/profile";
+import { Switch } from "@/components/ui/switch";
+import { Spinner } from "@/components/Spinner";
 
 const Privacy = () => {
+  const [loadExternal, setLoadExternal] = useState(false);
+  const { allSetting, updateSettings } = useProfileStore();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (allSetting && allSetting.privacy) {
+      setLoadExternal(allSetting.privacy.loadExternalImages);
+    }
+  }, [allSetting]);
+
+  const handleToggle = async (checked: boolean) => {
+    setLoadExternal(checked);
+    setIsLoading(true);
+
+    try {
+      await updateSettings("privacy", { loadExternalImages: checked });
+    } catch (error) {
+      console.error("Failed to update settings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div>
+    <div className="relative">
+      {isLoading && (
+        <div className="absolute ">
+          <Spinner />
+        </div>
+      )}
       <SettingTitle>Email Privacy</SettingTitle>
       <SettingDiv>
-        <div className="flex gap-10 cursor-pointer">
+        <div className="flex gap-10 cursor-pointer items-center">
           <p>Load external images or Sources</p>
-          <label className="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-core"></div>
-          </label>
+          <Switch checked={loadExternal} onCheckedChange={handleToggle} />
         </div>
-        
       </SettingDiv>
     </div>
   );
