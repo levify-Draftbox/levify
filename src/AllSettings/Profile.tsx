@@ -35,14 +35,12 @@ const Profile = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
-
-  console.log(profile);
   
   useEffect(() => {
     if (profile) {
       setNickname(profile.nickname || "");
       setFullName(profile.full_name || "");
-      setSelectedEmail(profile.email || "");
+      setSelectedEmail(profile.default_email || "");
       setShowNicknameInEmail(profile.showNicknameInEmail || false);
       setCroppedImage(profile.croppedImage || null);
     }
