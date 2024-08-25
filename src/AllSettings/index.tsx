@@ -25,18 +25,20 @@ type SidebarNavLinkProp = {
 
 const AllSettings = () => {
   const [activeSetting, setActiveSetting] = useState("profile");
+  const scrollChildDivRef = useRef<HTMLDivElement>(null);
+  const [childTop, setChildTop] = useState(true);
 
   const SidebarNavLink = (p: SidebarNavLinkProp) => {
     return (
       <Button
         variant={"navlink"}
-        active={activeSetting == p.setting}
+        active={activeSetting === p.setting}
         className={"mt-1 !py-0 px-[10px] !h-[30px] font-thin"}
         onClick={() => setActiveSetting(p.setting)}
       >
         <div className="flex gap-2">
           {p.icon}
-          <p className="text-sm ">{p.children}</p>
+          <p className="text-sm">{p.children}</p>
         </div>
       </Button>
     );
@@ -45,7 +47,7 @@ const AllSettings = () => {
   const SideBar = () => {
     return (
       <div className="px-2 py-3">
-        <div className="">
+        <div>
           <p className="text-xs px-3 py-1 font-medium text-gray-500 dark:text-gray-400">
             Account
           </p>
@@ -57,7 +59,7 @@ const AllSettings = () => {
           </SidebarNavLink>
           <SidebarNavLink
             icon={<ChatCenteredText size={18} />}
-            setting={"security"}
+            setting={"LanguageAndTime"}
           >
             Language and time
           </SidebarNavLink>
@@ -121,44 +123,37 @@ const AllSettings = () => {
     );
   };
 
-  const scrollChildDivRef = useRef<HTMLDivElement>(null);
-  const [childTop, setChildTop] = useState(true);
-  // const [childBottom, setChildBottom] = useState(false);
-
   useEffect(() => {
-    const sEvent = (e: any) => {
-      const { scrollTop /* , scrollHeight, clientHeight  */ } = e.target;
-      setChildTop(scrollTop === 0);
-      // setChildBottom(scrollTop + clientHeight >= scrollHeight);
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      setChildTop(target.scrollTop === 0);
     };
 
     const scrollDiv = scrollChildDivRef.current;
-    scrollDiv?.addEventListener("scroll", sEvent);
+    scrollDiv?.addEventListener("scroll", handleScroll);
 
     return () => {
-      scrollDiv?.removeEventListener("scroll", sEvent);
+      scrollDiv?.removeEventListener("scroll", handleScroll);
     };
-  }, [scrollChildDivRef.current]);
+  }, []);
 
   useEffect(() => {
-    if (scrollChildDivRef.current) {
-      scrollChildDivRef.current.scrollTo({
-        top: 0
-      })
-    }
-  },[activeSetting])
+    scrollChildDivRef.current?.scrollTo({ top: 0 });
+  }, [activeSetting]);
 
   return (
-    /* @ts-ignore */
-    <ModalSidebarLayout sidebar={<SideBar />} sizebarSize={22} ref={scrollChildDivRef}>
+    <ModalSidebarLayout
+      sidebar={<SideBar />}
+      sizebarSize={22}
+    >
       {SettingsList[activeSetting] ? (
-        <div className="h-full flex flex-col" >
+        <div className="h-full flex flex-col">
           <div
             className={`flex flex-col sticky top-0 bg-background-secondary py-5 px-16 gap-1 ${
               !childTop ? "border-b" : ""
             } z-[9]`}
           >
-            <h1 className={`text-2xl font-[500] `}>
+            <h1 className="text-2xl font-[500]">
               {SettingsList[activeSetting].name}
             </h1>
             {SettingsList[activeSetting].description && (

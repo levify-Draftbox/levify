@@ -1,5 +1,6 @@
 import Appearance from "./Appearance";
 import Composer from "./Composer";
+import LanguageAndTime from "./LanguageAndTime";
 import Notification from "./Notification";
 import Privacy from "./Privacy";
 import Profile from "./Profile";
@@ -22,9 +23,14 @@ const SettingsList: {
     name: "Your Plan",
     component: <>Your Plan!</>,
   },
-  security: {
-    name: "Security And 2FA",
-    component: <>Active 2FAI!</>,
+  LanguageAndTime: {
+    name: "Language and Time",
+    description: "Set your language and time zone for a tailored website experience.",
+    component: <LanguageAndTime selectedLanguage={""} selectedTimeZone={""} onLanguageChange={function (value: string): void {
+      throw new Error("Function not implemented.");
+    } } onTimeZoneChange={function (value: string): void {
+      throw new Error("Function not implemented.");
+    } } />,
   },
   appearance: {
     name: "Appearance",
@@ -45,8 +51,7 @@ const SettingsList: {
   },
   Composer: {
     name: "Composer",
-    description:
-      "Customize email composition preferences and settings.",
+    description: "Customize email composition preferences and settings.",
     component: <Composer />,
   },
   Filter: {
