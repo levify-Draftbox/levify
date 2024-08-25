@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, ReactNode, useRef } from "react";
+import React, { FC, useState, useEffect, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./resizable";
@@ -97,12 +97,6 @@ export const ModalSidebarLayout: React.FC<ModalSidebarLayoutProps> = ({
   sidebar,
   sizebarSize = 25,
 }) => {
-  let divRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    console.log("123");
-    
-  }, [children])
-
   return (
     <div className="h-full w-full">
       <ResizablePanelGroup
@@ -121,7 +115,7 @@ export const ModalSidebarLayout: React.FC<ModalSidebarLayoutProps> = ({
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel>
-          <div ref={divRef} className="h-full overflow-auto scroll-bar bg-background-secondary">
+          <div className="h-full overflow-auto scroll-bar bg-background-secondary">
             {children}
           </div>
         </ResizablePanel>

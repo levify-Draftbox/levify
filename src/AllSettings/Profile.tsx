@@ -29,11 +29,16 @@ const Profile = () => {
   const [nickname, setNickname] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [showNicknameInEmail, setShowNicknameInEmail] =
+  const [_, setShowNicknameInEmail] =
     useState<boolean>(false);
-  const { emails: userEmails, profile, updateSettings } = useProfileStore();
+  const [nameInEmail, setnameInEmail] = useState<boolean | null>(false);
+  const {
+    emails: userEmails,
+    profile,
+    updateSettings,
+    allSetting,
+  } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
-
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
@@ -41,16 +46,23 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error] = useState("");
-  const [isDisabled, setIsDisabled] = useState(false);  const [finalImg, setFinalImg] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+   const [finalImg, setFinalImg] = useState("");
   const [fileType, setFileType] = useState<string | null>("");
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   useEffect(() => {
     if (profile) {
+      setIsImageLoading(true);
       setNickname(profile.nickname || "");
       setFullName(profile.full_name || "");
       setSelectedEmail(profile.default_email || "");
       setShowNicknameInEmail(profile.showNicknameInEmail || false);
       setCroppedImage(profile.croppedImage || null);
+      console.log(allSetting.profile?.image);
+      
+      setFinalImg(allSetting.profile?.image || "");
+      setIsImageLoading(false);
     }
   }, [profile]);
 
@@ -98,25 +110,28 @@ const Profile = () => {
 
   const handleCropImage = async () => {
     if (image && croppedArea) {
-      const rowImg = await getCroppedImg(image, croppedArea);
-
-      const blob = await fetch(rowImg as string).then((r) => r.blob());
-      console.log(blob);
-
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(blob);
-      reader.onloadend = async function () {
-        const response = await api.post("/fo", reader.result, {
-          headers: {
-            "X-File-Name": fileType,
-          },
-        });
-        const img = response.data.url;
-        setFinalImg(img);
-        await updateProfile({ img });
-      };
-      setImage("");
-      // Update profile with cropped image
+      try {
+        setIsImageLoading(true);
+        const rowImg = await getCroppedImg(image, croppedArea);
+        const blob = await fetch(rowImg as string).then((r) => r.blob());
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = async function () {
+          const response = await api.post("/fo", reader.result, {
+            headers: {
+              "X-File-Name": fileType,
+            },
+          });
+          const image = response.data.url;
+          setFinalImg(image);
+          await updateProfile({ image });
+        };
+        setImage("");
+      } catch (error) {
+        console.error("Error cropping image:", error);
+      } finally {
+        setIsImageLoading(false);
+      }
     }
   };
 
@@ -124,19 +139,29 @@ const Profile = () => {
     setImage("");
   };
 
-  const handleGravatar = () => {
-    const gravatarUrl = "https://www.gravatar.com/avatar/YOUR_HASH";
-    setCroppedImage(gravatarUrl);
-    setShowMenu(false);
-
-    updateProfile({ croppedImage: gravatarUrl });
+  const handleGravatar = async () => {
+    try {
+      setIsImageLoading(true);
+      const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
+      setCroppedImage(gravatarUrl);
+      setShowMenu(false);
+      await updateProfile({ image: gravatarUrl });
+    } catch (error) {
+      console.error("Error updating profile with Gravatar image:", error);
+    } finally {
+      setIsImageLoading(false);
+    }
   };
 
-  const handleRemovePhoto = () => {
-    setCroppedImage("");
-    setShowMenu(false);
-
-    updateProfile({ croppedImage: "" });
+  const handleRemovePhoto = async () => {
+    try {
+      setIsImageLoading(true);
+      setCroppedImage("");
+      setShowMenu(false);
+      await updateProfile({ image: "" });
+    } finally {
+      setIsImageLoading(false);
+    }
   };
 
   const handleSubmit = () => {
@@ -148,6 +173,7 @@ const Profile = () => {
     });
   };
 
+  // @ts-ignore
   const handleLogOut = () => {
     localStorage.removeItem("token");
     window.location.reload();
@@ -175,6 +201,14 @@ const Profile = () => {
     }
   };
 
+  const handleNameSwitch = () => {
+    setnameInEmail(!nameInEmail);
+    const value = nameInEmail;
+    updateProfile({ nameInMail: value });
+  };
+
+  console.log(selectedEmail);
+
   return (
     <div>
       <SettingTitle>My Profile</SettingTitle>
@@ -182,13 +216,17 @@ const Profile = () => {
 
       <SettingDiv>
         <div className="flex items-center gap-6">
-          <div className="flex w-fit">
+          <div className="flex w-14 justify-center">
             <Tooltip tip="Your Profile">
-              <img
-                src={finalImg || ""}
-                alt="Profile"
-                className="w-14 h-14 rounded-full"
-              />
+              {isImageLoading ? (
+                <Spinner size={30} />
+              ) : (
+                <img
+                  src={finalImg || ""}
+                  alt="Profile"
+                  className="w-14 h-14 rounded-full"
+                />
+              )}
             </Tooltip>
           </div>
           <div>
@@ -196,6 +234,11 @@ const Profile = () => {
               id="nickname"
               label="Nickname"
               type="text"
+              onBlur={() => {
+                updateProfile({
+                  nickname,
+                });
+              }}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
@@ -259,11 +302,11 @@ const Profile = () => {
       </SettingDiv>
 
       {image && (
-         <ResizeableModel
-         modalKey="image-crop"
-         key="image-crop"
-         onClose={handleDiscard}
-       >
+        <ResizeableModel
+          modalKey="image-crop"
+          key="image-crop"
+          onClose={handleDiscard}
+        >
           <div className="relative h-[600px] w-[900px]">
             <Cropper
               image={image}
@@ -300,18 +343,27 @@ const Profile = () => {
 
       <SettingDiv>
         <div className="flex justify-between items-center">
-          <label htmlFor="fullname">Full name</label>
+        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+              Full name
+            </h2>
           <Input
             id="fullname"
             type="text"
             className="w-72"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
+            onBlur={() => {
+              updateProfile({
+                full_name: fullName,
+              });
+            }}
           />
         </div>
 
         <div className="flex items-center justify-between my-5">
-          <label htmlFor="email-select">Default email</label>
+        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+              Default email
+            </h2>
           <Select
             onValueChange={(value) => setSelectedEmail(value)}
             value={selectedEmail}
@@ -331,16 +383,22 @@ const Profile = () => {
           </Select>
         </div>
 
-        <label className="font-normal text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">Name in mail</label>
-        <div className="flex items-center justify-between">
-          <Label
-            htmlFor="nikname-switch"
-            className="font-normal text-slate-400"
-          >
-            Show Nickname in email
-          </Label>
-          <Switch id="nikname-switch" />
-        </div>
+        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Name in mail
+          </h2>
+          <div className="flex mt-1 items-center justify-between">
+            <Label
+              htmlFor="nikname-switch"
+              className="font-normal text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]"
+            >
+              Show full name in email
+            </Label>
+            <Switch
+              id="nikname-switch"
+              checked={nameInEmail as boolean}
+              onCheckedChange={handleNameSwitch}
+            />
+          </div>
       </SettingDiv>
 
       <SettingTitle>Password and Security</SettingTitle>
@@ -387,48 +445,48 @@ const Profile = () => {
                 </p>
               </div>
               <div className="mt-4">
+                <Input
+                  type="password"
+                  error={error}
+                  label="Enter your current password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  disabled={isDisabled}
+                />
+
+                <div className="mt-1">
                   <Input
                     type="password"
-                    error={error}
-                    label="Enter your current password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    label="Enter a new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                     disabled={isDisabled}
                   />
-
-                  <div className="mt-1">
-                    <Input
-                      type="password"
-                      label="Enter a new password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <Input
-                      type="password"
-                      label="Confirm your new password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  {error && (
-                    <p className="text-red-500 text-sm mt-2">{error}</p>
-                  )}
-                  <div className="mt-4 w-full flex justify-end">
-                    <Button
-                      className="w-40"
-                      onClick={() => {
-                        handleChengePassword();
-                      }}
-                      variant="primary"
-                    >
-                      {!isLoading ? `chenge password` : <Spinner />}
-                    </Button>
-                  </div>
                 </div>
+                <div className="mt-1">
+                  <Input
+                    type="password"
+                    label="Confirm your new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={isDisabled}
+                  />
+                </div>
+                {error && (
+                  <p className="text-red-500 text-sm mt-2">{error}</p>
+                )}
+                <div className="mt-4 w-full flex justify-end">
+                  <Button
+                    className="w-40"
+                    onClick={() => {
+                      handleChengePassword();
+                    }}
+                    variant="primary"
+                  >
+                    {!isLoading ? `chenge password` : <Spinner />}
+                  </Button>
+                </div>
+              </div>
             </div>
           </ResizeableModel>
         )}
@@ -437,7 +495,7 @@ const Profile = () => {
           2-Step Verification
         </h2>
         <div className="mt-2 flex items-center justify-between gap-3">
-        <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+          <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Add an additional layer of security to your account during login
           </p>
           <Switch id="2fa-switch" />
@@ -448,7 +506,7 @@ const Profile = () => {
         </h2>
 
         <div className="flex items-center justify-between">
-        <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+          <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Log out of all other active sessions on other devices besides
             this one.
           </p>

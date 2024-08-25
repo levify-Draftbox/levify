@@ -37,7 +37,7 @@ const Privacy = () => {
       )}
       <SettingTitle>Email Privacy</SettingTitle>
       <SettingDiv>
-        <div className="flex gap-10 cursor-pointer items-center">
+        <div className="flex gap-10 cursor-pointer items-center justify-between">
           <p>Load external images or Sources</p>
           <Switch checked={loadExternal} onCheckedChange={handleToggle} />
         </div>
