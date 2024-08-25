@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import getCroppedImg from "@/lib/cropImage";
 import ResizeableModel from "@/components/ui/ResizeableModel";
+import api from "@/lib/api";
+import { Spinner } from "@/components/Spinner";
 
 const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -35,6 +37,12 @@ const Profile = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);  const [finalImg, setFinalImg] = useState("");
+  const [fileType, setFileType] = useState<string | null>("");
 
   useEffect(() => {
     if (profile) {
@@ -58,7 +66,7 @@ const Profile = () => {
   interface ProfileSettings extends Record<string, unknown> {
     nickname?: string;
     full_name?: string;
-    email?: string;
+    default_email?: string;
     croppedImage?: string;
     showNicknameInEmail?: boolean;
   }
@@ -77,6 +85,7 @@ const Profile = () => {
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    setFileType(file?.type as string);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -89,12 +98,25 @@ const Profile = () => {
 
   const handleCropImage = async () => {
     if (image && croppedArea) {
-      const croppedImage = await getCroppedImg(image, croppedArea);
-      setCroppedImage(croppedImage);
-      setImage("");
+      const rowImg = await getCroppedImg(image, croppedArea);
 
+      const blob = await fetch(rowImg as string).then((r) => r.blob());
+      console.log(blob);
+
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(blob);
+      reader.onloadend = async function () {
+        const response = await api.post("/fo", reader.result, {
+          headers: {
+            "X-File-Name": fileType,
+          },
+        });
+        const img = response.data.url;
+        setFinalImg(img);
+        await updateProfile({ img });
+      };
+      setImage("");
       // Update profile with cropped image
-      // await updateProfile({ croppedImage });
     }
   };
 
@@ -118,13 +140,39 @@ const Profile = () => {
   };
 
   const handleSubmit = () => {
-    // Call updateProfile with all fields
+    const newemail = selectedEmail;
     updateProfile({
       nickname,
       full_name: fullName,
-      email: selectedEmail,
-      showNicknameInEmail,
+      default_email: newemail,
     });
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
+  const passwordData = {
+    currentPassword,
+    confirmPassword,
+  };
+
+  const handleChengePassword = async () => {
+    setIsDisabled(true);
+    setIsLoading(true);
+
+    try {
+      const response = await api.post("/profile/reset-password", passwordData);
+      console.log(response.data.error);
+    } catch (error: unknown) {
+      // setError(error.response.data.error);
+
+      // setError("An error occurred while changing the password.");
+    } finally {
+      setIsDisabled(false);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -137,7 +185,7 @@ const Profile = () => {
           <div className="flex w-fit">
             <Tooltip tip="Your Profile">
               <img
-                src={croppedImage || ""}
+                src={finalImg || ""}
                 alt="Profile"
                 className="w-14 h-14 rounded-full"
               />
@@ -211,7 +259,11 @@ const Profile = () => {
       </SettingDiv>
 
       {image && (
-        <ResizeableModel modalKey="image-crop" key="image-crop" onClose={handleDiscard}>
+         <ResizeableModel
+         modalKey="image-crop"
+         key="image-crop"
+         onClose={handleDiscard}
+       >
           <div className="relative h-[600px] w-[900px]">
             <Cropper
               image={image}
@@ -279,7 +331,7 @@ const Profile = () => {
           </Select>
         </div>
 
-        <label htmlFor="nikname-switch">Name in mail</label>
+        <label className="font-normal text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">Name in mail</label>
         <div className="flex items-center justify-between">
           <Label
             htmlFor="nikname-switch"
@@ -328,22 +380,55 @@ const Profile = () => {
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium">Change password</h3>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1">
                   Password must contain at least one uppercase letter, one
                   special character, one number, and be at least 6 characters
                   long
                 </p>
               </div>
-              <div className=" mt-4">
-                <Input type="password" label="Enter your current password" />
-                <Input type="password" label="Enter a new password" />
-                <Input type="password" label="Confirm your new password" />
-                <div className="mt-4 w-full flex justify-end">
-                  <Button className="w-fit" variant={"primary"}>
-                    Change password
-                  </Button>
+              <div className="mt-4">
+                  <Input
+                    type="password"
+                    error={error}
+                    label="Enter your current password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    disabled={isDisabled}
+                  />
+
+                  <div className="mt-1">
+                    <Input
+                      type="password"
+                      label="Enter a new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      disabled={isDisabled}
+                    />
+                  </div>
+                  <div className="mt-1">
+                    <Input
+                      type="password"
+                      label="Confirm your new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      disabled={isDisabled}
+                    />
+                  </div>
+                  {error && (
+                    <p className="text-red-500 text-sm mt-2">{error}</p>
+                  )}
+                  <div className="mt-4 w-full flex justify-end">
+                    <Button
+                      className="w-40"
+                      onClick={() => {
+                        handleChengePassword();
+                      }}
+                      variant="primary"
+                    >
+                      {!isLoading ? `chenge password` : <Spinner />}
+                    </Button>
+                  </div>
                 </div>
-              </div>
             </div>
           </ResizeableModel>
         )}
@@ -351,8 +436,8 @@ const Profile = () => {
         <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
           2-Step Verification
         </h2>
-        <div className="mt-1 flex items-center justify-between gap-3">
-          <p className="text-xs text-slate-400">
+        <div className="mt-2 flex items-center justify-between gap-3">
+        <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Add an additional layer of security to your account during login
           </p>
           <Switch id="2fa-switch" />
@@ -363,7 +448,7 @@ const Profile = () => {
         </h2>
 
         <div className="flex items-center justify-between">
-          <p className="text-xs text-slate-400">
+        <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Log out of all other active sessions on other devices besides
             this one.
           </p>
@@ -371,7 +456,8 @@ const Profile = () => {
         </div>
       </SettingDiv>
 
-      <div className="pb-4 sticky bottom-0 bg-background-secondary border-t border-border">
+      <div className="pb-4 sticky bottom-0 bg-background-secondary">
+        <SettingHr className="!m-0" />
 
         <SettingDiv className="relative w-full !mb-0 pt-1">
           <div className="w-full">
