@@ -31,7 +31,7 @@ const Profile = () => {
   const [nickname, setNickname] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [nameInEmail, setnameInEmail] = useState<boolean | null>(false);
+  const [nameInEmail, setnameInEmail] = useState<boolean | undefined>(false);
   const {
     emails: userEmails,
     profile,
@@ -51,14 +51,22 @@ const Profile = () => {
 
   useEffect(() => {
     if (profile) {
-      setIsImageLoading(true);
       setNickname(profile.nickname || "");
       setFullName(profile.full_name || "");
       setSelectedEmail(profile.default_email || "");
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (allSetting.profile) {
+      setIsImageLoading(true);
       setFinalImg(allSetting.profile.image || "");
       setIsImageLoading(false);
     }
-  }, [profile, allSetting]);
+  }, [profile, allSetting.profile]);
+
+  console.log("database email", profile.default_email);
+  console.log("state email", selectedEmail);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -192,6 +200,18 @@ const Profile = () => {
 
   console.log(selectedEmail);
 
+  const handleFUllNameBlur = () => {
+    updateProfile({
+      full_name: fullName,
+    });
+  };
+
+  const handleNicknameBlur = () => {
+    updateProfile({
+      nickname,
+    });
+  };
+
   return (
     <div>
       <SettingDiv>
@@ -219,11 +239,7 @@ const Profile = () => {
                 id="nickname"
                 label="Nickname"
                 type="text"
-                onBlur={() => {
-                  updateProfile({
-                    nickname,
-                  });
-                }}
+                onBlur={handleNicknameBlur}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
               />
@@ -334,11 +350,7 @@ const Profile = () => {
               id="fullname"
               type="text"
               className="w-72"
-              onBlur={() => {
-                updateProfile({
-                  full_name: fullName,
-                });
-              }}
+              onBlur={handleFUllNameBlur}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
@@ -349,13 +361,13 @@ const Profile = () => {
               Default email
             </h2>
             <Select
-              value={selectedEmail}
               onValueChange={(value) => {
                 setSelectedEmail(value),
-                  updateProfile({
-                    default_email: selectedEmail,
-                  });
+                updateProfile({
+                  default_email: value,
+                });
               }}
+              value={selectedEmail}
             >
               <SelectTrigger className="w-72">
                 <SelectValue placeholder="Select an email" />
