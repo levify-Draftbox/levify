@@ -140,13 +140,21 @@ const AllSettings = () => {
     };
   }, [scrollChildDivRef.current]);
 
+  useEffect(() => {
+    if (scrollChildDivRef.current) {
+      scrollChildDivRef.current.scrollTo({
+        top: 0
+      })
+    }
+  },[activeSetting])
+
   return (
     /* @ts-ignore */
-    <ModalSidebarLayout sidebar={<SideBar />} ref={scrollChildDivRef}>
+    <ModalSidebarLayout sidebar={<SideBar />} sizebarSize={22} ref={scrollChildDivRef}>
       {SettingsList[activeSetting] ? (
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col" >
           <div
-            className={`flex flex-col sticky top-0  bg-background-secondary py-5 px-14 gap-1 ${
+            className={`flex flex-col sticky top-0 bg-background-secondary py-5 px-16 gap-1 ${
               !childTop ? "border-b" : ""
             } z-[9]`}
           >
@@ -161,7 +169,7 @@ const AllSettings = () => {
           </div>
 
           <div
-            className="px-14 py-2 overflow-auto scroll-bar flex-1"
+            className="overflow-auto scroll-bar flex-1"
             ref={scrollChildDivRef}
           >
             {SettingsList[activeSetting].component}

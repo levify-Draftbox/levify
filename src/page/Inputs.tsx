@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 function Inputs(): React.ReactNode {
 
     const [selectValue, setSelectValue] = useState("hello")
-    const {setLoad: loadInbox} = useloadInboxModal()
+    const { setLoad: loadInbox } = useloadInboxModal()
 
     useEffect(() => {
         loadInbox()
@@ -63,6 +63,25 @@ function Inputs(): React.ReactNode {
                 </div>
 
                 <div className="px-4 py-1">
+                    <Input
+                        label="Email Address"
+                        type="text"
+                        id="Email"
+                        option={{
+                            hi: "@rellit.email",
+                            hello: "@rellitl.ink",
+                        }}
+                        optionName="Domains"
+                        placeholder="Username"
+                        optionValue={selectValue}
+                        optionLabel="Select Domain"
+                        onOptionChange={(s) => setSelectValue(s)}
+                        value={"qewe"}
+                        optionPosition="item-aligned"
+                    />
+                </div>
+
+                <div className="px-4 py-1">
                     <PhoneInput placeholder="Phone No" defaultCountry="IN" label="Phone No" />
                 </div>
 
@@ -81,11 +100,13 @@ function Inputs(): React.ReactNode {
                     </div>
                 </div>
 
-                <div className="px-4 py-3">
+                <div className="flex px-4 gap-2">
                     <Button className="">Submit</Button>
-                </div>
-                <div className="px-4 py-1">
                     <Button className="" variant={"secondary"}>Submit</Button>
+                </div>
+
+                <div className="px-4 py-4">
+                    <Button className="" size={"lg"}>Submit</Button>
                 </div>
             </div>
         </>

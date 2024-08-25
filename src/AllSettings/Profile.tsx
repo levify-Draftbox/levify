@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
-import { SettingDiv, SettingTitle } from "./components";
+import { SettingDiv, SettingHr, SettingTitle } from "./components";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import Cropper, { Area } from "react-easy-crop";
@@ -35,7 +35,7 @@ const Profile = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
-  
+
   useEffect(() => {
     if (profile) {
       setNickname(profile.nickname || "");
@@ -50,7 +50,7 @@ const Profile = () => {
     (croppedArea: Area, croppedAreaPixels: Area) => {
       setCroppedArea(croppedAreaPixels);
       console.log(croppedArea);
-      
+
     },
     []
   );
@@ -129,264 +129,270 @@ const Profile = () => {
 
   return (
     <div>
+      <SettingTitle>My Profile</SettingTitle>
+      <SettingHr />
+
       <SettingDiv>
-        <SettingTitle>My Profile</SettingTitle>
-        <div className="border"></div>
-
-        <SettingDiv>
-          <div className="flex items-center gap-6">
-            <div className="flex w-fit">
-              <Tooltip tip="Your Profile">
-                <img
-                  src={croppedImage || ""}
-                  alt="Profile"
-                  className="w-14 h-14 rounded-full"
-                />
-              </Tooltip>
-            </div>
-            <div>
-              <Input
-                id="nickname"
-                label="Nickname"
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
+        <div className="flex items-center gap-6">
+          <div className="flex w-fit">
+            <Tooltip tip="Your Profile">
+              <img
+                src={croppedImage || ""}
+                alt="Profile"
+                className="w-14 h-14 rounded-full"
               />
-            </div>
+            </Tooltip>
           </div>
-          <div className="relative">
-            <button
-              className="text-sm mt-2 text-gray-400"
-              onClick={() => setShowMenu((prev) => !prev)}
-            >
-              Add Photo
-            </button>
+          <div>
+            <Input
+              id="nickname"
+              label="Nickname"
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="relative">
+          <button
+            className="text-sm mt-2 text-gray-400"
+            onClick={() => setShowMenu((prev) => !prev)}
+          >
+            Add Photo
+          </button>
 
-            {showMenu && (
-              <motion.div
-                initial={{ y: -30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="absolute mt-2 border bg-white rounded-md border-gray-300 shadow-lg dark:bg-black"
-              >
-                <ul>
+          {showMenu && (
+            <motion.div
+              initial={{ y: -30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="absolute mt-2 border bg-white rounded-md border-gray-300 shadow-lg dark:bg-black"
+            >
+              <ul>
+                <li>
+                  <button
+                    className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
+                    onClick={() =>
+                      document.getElementById("fileInput")?.click()
+                    }
+                  >
+                    From Device
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="block text-sm px-4 py-2 hover:bg-secondary rounded-md w-full text-left"
+                    onClick={handleGravatar}
+                  >
+                    From Gravatar
+                  </button>
+                </li>
+                {croppedImage && (
                   <li>
                     <button
                       className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
-                      onClick={() =>
-                        document.getElementById("fileInput")?.click()
-                      }
+                      onClick={handleRemovePhoto}
                     >
-                      From Device
+                      Remove Photo
                     </button>
                   </li>
-                  <li>
-                    <button
-                      className="block text-sm px-4 py-2 hover:bg-secondary rounded-md w-full text-left"
-                      onClick={handleGravatar}
-                    >
-                      From Gravatar
-                    </button>
-                  </li>
-                  {croppedImage && (
-                    <li>
-                      <button
-                        className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
-                        onClick={handleRemovePhoto}
-                      >
-                        Remove Photo
-                      </button>
-                    </li>
-                  )}
-                </ul>
-              </motion.div>
-            )}
+                )}
+              </ul>
+            </motion.div>
+          )}
 
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+        </div>
+      </SettingDiv>
+
+      {image && (
+        <ResizeableModel modalKey="image-crop" key="image-crop" onClose={handleDiscard}>
+          <div className="relative h-[600px] w-[900px]">
+            <Cropper
+              image={image}
+              crop={crop}
+              zoom={zoom}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
             />
           </div>
-        </SettingDiv>
+          <div className="flex justify-end gap-4 px-3">
+            <Button
+              className="w-fit"
+              variant={"primary"}
+              onClick={handleCropImage}
+            >
+              Save
+            </Button>
+            <Button
+              className="w-fit"
+              variant="secondary"
+              onClick={handleDiscard}
+            >
+              Discard
+            </Button>
+          </div>
+        </ResizeableModel>
+      )}
 
-        {image && (
-          <ResizeableModel modalKey="image-crop" key="image-crop" onClose={handleDiscard}>
-            <div className="relative h-[600px] w-[900px]">
-              <Cropper
-                image={image}
-                crop={crop}
-                zoom={zoom}
-                aspect={1}
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
-                onCropComplete={onCropComplete}
-              />
-            </div>
-            <div className="flex justify-end gap-4 px-3">
-              <Button
-                className="w-fit"
-                variant={"primary"}
-                onClick={handleCropImage}
-              >
-                Save
-              </Button>
-              <Button
-                className="w-fit"
-                variant="secondary"
-                onClick={handleDiscard}
-              >
-                Discard
-              </Button>
+      <SettingTitle>Name and Email</SettingTitle>
+
+      <SettingHr />
+
+      <SettingDiv>
+        <div className="flex justify-between items-center">
+          <label htmlFor="fullname">Full name</label>
+          <Input
+            id="fullname"
+            type="text"
+            className="w-72"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
+        </div>
+
+        <div className="flex items-center justify-between my-5">
+          <label htmlFor="email-select">Default email</label>
+          <Select
+            onValueChange={(value) => setSelectedEmail(value)}
+            value={selectedEmail}
+          >
+            <SelectTrigger className="w-72">
+              <SelectValue placeholder="Select an email" />
+            </SelectTrigger>
+            <SelectContent position="item-aligned">
+              <SelectGroup>
+                {userEmails.map((e, i) => (
+                  <SelectItem key={i} value={e} dontShowCheck>
+                    {e}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <label htmlFor="nikname-switch">Name in mail</label>
+        <div className="flex items-center justify-between">
+          <Label
+            htmlFor="nikname-switch"
+            className="font-normal text-slate-400"
+          >
+            Show Nickname in email
+          </Label>
+          <Switch id="nikname-switch" />
+        </div>
+      </SettingDiv>
+
+      <SettingTitle>Password and Security</SettingTitle>
+
+      <SettingHr />
+
+      <SettingDiv>
+
+        <div>
+          <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Change password
+          </h2>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-slate-400">
+              Add an additional layer of security to your account during login
+            </p>
+            <Button
+              variant={"secondary"}
+              onClick={() => setChangePassword(!changePassword)}
+              className="w-fit"
+            >
+              Change password
+            </Button>
+          </div>
+        </div>
+
+
+        {changePassword && (
+          <ResizeableModel
+            size={{ width: "500px" }}
+            onClose={() => setChangePassword(false)}
+            key="password"
+            modalKey="password"
+          >
+            <div className=" py-6 px-6">
+              <div className=" ">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Change password</h3>
+                </div>
+                <p className="text-xs text-slate-400 mt-1">
+                  Password must contain at least one uppercase letter, one
+                  special character, one number, and be at least 6 characters
+                  long
+                </p>
+              </div>
+              <div className=" mt-4">
+                <Input type="password" label="Enter your current password" />
+                <Input type="password" label="Enter a new password" />
+                <Input type="password" label="Confirm your new password" />
+                <div className="mt-4 w-full flex justify-end">
+                  <Button className="w-fit" variant={"primary"}>
+                    Change password
+                  </Button>
+                </div>
+              </div>
             </div>
           </ResizeableModel>
         )}
 
-        <SettingTitle>Name and Email</SettingTitle>
-        <div className="border"></div>
-        <SettingDiv>
-          <div className="flex justify-between items-center">
-            <label htmlFor="fullname">Full name</label>
-            <Input
-              id="fullname"
-              type="text"
-              className="w-72"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          </div>
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          2-Step Verification
+        </h2>
+        <div className="mt-1 flex items-center justify-between gap-3">
+          <p className="text-xs text-slate-400">
+            Add an additional layer of security to your account during login
+          </p>
+          <Switch id="2fa-switch" />
+        </div>
 
-          <SettingDiv className="flex items-center justify-between mt-5">
-            <label htmlFor="email-select">Default email</label>
-            <Select
-              onValueChange={(value) => setSelectedEmail(value)}
-              value={selectedEmail}
-            >
-              <SelectTrigger className="w-72">
-                <SelectValue placeholder="Select an email" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {userEmails.map((e, i) => (
-                    <SelectItem key={i} value={e} dontShowCheck>
-                      {e}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </SettingDiv>
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          Login Session
+        </h2>
 
-          <label htmlFor="nikname-switch">Name in mail</label>
-          <div className="flex items-center justify-between">
-            <Label
-              htmlFor="nikname-switch"
-              className="font-normal text-slate-400"
-            >
-              Show Nickname in email
-            </Label>
-            <Switch id="nikname-switch" />
-          </div>
-        </SettingDiv>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-slate-400">
+            Log out of all other active sessions on other devices besides
+            this one.
+          </p>
+          <Button variant={"destructive"}>Log Out</Button>
+        </div>
+      </SettingDiv>
 
-        <SettingTitle>Password and Security</SettingTitle>
-        <div className="border"></div>
+      <div className="pb-4 sticky bottom-0 bg-background-secondary border-t border-border">
 
-        <SettingDiv>
-          <div>
-            <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Change password
-            </h2>
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-slate-400">
-                Add an additional layer of security to your account during login
-              </p>
+        <SettingDiv className="relative w-full !mb-0 pt-1">
+          <div className="w-full">
+            <div className="flex gap-3 justify-end">
               <Button
-                variant={"secondary"}
-                onClick={() => setChangePassword(!changePassword)}
                 className="w-fit"
+                onClick={handleSubmit}
+                loading={isLoading}
+                variant={"primary"}
               >
-                Change password
+                Save
+              </Button>
+              <Button className="w-fit" variant={"secondary"}>
+                Discard
               </Button>
             </div>
           </div>
-
-          {changePassword && (
-            <ResizeableModel
-              size={{ width: "500px" }}
-              onClose={() => setChangePassword(false)}
-              key="password"
-              modalKey="password"
-            >
-              <div className=" py-6 px-6">
-                <div className=" ">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-medium">Change password</h3>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Password must contain at least one uppercase letter, one
-                    special character, one number, and be at least 6 characters
-                    long
-                  </p>
-                </div>
-                <div className=" mt-4">
-                  <Input type="password" label="Enter your current password" />
-                  <Input type="password" label="Enter a new password" />
-                  <Input type="password" label="Confirm your new password" />
-                  <div className="mt-4 w-full flex justify-end">
-                    <Button className="w-fit" variant={"primary"}>
-                      Change password
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </ResizeableModel>
-          )}
-
-          <SettingDiv>
-            <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              2-Step Verification
-            </h2>
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <p className="text-xs text-slate-400">
-                Add an additional layer of security to your account during login
-              </p>
-              <Switch id="2fa-switch" />
-            </div>
-
-            <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Login Session
-            </h2>
-
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-slate-400">
-                Log out of all other active sessions on other devices besides
-                this one.
-              </p>
-              <Button variant={"destructive"}>Log Out</Button>
-            </div>
-          </SettingDiv>
-
-          <SettingDiv className="relative w-full">
-            <div className="w-full">
-              <div className="flex gap-3 justify-end">
-                <Button
-                  className="w-fit"
-                  onClick={handleSubmit}
-                  loading={isLoading}
-                  variant={"primary"}
-                >
-                  Save
-                </Button>
-                <Button className="w-fit" variant={"secondary"}>
-                  Discard
-                </Button>
-              </div>
-            </div>
-          </SettingDiv>
         </SettingDiv>
-      </SettingDiv>
+
+      </div>
+
     </div>
   );
 };
