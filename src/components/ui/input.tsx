@@ -17,10 +17,11 @@ export interface InputProps
   optionName?: string
   optionValue?: string
   onOptionChange?: (_: string) => void
+  optionPosition?: 'item-aligned' | 'popper';
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, variant, label, ...props }, ref) => {
+  ({ className, type, error, variant, label, optionPosition, ...props }, ref) => {
 
     const [inputType, setInputType] = React.useState(type || "input")
 
@@ -33,9 +34,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div
           className={cn(
-            "h-[38px]",
-            label ? "mt-1" : "",
-            "bg-input overflow-hidden rounded-lg flex group border focus-within:!border-input-border !border-transparent",
+            "h-[34px]",
+            label ? "mt-[6px]" : "",
+            "overflow-hidden rounded-md flex group border-[1px] border-input-border transition-colors duration-100 hover:border-input-border-hover focus-within:!border-core",
             className
           )
           }>
@@ -43,7 +44,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={inputType}
             className={cn(
               Object.keys(props.option || {}).length > 0 ? "pr-1" : "pr-4",
-              "flex w-full bg-transparent !outline-none pl-4 py-2 text-sm file:border-0 file:bg-transparent text-gray-700 dark:text-white file:text-sm file:font-medium placeholder:text-gray-400 dark:placeholder:text-gray-200 disabled:cursor-not-allowed disabled:opacity-50 ",
+              "flex w-full bg-transparent !outline-none pl-3 py-[6px] text-[.8rem] file:border-0 file:bg-transparent text-gray-700 dark:text-white file:text-sm file:font-medium placeholder:text-gray-400 dark:placeholder:text-gray-200 disabled:cursor-not-allowed disabled:opacity-50 ",
               props.inputClass
             )}
             ref={ref}
@@ -67,10 +68,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {
             (Object.keys(props.option || {}).length || 0) > 0 &&
             <SelectRoot onValueChange={props.onOptionChange} {...props.optionValue ? { value: props.optionValue } : {}}>
-              <SelectTrigger className="w-[40%] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
+              <SelectTrigger className="w-[40%] border-none bg-transparent rounded-l-none">
                 <SelectValue placeholder={props.optionLabel || ""} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position={optionPosition || "popper"}>
                 <SelectGroup>
                   {
                     props.optionName &&

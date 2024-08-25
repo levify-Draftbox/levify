@@ -75,13 +75,12 @@ const Appearance = () => {
                 onClick={() => updateAppearance({ theme: themeOption })}
               >
                 <div
-                  className={`w-8 h-8 rounded-full ${
-                    themeOption === "system"
-                      ? "bg-gradient-to-l from-black to-white rotate-[-45deg]"
-                      : themeOption === "dark"
+                  className={`w-8 h-8 rounded-full ${themeOption === "system"
+                    ? "bg-gradient-to-l from-black to-white rotate-[-45deg]"
+                    : themeOption === "dark"
                       ? "bg-black"
                       : "bg-white border border-gray-400"
-                  }`}
+                    }`}
                 ></div>
                 <span className="text-sm">{themeName}</span>
               </button>
@@ -132,8 +131,7 @@ const Appearance = () => {
               <img
                 src="./download (1).jpg"
                 className={cn(
-                  `h-24 w-36 object-cover rounded-md ${
-                    selectedImage === 1 ? "ring-2 ring-core" : ""
+                  `h-24 w-36 object-cover rounded-md ${selectedImage === 1 ? "ring-2 ring-core" : ""
                   }`,
                   {
                     "ring-2 ring-core":
@@ -149,8 +147,7 @@ const Appearance = () => {
               <img
                 src="./download.jpg"
                 className={cn(
-                  `h-24 w-36 object-cover rounded-md ${
-                    selectedImage === 2 ? "ring-2 ring-core" : ""
+                  `h-24 w-36 object-cover rounded-md ${selectedImage === 2 ? "ring-2 ring-core" : ""
                   }`,
                   {
                     "ring-2 ring-core":
@@ -166,8 +163,7 @@ const Appearance = () => {
               <img
                 src="./download.jpg"
                 className={cn(
-                  `h-24 w-36 object-cover rounded-md ${
-                    selectedImage === 3 ? "ring-2 ring-core" : ""
+                  `h-24 w-36 object-cover rounded-md ${selectedImage === 3 ? "ring-2 ring-core" : ""
                   }`,
                   {
                     "ring-2 ring-core":
@@ -184,45 +180,46 @@ const Appearance = () => {
           {selectedImage === 1 && (
             <div>
               <SettingTitle>Mail Layout</SettingTitle>
-              <div className="flex flex-col gap-2">
-                <div className="flex gap-4">
-                  <div>
-                    <img
-                      src="./download (1).jpg"
-                      className={cn(
-                        `h-24 w-36 object-cover rounded-md ${
-                          selectedMailLayout === "sender" ||
-                          allSetting?.appearance?.mailLayout === "sender"
+              <SettingDiv>
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-4">
+                    <div>
+                      <img
+                        src="./download (1).jpg"
+                        className={cn(
+                          `h-24 w-36 object-cover rounded-md ${selectedMailLayout === "sender" ||
+                            allSetting?.appearance?.mailLayout === "sender"
                             ? "ring-2 ring-core"
                             : ""
-                        }`
-                      )}
-                      onClick={() => handleMailLayoutClick("sender")}
-                      alt="Sender First Layout"
-                    />
-                    <p className="text-center mt-2">Sender First</p>
-                  </div>
+                          }`
+                        )}
+                        onClick={() => handleMailLayoutClick("sender")}
+                        alt="Sender First Layout"
+                      />
+                      <p className="text-center mt-2">Sender First</p>
+                    </div>
 
-                  <div>
-                    <img
-                      src="./download.jpg"
-                      className={cn(
-                        `h-24 w-36 object-cover rounded-md ${
-                          selectedMailLayout === "subject" ||
-                          allSetting?.appearance?.mailLayout === "subject"
+                    <div>
+                      <img
+                        src="./download.jpg"
+                        className={cn(
+                          `h-24 w-36 object-cover rounded-md ${selectedMailLayout === "subject" ||
+                            allSetting?.appearance?.mailLayout === "subject"
                             ? "ring-2 ring-core"
                             : ""
-                        }`
-                      )}
-                      onClick={() => handleMailLayoutClick("subject")}
-                      alt="Subject First Layout"
-                    />
-                    <p className="text-center mt-2">Subject First</p>
+                          }`
+                        )}
+                        onClick={() => handleMailLayoutClick("subject")}
+                        alt="Subject First Layout"
+                      />
+                      <p className="text-center mt-2">Subject First</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </SettingDiv>
             </div>
           )}
+
         </div>
       </div>
     </div>

@@ -483,10 +483,10 @@ const ComposerModal: React.FC<{
                 onValueChange={(v) => setFrom(v)}
                 disabled={loading}
               >
-                <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none group-focus-within:hover:bg-input-hover">
+                <SelectTrigger className="p-0 px-3 text-[15px] h-[22px] bg-transparent rounded-l-none !border-none">
                   <SelectValue className="" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent> 
                   <SelectGroup>
                     {userEmails.map((e, i) => {
                       return (

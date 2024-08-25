@@ -50,7 +50,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
                     <div
                         className={cn(
                             label ? "mt-1" : "",
-                            "bg-input overflow-hidden rounded-lg flex group border focus-within:!border-input-border !border-transparent",
+                            "overflow-hidden rounded-lg flex group border focus-within:!border-core border-input-border hover:border-input-border-hover",
                             className
                         )
                         }>
@@ -109,7 +109,10 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, ...props }, ref) => (
         <Input
             inputClass="pl-2"
-            className={cn("h-[36px]","!border-none !rounded-none w-full bg-transparent", className)}
+            className={cn(
+                "h-[32px]",
+                "!border-none !rounded-none w-full bg-transparent", className
+            )}
             {...props}
             ref={ref}
         />
@@ -144,7 +147,7 @@ const CountrySelect = ({
             <PopoverTrigger asChild>
                 <Button
                     variant={"secondary"}
-                    className={cn("flex gap-1 h-[36px] rounded-none px-3 py-6 w-fit bg-transparent hover:!bg-transparent group-focus-within:hover:!bg-button-hover border-none")}
+                    className={cn("flex gap-1 h-[32px] rounded-none px-3 py-6 w-fit bg-transparent hover:!bg-transparent group-focus-within:hover:!bg-button-hover border-none")}
                     disabled={disabled}
                 >
                     <FlagComponent country={value} countryName={value} />

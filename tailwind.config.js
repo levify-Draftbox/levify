@@ -78,6 +78,7 @@ export const theme = {
         hover: "var(--input-hover)",
         active: "var(--input-active)",
         border: "var(--input-border)",
+        "border-hover": "var(--input-border-hover)",
       },
       sideBarCards: {
         bg: "var(--sidebar-cards-bg)",

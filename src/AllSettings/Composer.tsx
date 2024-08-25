@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { motion, AnimatePresence } from "framer-motion";
 import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
 
@@ -200,8 +199,8 @@ const Composer = () => {
   return (
     <div>
       {isLoading && <Spinner className="absolute" />}
+      <SettingTitle>Default Browser Composer</SettingTitle>
       <SettingDiv>
-        <SettingTitle>Default Browser Composer</SettingTitle>
         <Button
           className="w-fit px-4"
           onClick={handleBrowserComposer}
@@ -215,8 +214,8 @@ const Composer = () => {
         </Button>
       </SettingDiv>
 
+      <SettingTitle>Compose size</SettingTitle>
       <SettingDiv>
-        <SettingTitle>Compose size</SettingTitle>
         <div className="flex gap-10 cursor-pointer">
           <div className="flex items-center space-x-2">
             <Switch
@@ -231,15 +230,15 @@ const Composer = () => {
         </div>
       </SettingDiv>
 
-      <SettingDiv className="!mb-16">
-        <SettingTitle>Email Signature</SettingTitle>
+      <SettingTitle>Email Signature</SettingTitle>
+      <SettingDiv className="!mb-24">
         <div>
           <p className="text-sm">
             Edit and choose Signature that will be automatically added to your
             email message.
           </p>
 
-          <motion.div className="py-3 cursor-pointer">
+          <div className="py-3 cursor-pointer">
             <div
               className="flex gap-2 items-center text-core hover:text-core-lite"
               onClick={handleAddSignature}
@@ -247,89 +246,79 @@ const Composer = () => {
               <Plus size={20} />
               <h3>Add new signature</h3>
             </div>
-          </motion.div>
+          </div>
 
           <div className="mt-2">
-            <AnimatePresence mode="wait">
-              {signatures.length > 0 && !isAddingSignature ? (
-                <motion.div className="flex gap-3">
-                  <Select
-                    onValueChange={handleSelectSignature}
-                    value={selectedSignature || undefined}
-                  >
-                    <SelectTrigger className="w-72">
-                      <SelectValue placeholder="Select a signature" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {signatures.map((sig, index) => (
-                        <SelectItem key={index} value={sig.name}>
-                          {sig.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <div className="flex gap-2">
-                    <Button variant={"secondary"} onClick={handleRename}>
-                      Rename
-                    </Button>
-                    <Button variant={"secondary"} onClick={handleDelete}>
-                      Delete
-                    </Button>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div key="input">
-                  <Input
-                    ref={inputRef}
-                    className="w-full"
-                    type="text"
-                    placeholder="Edit signature name"
-                    value={signatureName}
-                    onChange={(e) => setSignatureName(e.target.value)}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div className="mb-4">
+            {signatures.length > 0 && !isAddingSignature ? (
+              <div className="flex gap-3">
+                <Select
+                  onValueChange={handleSelectSignature}
+                  value={selectedSignature || undefined}
+                >
+                  <SelectTrigger className="w-72">
+                    <SelectValue placeholder="Select a signature" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {signatures.map((sig, index) => (
+                      <SelectItem key={index} value={sig.name}>
+                        {sig.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="flex gap-2">
+                  <Button variant={"secondary"} onClick={handleRename}>
+                    Rename
+                  </Button>
+                  <Button variant={"secondary"} onClick={handleDelete}>
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div key="input">
+                <Input
+                  ref={inputRef}
+                  className="w-full"
+                  type="text"
+                  placeholder="Edit signature name"
+                  value={signatureName}
+                  onChange={(e) => setSignatureName(e.target.value)}
+                />
+              </div>
+            )}
+            </div>
 
-            <motion.div
-              className="mt-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-            >
-              <QuillEditor
-                value={content}
-                onChange={handleChange}
-                placeholder="Start typing..."
-              />
-            </motion.div>
+            <QuillEditor
+              value={content}
+              onChange={handleChange}
+              placeholder="Start typing..."
+            />
+
           </div>
         </div>
       </SettingDiv>
 
-      <div className="mt-2 flex gap-3">
-        <motion.div>
-          <Button
-            className="w-28 hover:bg-core-lite"
-            variant={"primary"}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
-        </motion.div>
-        <motion.div>
-          <Button
-            className="w-28"
-            variant={"secondary"}
-            onClick={handleDiscard}
-          >
-            Discard
-          </Button>
-        </motion.div>
-      </div>
+      <SettingDiv className="mt-2 flex gap-3">
+        <Button
+          className="w-28 hover:bg-core-lite"
+          variant={"primary"}
+          onClick={handleSave}
+        >
+          Save
+        </Button>
+        <Button
+          className="w-28"
+          variant={"secondary"}
+          onClick={handleDiscard}
+        >
+          Discard
+        </Button>
+      </SettingDiv>
 
+      <SettingTitle>Reply mode</SettingTitle>
       <SettingDiv className="mt-10">
-        <SettingTitle>Reply mode</SettingTitle>
         <RadioGroup
           value={selectedReply}
           onValueChange={handleReplyChange}

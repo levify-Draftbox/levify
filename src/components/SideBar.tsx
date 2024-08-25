@@ -47,7 +47,7 @@ const SideBar = () => {
           </Link>
 
           <div className="mt-3">
-            <Button onClick={() => newComposer()} variant={"primary"}>
+            <Button onClick={() => newComposer()} variant={"primary"} size={"sm"}>
               New Message
             </Button>
           </div>
@@ -152,7 +152,7 @@ const SideBar = () => {
       </div>
 
       {settingOpen && (
-        <Modal key="full-settings" onClose={() => setSettingOpen(false)}>
+        <Modal width={"58%"} key="full-settings" modalKey="full-settings" onClose={() => setSettingOpen(false)}>
           <Suspense fallback={
             <div className="flex items-center justify-center h-full w-full">
               <Spinner size={50} borderWidth={4} />

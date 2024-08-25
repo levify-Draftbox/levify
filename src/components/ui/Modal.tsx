@@ -4,17 +4,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./resizable";
 import ScrollArea from "./ScrollArea";
 import useEscKeyStore from "@/store/escStack";
+import { cn } from "@/lib/utils";
 
 type ModalProps = {
-  onClose: () => void;
-  children: ReactNode;
+  onClose: () => void
+  children: ReactNode
   key: string
+  modalKey?: string
+  width?: number | string
+  height?: number | string
 };
 
-const Modal: FC<ModalProps> = ({ onClose, children, key }) => {
+const Modal: FC<ModalProps> = ({ onClose, children, key, modalKey, height, width }) => {
 
   const { pushEsc, popEsc } = useEscKeyStore()
-  useEffect(() => pushEsc(`modal-${key}`, () => setIsVisible(false)), [])
+  useEffect(() => pushEsc(`modal-${modalKey || key}`, () => setIsVisible(false)), [])
 
   const [isVisible, setIsVisible] = useState(true);
   const portalRoot = document.querySelector("#reactPortal");
@@ -51,10 +55,10 @@ const Modal: FC<ModalProps> = ({ onClose, children, key }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ ease: "easeInOut", duration: 0.15 }}
-          className="z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 modal--backdrop dark:bg-opacity-80 "
+          className={cn(`modal--backdrop-${modalKey || key}`, "z-[999999] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 dark:bg-opacity-80")}
           onClick={(e) => {
             if (
-              (e.target as HTMLElement).classList.contains("modal--backdrop")
+              (e.target as HTMLElement).classList.contains(`modal--backdrop-${modalKey || key}`)
             ) {
               handleCloseModal();
             }
@@ -65,7 +69,11 @@ const Modal: FC<ModalProps> = ({ onClose, children, key }) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ ease: "easeInOut", duration: 0.15 }}
-            className="bg-background w-[65%] h-[75%] rounded-lg overflow-hidden"
+            className="bg-background rounded-lg overflow-hidden"
+            style={{
+              height: height || "75%",
+              width: width || "65%"
+            }}
           >
             {/* <div className="p-4 min-h-full"> */}
             {children}
@@ -80,11 +88,14 @@ const Modal: FC<ModalProps> = ({ onClose, children, key }) => {
 type ModalSidebarLayoutProps = {
   sidebar: React.ReactNode,
   children: React.ReactNode
+  sizebarSize?: number
+  divRef?: any
 }
 
 export const ModalSidebarLayout: React.FC<ModalSidebarLayoutProps> = ({
   children,
-  sidebar
+  sidebar,
+  sizebarSize = 25,
 }) => {
   return (
     <div className="h-full w-full">
@@ -93,9 +104,9 @@ export const ModalSidebarLayout: React.FC<ModalSidebarLayoutProps> = ({
         direction="horizontal"
       >
         <ResizablePanel
-          minSize={18}
-          maxSize={22}
-          defaultSize={18}
+          minSize={sizebarSize}
+          maxSize={sizebarSize + 7}
+          defaultSize={sizebarSize}
           className="h-full"
         >
           <ScrollArea className="scroll-hide bg-background">

@@ -72,68 +72,65 @@ const Notification = () => {
 
   return (
     <div className="w-full h-full">
-      <SettingDiv>
-        <SettingTitle>Notification Sound</SettingTitle>
-        <div className="flex items-center">
-          <Select
-            onValueChange={handleSoundChange}
-            value={
-              selectedSound
-                ? sounds.find((s) => s.src === selectedSound)?.name
-                : undefined
-            }
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Sound" />
-            </SelectTrigger>
-            <SelectContent>
-              {sounds.map((sound) => (
-                <SelectItem key={sound.src} value={sound.name}>
-                  {sound.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          {isSoundLoading && <span className="ml-2"><Spinner /></span>}
-          
-          <button
-            type="button"
-            className="ml-2 p-2 text-gray-500 hover:text-gray-700"
-            onClick={() => playSound(selectedSound)}
-            aria-label="Play selected sound"
-            disabled={!selectedSound || isSoundLoading}
-          >
-            <SpeakerHigh size={24} />
-          </button>
-        </div>
+      <SettingTitle>Notification Sound</SettingTitle>
+
+      <SettingDiv className="flex items-center">
+        <Select
+          onValueChange={handleSoundChange}
+          value={
+            selectedSound
+              ? sounds.find((s) => s.src === selectedSound)?.name
+              : undefined
+          }
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select Sound" />
+          </SelectTrigger>
+          <SelectContent>
+            {sounds.map((sound) => (
+              <SelectItem key={sound.src} value={sound.name}>
+                {sound.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {isSoundLoading && <span className="ml-2"><Spinner /></span>}
+
+        <button
+          type="button"
+          className="ml-2 p-2 text-gray-500 hover:text-gray-700"
+          onClick={() => playSound(selectedSound)}
+          aria-label="Play selected sound"
+          disabled={!selectedSound || isSoundLoading}
+        >
+          <SpeakerHigh size={24} />
+        </button>
       </SettingDiv>
 
-      <SettingDiv>
-        <SettingTitle>Desktop Notifications Sound</SettingTitle>
-        <div className="flex items-center">
-          <Button
-            className="w-fit px-4"
-            onClick={handleNotificationToggle}
-            variant={notiEnable ? "primary" : "secondary"}
-            disabled={isNotiLoading}
-          >
-            {notiEnable ? (
-              <div className="flex gap-1 items-center">
-                <BellRinging size={16} />
-                Enabled
-              </div>
-            ) : (
-              <div className="flex gap-1 items-center">
-                <BellSlash size={16} />
-                Disabled
-              </div>
-            )}
-          </Button>
-          {isNotiLoading && <span className="ml-2"><Spinner /></span>}
-        </div>
+      <SettingTitle>Desktop Notifications Sound</SettingTitle>
+      <SettingDiv className="flex items-center">
+        <Button
+          className="w-fit px-4"
+          onClick={handleNotificationToggle}
+          variant={notiEnable ? "primary" : "secondary"}
+          disabled={isNotiLoading}
+        >
+          {notiEnable ? (
+            <div className="flex gap-1 items-center">
+              <BellRinging size={16} />
+              Enabled
+            </div>
+          ) : (
+            <div className="flex gap-1 items-center">
+              <BellSlash size={16} />
+              Disabled
+            </div>
+          )}
+        </Button>
+        {isNotiLoading && <span className="ml-2"><Spinner /></span>}
       </SettingDiv>
-    </div>
+    </div >
   );
 };
 
