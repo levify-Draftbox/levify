@@ -84,9 +84,9 @@ const AllSettings = () => {
 
           <SidebarNavLink
             icon={<EnvelopeSimple size={18} />}
-            setting={"Compose"}
+            setting={"Composer"}
           >
-            Compose
+            Composer
           </SidebarNavLink>
 
           <SidebarNavLink icon={<Funnel size={18} />} setting={"Filter"}>

@@ -43,8 +43,8 @@ const SettingsList: {
       "Privacy is key on our mail service site, protecting user data with robust security.",
     component: <Privacy />,
   },
-  Compose: {
-    name: "Compose",
+  Composer: {
+    name: "Composer",
     description:
       "Customize email composition preferences and settings.",
     component: <Composer />,

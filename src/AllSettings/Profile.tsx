@@ -389,7 +389,7 @@ const Profile = () => {
           <div className="flex mt-1 items-center justify-between">
             <Label
               htmlFor="nikname-switch"
-              className="font-normal text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]"
+              className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1"
             >
               Show full name in email
             </Label>
@@ -412,7 +412,7 @@ const Profile = () => {
             Change password
           </h2>
           <div className="flex items-center justify-between">
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1">
               Add an additional layer of security to your account during login
             </p>
             <Button

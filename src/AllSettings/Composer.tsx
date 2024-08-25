@@ -214,24 +214,22 @@ const Composer = () => {
         </Button>
       </SettingDiv>
 
-      <SettingTitle>Compose size</SettingTitle>
+      <SettingTitle>Composer size</SettingTitle>
       <SettingDiv>
-        <div className="flex gap-10 cursor-pointer">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="airplane-mode"
-              checked={size}
-              onCheckedChange={handleSize}
-            />
-            <Label htmlFor="airplane-mode" className="font-normal">
-              Compose full screen
-            </Label>
-          </div>
+        <div className="flex items-center w-full justify-between">
+          <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            Composer full screen
+          </p>
+          <Switch
+            id="airplane-mode"
+            checked={size}
+            onCheckedChange={handleSize}
+          />
         </div>
       </SettingDiv>
 
       <SettingTitle>Email Signature</SettingTitle>
-      <SettingDiv className="!mb-24">
+      <SettingDiv className="!mb-0">
         <div>
           <p className="text-sm">
             Edit and choose Signature that will be automatically added to your
@@ -249,72 +247,88 @@ const Composer = () => {
           </div>
 
           <div className="mt-2">
-            <div className="mb-4">
-            {signatures.length > 0 && !isAddingSignature ? (
-              <div className="flex gap-3">
-                <Select
-                  onValueChange={handleSelectSignature}
-                  value={selectedSignature || undefined}
-                >
-                  <SelectTrigger className="w-72">
-                    <SelectValue placeholder="Select a signature" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {signatures.map((sig, index) => (
-                      <SelectItem key={index} value={sig.name}>
-                        {sig.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <div className="flex gap-2">
-                  <Button variant={"secondary"} onClick={handleRename}>
-                    Rename
-                  </Button>
-                  <Button variant={"secondary"} onClick={handleDelete}>
-                    Delete
-                  </Button>
+            <div className="mb-3">
+              {!isAddingSignature ? (
+                <div className="flex gap-3">
+                  {signatures.length > 0 && (
+                    <Select
+                      onValueChange={handleSelectSignature}
+                      value={selectedSignature || undefined}
+                    >
+                      <SelectTrigger className="w-72">
+                        <SelectValue placeholder="Select a signature" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {signatures.map((sig, index) => (
+                          <SelectItem key={index} value={sig.name}>
+                            {sig.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  <div className="flex gap-2">
+                    {selectedSignature && (
+                      <>
+                        <Button variant={"secondary"} onClick={handleRename}>
+                          Edit
+                        </Button>
+                        <Button variant={"secondary"} onClick={handleDelete}>
+                          Delete
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div key="input">
-                <Input
-                  ref={inputRef}
-                  className="w-full"
-                  type="text"
-                  placeholder="Edit signature name"
-                  value={signatureName}
-                  onChange={(e) => setSignatureName(e.target.value)}
-                />
-              </div>
-            )}
+              ) : (
+                <div key="input">
+                  <Input
+                    ref={inputRef}
+                    className="w-full"
+                    type="text"
+                    placeholder="Edit signature name"
+                    value={signatureName}
+                    onChange={(e) => setSignatureName(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
 
-            <QuillEditor
-              value={content}
-              onChange={handleChange}
-              placeholder="Start typing..."
-            />
-
+            {isAddingSignature && (
+              <QuillEditor
+                value={content}
+                onChange={handleChange}
+                placeholder="Start typing..."
+              />
+            )}
           </div>
         </div>
       </SettingDiv>
 
+      {isAddingSignature && (
+        <SettingDiv>
+          <div className="mt-16"></div>
+        </SettingDiv>
+      )}
       <SettingDiv className="mt-2 flex gap-3">
-        <Button
-          className="w-28 hover:bg-core-lite"
-          variant={"primary"}
-          onClick={handleSave}
-        >
-          Save
-        </Button>
-        <Button
-          className="w-28"
-          variant={"secondary"}
-          onClick={handleDiscard}
-        >
-          Discard
-        </Button>
+        {isAddingSignature && (
+          <>
+            <Button
+              className="w-28 hover:bg-core-lite"
+              variant={"primary"}
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+            <Button
+              className="w-28"
+              variant={"secondary"}
+              onClick={handleDiscard}
+            >
+              Discard
+            </Button>
+          </>
+        )}
       </SettingDiv>
 
       <SettingTitle>Reply mode</SettingTitle>
