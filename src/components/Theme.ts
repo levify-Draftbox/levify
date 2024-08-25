@@ -19,7 +19,7 @@ type Colors =
   | "Lime"
   | "Cyan";
 
-export const ThemeColors: { [_ in Colors]: string } = {
+export const ThemeColors: { [_ in Colors]: string } | any = {
   purple: "#7c5cff",
   blue: "#0066ff",
   green: "#24b158",

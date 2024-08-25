@@ -4,6 +4,7 @@ import { SettingDiv, SettingTitle } from "./components";
 import { Spinner } from "@/components/Spinner";
 import { cn } from "@/lib/utils";
 import { ThemeColors } from "@/components/Theme";
+import { Select, SelectItem, SelectContent, SelectGroup, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Appearance = () => {
   const { allSetting, updateSettings } = useProfileStore();
@@ -48,80 +49,67 @@ const Appearance = () => {
     }
   };
 
-  const ThemeOptions = {
-    system: "System",
-    dark: "Dark",
-    light: "Light",
+  const ThemeOptions: any = {
+    system: <div className="flex gap-2 items-center">
+      <div className="h-4 w-6 border border-input rounded-sm" style={{
+        background: "linear-gradient(to left, white 50%, #1a1a1a 50%)",
+      }} />
+      System
+    </div>,
+    dark: <div className="flex gap-2 items-center">
+      <div className="h-4 w-6 border dark:border-input-border-hover border-input rounded-sm bg-[#1a1a1a]" />
+      Dark
+    </div>,
+    light: <div className="flex gap-2 items-center">
+      <div className="h-4 w-6 border border-button-active dark:border-input-border-hover rounded-sm bg-white" />
+      Light
+    </div>,
   };
   return (
     <div className="w-full h-full">
       {isLoading && <Spinner className="absolute" />}
       <div>
         <SettingTitle>Theme</SettingTitle>
-        <SettingDiv className="flex flex-wrap gap-4">
-          {Object.keys(ThemeOptions).map((themeOption, index) => {
-            const themeName =
-              ThemeOptions[themeOption as keyof typeof ThemeOptions];
-            return (
-              <button
-                key={index}
-                className={cn(
-                  `flex items-center space-x-2 p-2 w-36 gap-3 rounded-md transition-all duration-200 border`,
-                  {
-                    "border-core":
-                      allSetting?.appearance?.theme === themeOption,
-                  }
-                )}
-                onClick={() => updateAppearance({ theme: themeOption })}
-              >
-                <div
-                  className={`w-8 h-8 rounded-full ${themeOption === "system"
-                    ? "bg-gradient-to-l from-black to-white rotate-[-45deg]"
-                    : themeOption === "dark"
-                      ? "bg-black"
-                      : "bg-white border border-gray-400"
-                    }`}
-                ></div>
-                <span className="text-sm">{themeName}</span>
-              </button>
-            );
-          })}
+
+        <SettingDiv>
+          <Select onValueChange={(v) => updateAppearance({ theme: v })} value={allSetting?.appearance?.theme || "system"}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select Theme" />
+            </SelectTrigger>
+            <SelectContent position="item-aligned">
+              <SelectGroup>
+                {Object.keys(ThemeOptions).map((e: string, i) => (
+                  <SelectItem key={i} value={e} dontShowCheck>
+                    {ThemeOptions[e]}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </SettingDiv>
 
         <SettingTitle>Colors</SettingTitle>
-        <SettingDiv className="flex flex-wrap gap-4">
-          {Object.keys(ThemeColors).map((color, index) => {
-            const colorValue = ThemeColors[color as keyof typeof ThemeColors];
-            return (
-              <button
-                key={index}
-                className={cn(
-                  `flex items-center space-x-2 p-2 w-36 gap-3 rounded-md transition-all duration-200 border`,
-                  {
-                    "border-core": allSetting?.appearance?.color === color,
-                  }
-                )}
-                style={
-                  {
-                    "--hover-color": colorValue,
-                    borderColor:
-                      allSetting?.appearance?.color === color
-                        ? colorValue
-                        : undefined,
-                  } as React.CSSProperties
-                }
-                onClick={() => updateAppearance({ color: color })}
-              >
-                <div
-                  className="w-8   h-8   rounded-full"
-                  style={{
-                    background: colorValue,
-                  }}
-                ></div>
-                <span className="text-sm capitalize">{color}</span>
-              </button>
-            );
-          })}
+
+        <SettingDiv>
+          <Select onValueChange={(v) => updateAppearance({ color: v })} value={allSetting?.appearance?.color || "purple"}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select Theme" />
+            </SelectTrigger>
+            <SelectContent position="item-aligned">
+              <SelectGroup>
+                {Object.keys(ThemeColors).map((e: string, i) => (
+                  <SelectItem key={i} value={e} dontShowCheck>
+                    <div className="flex gap-2 items-center capitalize">
+                      <div className="h-4 w-6 border border-input rounded-sm" style={{
+                        background: ThemeColors[e],
+                      }} />
+                      {e}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </SettingDiv>
 
         <SettingTitle>Layout</SettingTitle>

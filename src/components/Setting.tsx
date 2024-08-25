@@ -243,7 +243,7 @@ const SettingSidebar = () => {
                   style={{
                     background: ThemeColors[color as keyof typeof ThemeColors]
                   }}
-                  onClick={() => setColorTheme(color as keyof typeof ThemeColors)}
+                  onClick={() => setColorTheme(color as any)}
                 ></div>
               ))}
             </div>
