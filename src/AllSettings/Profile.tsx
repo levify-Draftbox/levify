@@ -31,9 +31,13 @@ const Profile = () => {
   const [nickname, setNickname] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [, setShowNicknameInEmail] =
-    useState<boolean>(false);
-  const { emails: userEmails, profile, updateSettings } = useProfileStore();
+  const [nameInEmail, setnameInEmail] = useState<boolean | null>(false);
+  const {
+    emails: userEmails,
+    profile,
+    updateSettings,
+    allSetting,
+  } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -43,16 +47,18 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   useEffect(() => {
     if (profile) {
+      setIsImageLoading(true);
       setNickname(profile.nickname || "");
       setFullName(profile.full_name || "");
       setSelectedEmail(profile.default_email || "");
-      setShowNicknameInEmail(profile.showNicknameInEmail || false);
-      setCroppedImage(profile.croppedImage || null);
+      setFinalImg(allSetting.profile.image || "");
+      setIsImageLoading(false);
     }
-  }, [profile]);
+  }, [profile, allSetting]);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -98,53 +104,58 @@ const Profile = () => {
 
   const handleCropImage = async () => {
     if (image && croppedArea) {
-      const rowImg = await getCroppedImg(image, croppedArea);
-
-      const blob = await fetch(rowImg as string).then((r) => r.blob());
-      console.log(blob);
-
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(blob);
-      reader.onloadend = async function () {
-        const response = await api.post("/fo", reader.result, {
-          headers: {
-            "X-File-Name": fileType,
-          },
-        });
-        const img = response.data.url;
-        setFinalImg(img);
-        await updateProfile({ img });
-      };
-      setImage("");
-      // Update profile with cropped image
+      try {
+        setIsImageLoading(true);
+        const rowImg = await getCroppedImg(image, croppedArea);
+        const blob = await fetch(rowImg as string).then((r) => r.blob());
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = async function () {
+          const response = await api.post("/fo", reader.result, {
+            headers: {
+              "X-File-Name": fileType,
+            },
+          });
+          const image = response.data.url;
+          setFinalImg(image);
+          await updateProfile({ image });
+        };
+        setImage("");
+      } catch (error) {
+        console.error("Error cropping image:", error);
+      } finally {
+        setIsImageLoading(false);
+      }
     }
   };
+
   const handleDiscard = () => {
     setImage("");
   };
 
-  const handleGravatar = () => {
-    const gravatarUrl = "https://www.gravatar.com/avatar/YOUR_HASH";
-    setCroppedImage(gravatarUrl);
-    setShowMenu(false);
-
-    updateProfile({ croppedImage: gravatarUrl });
+  const handleGravatar = async () => {
+    try {
+      setIsImageLoading(true);
+      const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
+      setCroppedImage(gravatarUrl);
+      setShowMenu(false);
+      await updateProfile({ image: gravatarUrl });
+    } catch (error) {
+      console.error("Error updating profile with Gravatar image:", error);
+    } finally {
+      setIsImageLoading(false);
+    }
   };
 
-  const handleRemovePhoto = () => {
-    setCroppedImage("");
-    setShowMenu(false);
-
-    updateProfile({ croppedImage: "" });
-  };
-
-  const handleSubmit = () => {
-    const newemail = selectedEmail;
-    updateProfile({
-      nickname,
-      full_name: fullName,
-      default_email: newemail,
-    });
+  const handleRemovePhoto = async () => {
+    try {
+      setIsImageLoading(true);
+      setCroppedImage("");
+      setShowMenu(false);
+      await updateProfile({ image: "" });
+    } finally {
+      setIsImageLoading(false);
+    }
   };
 
   const handleLogOut = () => {
@@ -166,7 +177,6 @@ const Profile = () => {
       console.log(response.data.error);
     } catch (error: unknown) {
       // setError(error.response.data.error);
-
       // setError("An error occurred while changing the password.");
     } finally {
       setIsDisabled(false);
@@ -174,21 +184,34 @@ const Profile = () => {
     }
   };
 
+  const handleNameSwitch = () => {
+    setnameInEmail(!nameInEmail);
+    const value = nameInEmail;
+    updateProfile({ nameInMail: value });
+  };
+
+  console.log(selectedEmail);
+
   return (
     <div>
       <SettingDiv>
         <SettingTitle>My Profile</SettingTitle>
-        <div className="border"></div>
+
+        <hr></hr>
 
         <SettingDiv>
           <div className="flex items-center gap-6">
-            <div className="flex w-fit">
+            <div className="flex w-14 justify-center">
               <Tooltip tip="Your Profile">
-                <img
-                  src={finalImg || ""}
-                  alt="Profile"
-                  className="w-14 h-14 rounded-full"
-                />
+                {isImageLoading ? (
+                  <Spinner size={30} />
+                ) : (
+                  <img
+                    src={finalImg || ""}
+                    alt="Profile"
+                    className="w-14 h-14 rounded-full"
+                  />
+                )}
               </Tooltip>
             </div>
             <div>
@@ -196,6 +219,11 @@ const Profile = () => {
                 id="nickname"
                 label="Nickname"
                 type="text"
+                onBlur={() => {
+                  updateProfile({
+                    nickname,
+                  });
+                }}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
               />
@@ -295,24 +323,39 @@ const Profile = () => {
         )}
 
         <SettingTitle>Name and Email</SettingTitle>
-        <div className="border"></div>
+        <hr></hr>
+
         <SettingDiv>
           <div className="flex justify-between items-center">
-            <label htmlFor="fullname">Full name</label>
+            <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+              Full name
+            </h2>
             <Input
               id="fullname"
               type="text"
               className="w-72"
+              onBlur={() => {
+                updateProfile({
+                  full_name: fullName,
+                });
+              }}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
           </div>
 
           <SettingDiv className="flex items-center justify-between mt-5">
-            <label htmlFor="email-select">Default email</label>
+            <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+              Default email
+            </h2>
             <Select
-              onValueChange={(value) => setSelectedEmail(value)}
               value={selectedEmail}
+              onValueChange={(value) => {
+                setSelectedEmail(value),
+                  updateProfile({
+                    default_email: selectedEmail,
+                  });
+              }}
             >
               <SelectTrigger className="w-72">
                 <SelectValue placeholder="Select an email" />
@@ -329,20 +372,26 @@ const Profile = () => {
             </Select>
           </SettingDiv>
 
-          <label htmlFor="nikname-switch">Name in mail</label>
-          <div className="flex items-center justify-between">
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Name in mail
+          </h2>
+          <div className="flex mt-1 items-center justify-between">
             <Label
               htmlFor="nikname-switch"
               className="font-normal text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]"
             >
-              Show Nickname in email
+              Show full name in email
             </Label>
-            <Switch id="nikname-switch" />
+            <Switch
+              id="nikname-switch"
+              checked={nameInEmail}
+              onCheckedChange={handleNameSwitch}
+            />
           </div>
         </SettingDiv>
 
         <SettingTitle>Password and Security</SettingTitle>
-        <div className="border"></div>
+        <hr></hr>
 
         <SettingDiv>
           <div>
@@ -451,24 +500,6 @@ const Profile = () => {
                 <Button variant={"secondary"}>Log Out all sessions</Button>
                 <Button onClick={handleLogOut} variant={"destructive"}>
                   Log out
-                </Button>
-              </div>
-            </div>
-          </SettingDiv>
-
-          <SettingDiv className="relative w-full">
-            <div className="w-full">
-              <div className="flex gap-3 justify-end">
-                <Button
-                  className="w-fit"
-                  onClick={handleSubmit}
-                  loading={isLoading}
-                  variant={"primary"}
-                >
-                  Save
-                </Button>
-                <Button className="w-fit" variant={"secondary"}>
-                  Discard
                 </Button>
               </div>
             </div>
