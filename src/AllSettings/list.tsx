@@ -26,11 +26,7 @@ const SettingsList: {
   LanguageAndTime: {
     name: "Language and Time",
     description: "Set your language and time zone for a tailored website experience.",
-    component: <LanguageAndTime selectedLanguage={""} selectedTimeZone={""} onLanguageChange={function (value: string): void {
-      throw new Error("Function not implemented.");
-    } } onTimeZoneChange={function (value: string): void {
-      throw new Error("Function not implemented.");
-    } } />,
+    component: <LanguageAndTime />,
   },
   appearance: {
     name: "Appearance",
