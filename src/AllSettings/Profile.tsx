@@ -29,8 +29,7 @@ const Profile = () => {
   const [nickname, setNickname] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [_, setShowNicknameInEmail] =
-    useState<boolean>(false);
+  const [_, setShowNicknameInEmail] = useState<boolean>(false);
   const [nameInEmail, setnameInEmail] = useState<boolean | null>(false);
   const {
     emails: userEmails,
@@ -47,7 +46,7 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-   const [finalImg, setFinalImg] = useState("");
+  const [finalImg, setFinalImg] = useState("");
   const [fileType, setFileType] = useState<string | null>("");
   const [isImageLoading, setIsImageLoading] = useState(false);
 
@@ -60,7 +59,7 @@ const Profile = () => {
       setShowNicknameInEmail(profile.showNicknameInEmail || false);
       setCroppedImage(profile.croppedImage || null);
       console.log(allSetting.profile?.image);
-      
+
       setFinalImg(allSetting.profile?.image || "");
       setIsImageLoading(false);
     }
@@ -70,7 +69,6 @@ const Profile = () => {
     (croppedArea: Area, croppedAreaPixels: Area) => {
       setCroppedArea(croppedAreaPixels);
       console.log(croppedArea);
-
     },
     []
   );
@@ -193,7 +191,6 @@ const Profile = () => {
       console.log(response.data.error);
     } catch (error: unknown) {
       // setError(error.response.data.error);
-
       // setError("An error occurred while changing the password.");
     } finally {
       setIsDisabled(false);
@@ -343,9 +340,9 @@ const Profile = () => {
 
       <SettingDiv>
         <div className="flex justify-between items-center">
-        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Full name
-            </h2>
+          <h2 className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Full name
+          </h2>
           <Input
             id="fullname"
             type="text"
@@ -361,9 +358,9 @@ const Profile = () => {
         </div>
 
         <div className="flex items-center justify-between my-5">
-        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Default email
-            </h2>
+          <h2 className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Default email
+          </h2>
           <Select
             onValueChange={(value) => setSelectedEmail(value)}
             value={selectedEmail}
@@ -384,21 +381,21 @@ const Profile = () => {
         </div>
 
         <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-            Name in mail
-          </h2>
-          <div className="flex mt-1 items-center justify-between">
-            <Label
-              htmlFor="nikname-switch"
-              className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1"
-            >
-              Show full name in email
-            </Label>
-            <Switch
-              id="nikname-switch"
-              checked={nameInEmail as boolean}
-              onCheckedChange={handleNameSwitch}
-            />
-          </div>
+          Name in mail
+        </h2>
+        <div className="flex mt-1 items-center justify-between">
+          <Label
+            htmlFor="nikname-switch"
+            className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1"
+          >
+            Show full name in email
+          </Label>
+          <Switch
+            id="nikname-switch"
+            checked={nameInEmail as boolean}
+            onCheckedChange={handleNameSwitch}
+          />
+        </div>
       </SettingDiv>
 
       <SettingTitle>Password and Security</SettingTitle>
@@ -406,7 +403,6 @@ const Profile = () => {
       <SettingHr />
 
       <SettingDiv>
-
         <div>
           <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
             Change password
@@ -424,7 +420,6 @@ const Profile = () => {
             </Button>
           </div>
         </div>
-
 
         {changePassword && (
           <ResizeableModel
@@ -472,9 +467,7 @@ const Profile = () => {
                     disabled={isDisabled}
                   />
                 </div>
-                {error && (
-                  <p className="text-red-500 text-sm mt-2">{error}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 <div className="mt-4 w-full flex justify-end">
                   <Button
                     className="w-40"
@@ -507,8 +500,8 @@ const Profile = () => {
 
         <div className="flex items-center justify-between">
           <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-            Log out of all other active sessions on other devices besides
-            this one.
+            Log out of all other active sessions on other devices besides this
+            one.
           </p>
           <Button variant={"destructive"}>Log Out</Button>
         </div>
@@ -534,9 +527,7 @@ const Profile = () => {
             </div>
           </div>
         </SettingDiv>
-
       </div>
-
     </div>
   );
 };
