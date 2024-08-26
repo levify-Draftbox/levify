@@ -16,7 +16,14 @@ function Inputs(): React.ReactNode {
         loadInbox()
     }, [])
 
-    const [files, setFiles] = useState<FileObject[]>([])
+    const [files, setFiles] = useState<FileObject[]>([{
+        id: "sd",
+        loading: 100,
+        name: "hello.pdf",
+        size: 2000,
+        status: "success",
+        uid: ""
+    }])
     useEffect(() => {
         console.log(files);
     }, [files])
