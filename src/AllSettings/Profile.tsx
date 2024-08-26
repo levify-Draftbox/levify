@@ -85,7 +85,6 @@ const Profile = () => {
 
   const updateProfile = async (obj: ProfileSettings) => {
     setIsLoading(true);
-
     try {
       await updateSettings("profile", obj);
     } catch (error) {

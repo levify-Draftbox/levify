@@ -20,7 +20,6 @@ const sounds = [
 
 const Notification = () => {
   const { allSetting, updateSettings } = useProfileStore();
-
   const [notiEnable, setNotiEnable] = useState(false);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const [isSoundLoading, setIsSoundLoading] = useState(false);

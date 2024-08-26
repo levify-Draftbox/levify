@@ -6,6 +6,7 @@ import {
   BoxArrowUp,
   ChatCenteredText,
   ClockUser,
+  DownloadSimple,
   EnvelopeSimple,
   Funnel,
   Globe,
@@ -115,7 +116,7 @@ const AllSettings = () => {
           <SidebarNavLink icon={<Globe size={18} />} setting={"domains"}>
             Domains
           </SidebarNavLink>
-          <SidebarNavLink icon={<Bell size={18} />} setting={"GetTheApps"}>
+          <SidebarNavLink icon={<DownloadSimple size={18} />} setting={"GetTheApps"}>
             Get The Apps
           </SidebarNavLink>
         </div>

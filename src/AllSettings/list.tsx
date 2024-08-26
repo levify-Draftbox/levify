@@ -1,5 +1,6 @@
 import Appearance from "./Appearance";
 import Composer from "./Composer";
+import GetApp from "./GetApp";
 import LanguageAndTime from "./LanguageAndTime";
 import Notification from "./Notification";
 import Privacy from "./Privacy";
@@ -25,7 +26,8 @@ const SettingsList: {
   },
   LanguageAndTime: {
     name: "Language and Time",
-    description: "Set your language and time zone for a tailored website experience.",
+    description:
+      "Set your language and time zone for a tailored website experience.",
     component: <LanguageAndTime />,
   },
   appearance: {
@@ -72,7 +74,10 @@ const SettingsList: {
   },
   GetTheApps: {
     name: "Get The Apps",
-    component: <>GetTheApps</>,
+    description:
+      "Provides a direct link to download and install the application on your device.",
+
+    component: <GetApp />,
   },
 };
 
