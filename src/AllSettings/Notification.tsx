@@ -44,7 +44,10 @@ const Notification = () => {
     });
   }, []);
 
-  const updateAppearance = async (obj: any, loadingSetter: (loading: boolean) => void) => {
+  const updateAppearance = async (
+    obj: any,
+    loadingSetter: (loading: boolean) => void
+  ) => {
     loadingSetter(true);
     try {
       await updateSettings("notification", obj);
@@ -60,77 +63,122 @@ const Notification = () => {
     if (sound) {
       setSelectedSound(sound.src);
       playSound(sound.src);
-      await updateAppearance({ notificationSound: sound.src }, setIsSoundLoading);
+      await updateAppearance(
+        { notificationSound: sound.src },
+        setIsSoundLoading
+      );
     }
   };
 
   const handleNotificationToggle = async () => {
+    
+    // if (!notiEnable) {
+    //   // Notification logic
+    //   if (!("Notification" in window)) {
+    //     // Check if the browser supports notifications
+    //     alert("This browser does not support desktop notifications");
+    //   } else if (Notification.permission === "granted") {
+    //     // If permissions are already granted, create a notification
+    //     new Notification("Hi there!");
+    //   } else if (Notification.permission !== "denied") {
+    //     // Request permission from the user
+    //     const permission = await Notification.requestPermission();
+    //     if (permission === "granted") {
+    //       new Notification("Hi there!");
+    //     }
+    //   }
+    // }
+    
     const newNotiEnable = !notiEnable;
-    setNotiEnable(newNotiEnable);
-    await updateAppearance({ desktopNotificationSound: newNotiEnable }, setIsNotiLoading);
+   setNotiEnable(newNotiEnable);
+    // Update appearance settings
+    await updateAppearance(
+      { desktopNotificationSound: newNotiEnable },
+      setIsNotiLoading
+    );
   };
 
   return (
     <div className="w-full h-full">
       <SettingTitle>Notification Sound</SettingTitle>
 
-      <SettingDiv className="flex items-center">
-        <Select
-          onValueChange={handleSoundChange}
-          value={
-            selectedSound
-              ? sounds.find((s) => s.src === selectedSound)?.name
-              : undefined
-          }
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Sound" />
-          </SelectTrigger>
-          <SelectContent>
-            {sounds.map((sound) => (
-              <SelectItem key={sound.src} value={sound.name}>
-                {sound.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {isSoundLoading && <span className="ml-2"><Spinner /></span>}
-
-        <button
-          type="button"
-          className="ml-2 p-2 text-gray-500 hover:text-gray-700"
-          onClick={() => playSound(selectedSound)}
-          aria-label="Play selected sound"
-          disabled={!selectedSound || isSoundLoading}
-        >
-          <SpeakerHigh size={24} />
-        </button>
+      <SettingDiv>
+        <div className="flex justify-between items-center">
+          <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            Sets the default notification sound for incoming messages.
+          </p>
+          <div className="flex items-center gap-2">
+            {isSoundLoading && (
+              <span className="ml-2">
+                <Spinner />
+              </span>
+            )}
+            <button
+              type="button"
+              className="ml-2 p-2 text-gray-500 hover:text-gray-700"
+              onClick={() => playSound(selectedSound)}
+              aria-label="Play selected sound"
+              disabled={!selectedSound || isSoundLoading}
+            >
+              <SpeakerHigh size={24} />
+            </button>
+            <Select
+              onValueChange={handleSoundChange}
+              value={
+                selectedSound
+                  ? sounds.find((s) => s.src === selectedSound)?.name
+                  : undefined
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Sound" />
+              </SelectTrigger>
+              <SelectContent>
+                {sounds.map((sound) => (
+                  <SelectItem key={sound.src} value={sound.name}>
+                    {sound.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </SettingDiv>
 
-      <SettingTitle>Desktop Notifications Sound</SettingTitle>
-      <SettingDiv className="flex items-center">
-        <Button
-          className="w-fit px-4"
-          onClick={handleNotificationToggle}
-          variant={notiEnable ? "primary" : "secondary"}
-          disabled={isNotiLoading}
-        >
-          {notiEnable ? (
-            <div className="flex gap-1 items-center">
-              <BellRinging size={16} />
-              Enabled
-            </div>
-          ) : (
-            <div className="flex gap-1 items-center">
-              <BellSlash size={16} />
-              Disabled
-            </div>
-          )}
-        </Button>
-        {isNotiLoading && <span className="ml-2"><Spinner /></span>}
+      <SettingTitle>Desktop Notifications</SettingTitle>
+      <SettingDiv>
+        <div className="flex justify-between items-center w-full">
+          <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            Sets the default notification sound for incoming messages.
+          </p>
+          <div className="flex items-center gap-2">
+            {isNotiLoading && (
+              <span className="ml-2">
+                <Spinner />
+              </span>
+            )}
+            <Button
+              className="w-fit px-4"
+              onClick={handleNotificationToggle}
+              variant={notiEnable ? "primary" : "secondary"}
+              disabled={isNotiLoading}
+            >
+              {notiEnable ? (
+                <div className="flex gap-1 items-center">
+                  <BellRinging size={16} />
+                  Enabled
+                </div>
+              ) : (
+                <div className="flex gap-1 items-center">
+                  <BellSlash size={16} />
+                  Disabled
+                </div>
+              )}
+            </Button>
+          </div>
+        </div>
       </SettingDiv>
-    </div >
+    </div>
   );
 };
 

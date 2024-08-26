@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useProfileStore } from "@/store/profile";
 import { SettingDiv, SettingTitle } from "./components";
 import { Spinner } from "@/components/Spinner";
@@ -52,12 +52,7 @@ const Appearance = () => {
   const ThemeOptions: any = {
     system: (
       <div className="flex gap-2 items-center">
-        <div
-          className="h-4 w-6 border border-input rounded-sm"
-          style={{
-            background: "linear-gradient(to left, white 50%, #1a1a1a 50%)",
-          }}
-        />
+        <div className="h-4 w-6  border-input bg-gradient-to-r from-black to-white rounded-sm" />
         System
       </div>
     ),

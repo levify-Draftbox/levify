@@ -58,12 +58,13 @@ const Profile = () => {
       setSelectedEmail(profile.default_email || "");
       setShowNicknameInEmail(profile.showNicknameInEmail || false);
       setCroppedImage(profile.croppedImage || null);
-      console.log(allSetting.profile?.image);
-
       setFinalImg(allSetting.profile?.image || "");
       setIsImageLoading(false);
     }
   }, [profile]);
+
+  console.log(profile);
+  
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -204,7 +205,7 @@ const Profile = () => {
     updateProfile({ nameInMail: value });
   };
 
-  console.log(selectedEmail);
+  // console.log(selectedEmail);
 
   return (
     <div>
@@ -231,11 +232,6 @@ const Profile = () => {
               id="nickname"
               label="Nickname"
               type="text"
-              onBlur={() => {
-                updateProfile({
-                  nickname,
-                });
-              }}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
@@ -340,7 +336,7 @@ const Profile = () => {
 
       <SettingDiv>
         <div className="flex justify-between items-center">
-          <h2 className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
             Full name
           </h2>
           <Input
@@ -349,16 +345,11 @@ const Profile = () => {
             className="w-72"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            onBlur={() => {
-              updateProfile({
-                full_name: fullName,
-              });
-            }}
           />
         </div>
 
         <div className="flex items-center justify-between my-5">
-          <h2 className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
             Default email
           </h2>
           <Select
