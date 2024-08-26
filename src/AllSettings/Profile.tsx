@@ -342,7 +342,7 @@ const Profile = () => {
           <Input
             id="fullname"
             type="text"
-            className="w-72"
+            className="w-60"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
@@ -356,7 +356,7 @@ const Profile = () => {
             onValueChange={(value) => setSelectedEmail(value)}
             value={selectedEmail}
           >
-            <SelectTrigger className="w-72">
+            <SelectTrigger className="w-60">
               <SelectValue placeholder="Select an email" />
             </SelectTrigger>
             <SelectContent position="item-aligned">
