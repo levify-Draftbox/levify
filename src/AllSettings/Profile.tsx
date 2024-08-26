@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -34,7 +35,7 @@ const Profile = () => {
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
   const [_, setShowNicknameInEmail] = useState<boolean>(false);
-  const [nameInEmail, setnameInEmail] = useState<boolean | null>(false);
+  const [nameInEmail, setnameInEmail] = useState<boolean | undefined>(false);
   const {
     emails: userEmails,
     profile,
@@ -54,18 +55,53 @@ const Profile = () => {
   const [fileType, setFileType] = useState<string | null>("");
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [dummyImg, setdummyImg] = useState("");
+  const [imageChanged, setImageChanged] = useState(false);
+  const [showSaveDiscard, setshowSaveDiscard] = useState(false);
+  const [initialValues, setInitialValues] = useState<InitialValues>({
+    nickname: "",
+    fullName: "",
+    selectedEmail: "",
+    nameInEmail: false,
+    image: "",
+  });
 
   useEffect(() => {
     if (profile) {
       setIsImageLoading(true);
-      setNickname(profile.nickname || "");
-      setFullName(profile.full_name || "");
-      setSelectedEmail(profile.default_email || "");
-      setShowNicknameInEmail(profile.showNicknameInEmail || false);
-      setFinalImg(allSetting.profile?.image || "");
+      const newNickname = profile.nickname || "";
+      const newFullName = profile.full_name || "";
+      const newSelectedEmail = profile.default_email || "";
+      const newNameInEmail = profile.showNicknameInEmail || false;
+      const newImage = allSetting.profile?.image || "";
+  
+      setNickname(newNickname);
+      setFullName(newFullName);
+      setSelectedEmail(newSelectedEmail);
+      setShowNicknameInEmail(newNameInEmail);
+      setnameInEmail(newNameInEmail);
+      setFinalImg(newImage);
       setIsImageLoading(false);
+  
+      setInitialValues({
+        nickname: newNickname,
+        fullName: newFullName,
+        selectedEmail: newSelectedEmail,
+        nameInEmail: newNameInEmail,
+        image: newImage,
+      });
     }
   }, [allSetting.profile?.image, profile]);
+
+  useEffect(() => {
+    const hasChanges =
+      nickname !== initialValues.nickname ||
+      fullName !== initialValues.fullName ||
+      selectedEmail !== initialValues.selectedEmail ||
+      nameInEmail !== initialValues.nameInEmail ||
+      finalImg !== initialValues.image;
+  
+    setshowSaveDiscard(hasChanges);
+  }, [nickname, fullName, selectedEmail, nameInEmail, finalImg, initialValues]);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -75,16 +111,25 @@ const Profile = () => {
     []
   );
 
+  interface InitialValues {
+    nickname: string;
+    fullName: string;
+    selectedEmail: string;
+    nameInEmail: boolean;
+    image: string;
+  }
+
   interface ProfileSettings {
     nickname: string;
     full_name: string;
     default_email: string;
     croppedImage: string;
     showNicknameInEmail: boolean;
-    // FIX
     image: string;
     nameInMail: boolean | null;
   }
+
+
 
   const updateProfile = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
@@ -104,6 +149,7 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
+        setImageChanged(true);
       };
       reader.readAsDataURL(file);
     }
@@ -146,30 +192,64 @@ const Profile = () => {
       const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
       setFinalImg(gravatarUrl);
       await updateProfile({ image: gravatarUrl });
+      setImageChanged(true);
     } catch (error) {
       console.error("Error updating profile with Gravatar image:", error);
     } finally {
       setIsImageLoading(false);
     }
   };
-
   const handleRemovePhoto = async () => {
     try {
       setIsImageLoading(true);
+      setFinalImg("");
       await updateProfile({ image: "" });
+      setImageChanged(true);
+    } catch (error) {
+      console.error("Error removing profile photo:", error);
     } finally {
       setIsImageLoading(false);
     }
   };
 
-  const handleSubmit = () => {
-    const newemail = selectedEmail;
-    updateProfile({
-      nickname,
-      full_name: fullName,
-      default_email: newemail,
-    });
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const newemail = selectedEmail;
+      const updateData: Partial<ProfileSettings> = {
+        nickname,
+        full_name: fullName,
+        default_email: newemail,
+        nameInMail: nameInEmail,
+        image: finalImg,
+      };
+  
+      await updateProfile(updateData);
+  
+      setInitialValues({
+        nickname,
+        fullName,
+        selectedEmail: newemail,
+        nameInEmail: nameInEmail as boolean,
+        image: finalImg,
+      });
+      setImageChanged(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const handleAllDiscard = () => {
+    setNickname(initialValues.nickname);
+    setFullName(initialValues.fullName);
+    setSelectedEmail(initialValues.selectedEmail);
+    setnameInEmail(initialValues.nameInEmail);
+    setFinalImg(initialValues.image);
+    setImageChanged(false);
+  };
+
 
   // @ts-ignore
   const handleLogOut = () => {
@@ -212,6 +292,9 @@ const Profile = () => {
       setdummyImg("");
     }
   }, [nickname]);
+
+  console.log("switch",nameInEmail);
+  
 
   return (
     <div>
@@ -369,7 +452,7 @@ const Profile = () => {
           </Label>
           <Switch
             id="nikname-switch"
-            checked={nameInEmail as boolean}
+            checked={nameInEmail}
             onCheckedChange={handleNameSwitch}
           />
         </div>
@@ -484,27 +567,39 @@ const Profile = () => {
         </div>
       </SettingDiv>
 
-      <div className="pb-4 sticky bottom-0 bg-background-secondary">
-        <SettingHr className="!m-0" />
-
-        <SettingDiv className="relative w-full !mb-0 pt-1">
-          <div className="w-full">
-            <div className="flex gap-3 justify-end">
-              <Button
-                className="w-fit"
-                onClick={handleSubmit}
-                loading={isLoading}
-                variant={"primary"}
-              >
-                Save
-              </Button>
-              <Button className="w-fit" variant={"secondary"}>
-                Discard
-              </Button>
-            </div>
-          </div>
-        </SettingDiv>
-      </div>
+      <AnimatePresence>
+        {showSaveDiscard && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.4 }}
+            className="pb-4 sticky bottom-0 bg-background-secondary"
+          >
+            <SettingHr className="!m-0" />
+            <SettingDiv className="relative w-full !mb-0 pt-1">
+              <div className="w-full">
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    className="w-24"
+                    onClick={handleSubmit}
+                    variant={"primary"}
+                  >
+                    {!isLoading ? `Save` : <Spinner />}
+                  </Button>
+                  <Button
+                    className="w-24"
+                    variant={"secondary"}
+                    onClick={handleAllDiscard}
+                  >
+                    Discard
+                  </Button>
+                </div>
+              </div>
+            </SettingDiv>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

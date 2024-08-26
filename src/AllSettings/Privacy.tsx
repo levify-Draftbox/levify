@@ -35,10 +35,16 @@ const Privacy = () => {
           <Spinner />
         </div>
       )}
-      <SettingTitle>Email Privacy</SettingTitle>
       <SettingDiv>
         <div className="flex gap-10 cursor-pointer items-center justify-between">
-          <p>Load external images or Sources</p>
+          <div>
+            <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+              Email Privacy
+            </h2>
+            <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-2 mb-3">
+              Load external images or Sources.
+            </p>
+          </div>
           <Switch checked={loadExternal} onCheckedChange={handleToggle} />
         </div>
       </SettingDiv>

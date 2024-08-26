@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { SettingDiv, SettingTitle } from "./components";
+import { SettingDiv, SettingHr, SettingTitle } from "./components";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -227,11 +227,13 @@ const Composer = () => {
   return (
     <div>
       {isLoading && <Spinner className="absolute" />}
-      <SettingTitle>Default Browser Composer</SettingTitle>
       <SettingDiv>
-        <div className="flex justify-between items-center">
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          Default Browser Composer
+        </h2>
+        <div className="flex mt-1 justify-between items-center">
           <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-          Sets the default email composer for new messages.
+            Sets the default email composer for new messages.
           </p>
           <Button
             className="w-fit px-4"
@@ -247,9 +249,11 @@ const Composer = () => {
         </div>
       </SettingDiv>
 
-      <SettingTitle>Composer size</SettingTitle>
       <SettingDiv>
-        <div className="flex items-center w-full justify-between">
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          Composer size
+        </h2>
+        <div className="flex mt-1 items-center w-full justify-between">
           <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Composer full screen
           </p>
@@ -262,6 +266,7 @@ const Composer = () => {
       </SettingDiv>
 
       <SettingTitle>Email Signature</SettingTitle>
+      <SettingHr />
       <SettingDiv className="!mb-0">
         <div>
           <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
@@ -364,8 +369,13 @@ const Composer = () => {
         )}
       </SettingDiv>
 
-      <SettingTitle>Reply mode</SettingTitle>
       <SettingDiv className="mt-10">
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          Reply mod
+        </h2>
+        <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-2 mb-3">
+          Sets the default mode for replying to emails.
+        </p>
         <RadioGroup
           value={selectedReply}
           onValueChange={handleReplyChange}
@@ -373,11 +383,15 @@ const Composer = () => {
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="replyOne" id="replyOne" />
-            <Label htmlFor="replyOne">Reply to one</Label>
+            <Label htmlFor="replyOne" className="text-sm font-normal">
+              Reply to one
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="replyAll" id="replyAll" />
-            <Label htmlFor="replyAll">Reply to all</Label>
+            <Label htmlFor="replyAll" className="text-sm font-normal">
+              Reply to all
+            </Label>
           </div>
         </RadioGroup>
       </SettingDiv>

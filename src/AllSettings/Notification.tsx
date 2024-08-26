@@ -70,7 +70,6 @@ const Notification = () => {
   };
 
   const handleNotificationToggle = async () => {
-    
     // if (!notiEnable) {
     //   // Notification logic
     //   if (!("Notification" in window)) {
@@ -87,9 +86,9 @@ const Notification = () => {
     //     }
     //   }
     // }
-    
+
     const newNotiEnable = !notiEnable;
-   setNotiEnable(newNotiEnable);
+    setNotiEnable(newNotiEnable);
     // Update appearance settings
     await updateAppearance(
       { desktopNotificationSound: newNotiEnable },
@@ -99,9 +98,10 @@ const Notification = () => {
 
   return (
     <div className="w-full h-full">
-      <SettingTitle>Notification Sound</SettingTitle>
-
       <SettingDiv>
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          Notification Sound
+        </h2>
         <div className="flex justify-between items-center">
           <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Sets the default notification sound for incoming messages.
@@ -144,8 +144,10 @@ const Notification = () => {
         </div>
       </SettingDiv>
 
-      <SettingTitle>Desktop Notifications</SettingTitle>
       <SettingDiv>
+        <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          Desktop Notifications
+        </h2>
         <div className="flex justify-between items-center w-full">
           <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Sets the default notification sound for incoming messages.
