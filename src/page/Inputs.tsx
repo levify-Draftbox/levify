@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import FileUploadBlock from "@/components/ui/fileuploader";
+import FileUploadBlock, { FileObject } from "@/components/ui/fileuploader";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone";
+import ResizeableModel from "@/components/ui/ResizeableModel";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useloadInboxModal from "@/store/loadinbox";
 import React, { useEffect, useState } from "react";
@@ -14,6 +15,13 @@ function Inputs(): React.ReactNode {
     useEffect(() => {
         loadInbox()
     }, [])
+
+    const [files, setFiles] = useState<FileObject[]>([])
+    useEffect(() => {
+        console.log(files);
+    }, [files])
+
+    const [showNightFall, setNightFall] = useState(false)
 
     return (
         <>
@@ -103,11 +111,16 @@ function Inputs(): React.ReactNode {
 
                     <div className="mx-4 py-2 my-4">
                         <FileUploadBlock
+                            endPoint="/fileupload"
                             placeHolder="Upload File!"
                             className={"min-h-[58px] h-auto bg-background rounded-md border border-input-border"}
                             thumbClassName={"rounded-sm bg-gray-300/30 dark:bg-gray-300/5 border-2 border-dashed border-input-border !border-core"}
                             fileIconSize={24}
                             tileSize={40}
+                            files={files}
+                            setFiles={setFiles}
+                            sizeLimit={31457280}
+                            setLimitModal={setNightFall}
                         />
                     </div>
 
@@ -119,6 +132,26 @@ function Inputs(): React.ReactNode {
                     <div className="px-4 py-4">
                         <Button className="" size={"lg"}>Submit</Button>
                     </div>
+
+                    {showNightFall && (
+                        <ResizeableModel
+                            key="model"
+                            size={{ width: "30%", height: "15%" }}
+                            onClose={() => setNightFall(false)}
+                        >
+                            <div className="p-6 w-full h-full">
+                                <h1 className={`text-2xl font-[500] `}>
+                                    <p>Max Size</p>
+                                </h1>
+                                <div className="text-sm mt-3 font-thin text-gray-700 dark:text-gray-200">
+                                    night flow of file!
+                                </div>
+                                <div className="mt-4 flex justify-end items-end">
+                                    <Button variant={"primary"} onClick={() => {}} className="w-32" >Try again</Button>
+                                </div>
+                            </div>
+                        </ResizeableModel>
+                    )}
                 </div>
             </div>
         </>
