@@ -38,7 +38,7 @@ const Profile = () => {
   const {
     emails: userEmails,
     profile,
-    updateSettings,
+    updateProfile: updateUserProfile,
     allSetting,
   } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -75,18 +75,21 @@ const Profile = () => {
     []
   );
 
-  interface ProfileSettings extends Record<string, unknown> {
-    nickname?: string;
-    full_name?: string;
-    default_email?: string;
-    croppedImage?: string;
-    showNicknameInEmail?: boolean;
+  interface ProfileSettings {
+    nickname: string;
+    full_name: string;
+    default_email: string;
+    croppedImage: string;
+    showNicknameInEmail: boolean;
+    // FIX
+    image: string;
+    nameInMail: boolean | null;
   }
 
-  const updateProfile = async (obj: ProfileSettings) => {
+  const updateProfile = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
     try {
-      await updateSettings("profile", obj);
+      await updateUserProfile("profile", obj);
     } catch (error) {
       console.error("Error updating settings:", error);
     } finally {

@@ -148,7 +148,7 @@
     --button-hover: rgba(0, 0, 0, 0.085);
     --button-active: rgb(0, 0, 0, 0.1);
     --button-border: rgba(0, 0, 0, 0.075);
-/*   
+    /*   
     --input-hover: rgba(0, 0, 0, 0.085);
     --input-active: rgb(0, 0, 0, 0.12); */
 
@@ -246,6 +246,10 @@ html {
   width: 4px;
 }
 
+.scroll-bar.h::-webkit-scrollbar {
+  height: 4px;
+}
+
 /* Track */
 .scroll-bar::-webkit-scrollbar-track {
   background: transparent;
@@ -286,7 +290,8 @@ html {
   margin-right: 4px;
 }
 
-.dark{
+.dark {
+
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -296,4 +301,25 @@ html {
     transition: background-color 5000s ease-in-out 0s;
     box-shadow: inset 0 0 20px 20px #23232329;
   }
+}
+
+.file-upload-icon {
+  align-items: center;
+  display: flex;
+}
+
+.file-upload-icon .icon {
+  flex-wrap: wrap;
+}
+
+.file-upload-icon .loader .CircularProgressbar-trail {
+  stroke: var(--border) !important;
+}
+
+.dark .file-upload-icon .loader .CircularProgressbar-trail {
+  stroke: var(--input-border) !important;
+}
+
+.file-upload-icon .loader .CircularProgressbar-path{
+  stroke: var(--core) !important;
 }

@@ -9,11 +9,15 @@ interface SettingsState {
   fetchAllProfiles: () => Promise<void>;
   updateSettings: (
     type: string,
-    newSettings: Record<string, unknown>
+    newSettings: Record<string, any>
   ) => Promise<void>;
+  updateProfile: (
+    type: string,
+    newProfile: Record<string, any>
+  ) => Promise<void>
 }
 
-let updateInProgress = false;
+// let updateInProgress = false;
 
 export const useProfileStore = create<SettingsState>()((set) => ({
   allSetting: {},
@@ -34,12 +38,19 @@ export const useProfileStore = create<SettingsState>()((set) => ({
       console.error("Failed to fetch settings:", error);
     }
   },
+
   updateSettings: async (type: string, newSettings) => {
-    if (updateInProgress) return;
+    set((state) => ({
+      ...state,
+      allSetting: {
+        ...state.allSetting,
+        [type]: {
+          ...state.allSetting[type],
+          ...newSettings,
+        },
+      },
+    }));
 
-    console.log(type);
-
-    updateInProgress = true;
     try {
       const token = localStorage.getItem("token");
       console.log(newSettings);
@@ -52,16 +63,7 @@ export const useProfileStore = create<SettingsState>()((set) => ({
       });
 
       if (response.data.success) {
-        set((state) => ({
-          ...state,
-          allSetting: {
-            ...state.allSetting,
-            [type]: {
-              ...state.allSetting[type],
-              ...newSettings,
-            },
-          },
-        }));
+
       } else {
         console.error(
           `Failed to update ${type} settings:`,
@@ -70,8 +72,38 @@ export const useProfileStore = create<SettingsState>()((set) => ({
       }
     } catch (error) {
       console.error(`Failed to update ${type} settings:`, error);
-    } finally {
-      updateInProgress = false;
+    }
+  },
+
+  updateProfile: async (type: string = 'profile', newPofile) => {
+    set((state) => ({
+      ...state,
+      profile: {
+        ...state.profile,
+        ...newPofile,
+      },
+    }));
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await api.put(`/profile/${type}`, newPofile, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.success) {
+
+      } else {
+        console.error(
+          `Failed to update ${type} settings:`,
+          response.data.message
+        );
+      }
+    } catch (error) {
+      console.error(`Failed to update ${type} settings:`, error);
     }
   },
 }));
