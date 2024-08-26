@@ -21,12 +21,13 @@ const Composer = () => {
   const { allSetting, updateSettings } = useProfileStore();
 
   const [content, setContent] = useState<string>("");
-  const [notiEnable, setNotiEnable] = useState(false);
+  const [DefaultComposer, setDefaultComposer] = useState(false);
   const [size, setSize] = useState(false);
   const [isAddingSignature, setIsAddingSignature] = useState(false);
   const [signatureName, setSignatureName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedReply, setSelectedReply] = useState("replyOne");
+
   const [, setIsFirstLoad] = useState(true);
   const [signatures, setSignatures] = useState<
     Array<{ name: string; content: string }>
@@ -46,7 +47,7 @@ const Composer = () => {
         replay,
       } = allSetting.compose;
 
-      setNotiEnable(!!useDefaultBrowserComposer);
+      setDefaultComposer(!!useDefaultBrowserComposer);
       setSize(composerFullScreen);
       setSignatures(signature || []);
       setSelectedReply(replay || "replyOne");
@@ -139,7 +140,6 @@ const Composer = () => {
     setContent("");
     setIsAddingSignature(false);
 
-    // Reset selected signature to the previously selected one if exists
     if (selectedSignature) {
       const signature = signatures.find(
         (sig) => sig.name === selectedSignature
@@ -179,11 +179,40 @@ const Composer = () => {
   }, [isAddingSignature]);
 
   const handleBrowserComposer = () => {
-    const newNotiEnable = !notiEnable;
-
-    setNotiEnable(newNotiEnable);
-    updateComposer({ useDefaultBrowserComposer: newNotiEnable });
+    if (DefaultComposer) {
+      localStorage.removeItem("composer");
+    } else {
+      localStorage.setItem("composer", "true");
+    }
+    if (!DefaultComposer) {
+      if (typeof window !== "undefined" && navigator.registerProtocolHandler) {
+        const currentOrigin = window.location.origin;
+        const targetOrigin =
+          window.location.hostname === "localhost"
+            ? new URL("http://localhost:5173/composer").origin
+            : new URL("https://dev.rellitel.ink/composer").origin;
+  
+        if (currentOrigin === targetOrigin) {
+          navigator.registerProtocolHandler(
+            "mailto",
+            `${targetOrigin}/composer?to=%s`
+          );
+        } else {
+          console.warn(
+            "Origins do not match. Cannot register protocol handler."
+          );
+        }
+      } else {
+        console.warn(
+          "registerProtocolHandler is not supported by this browser."
+        );
+      }
+    }
+    const newDefaultComposer = !DefaultComposer;
+    setDefaultComposer(newDefaultComposer);
+    updateComposer({ useDefaultBrowserComposer: newDefaultComposer });
   };
+  
 
   const handleSize = () => {
     const newSize = !size;
@@ -204,9 +233,9 @@ const Composer = () => {
         <Button
           className="w-fit px-4"
           onClick={handleBrowserComposer}
-          variant={!notiEnable ? "primary" : "secondary"}
+          variant={!DefaultComposer ? "primary" : "secondary"}
         >
-          {!notiEnable ? (
+          {!DefaultComposer ? (
             <div className="flex gap-1 items-center">Enable</div>
           ) : (
             <div className="flex gap-1 items-center">Disable</div>
