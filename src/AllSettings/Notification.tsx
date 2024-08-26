@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { SettingDiv, SettingTitle } from "./components";
+import { SettingDiv } from "./components";
 import {
   Select,
   SelectContent,

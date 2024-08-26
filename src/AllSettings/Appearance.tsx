@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useProfileStore } from "@/store/profile";
-import { SettingDiv, SettingTitle } from "./components";
+import { SettingDiv } from "./components";
 import { Spinner } from "@/components/Spinner";
 import { ThemeColors } from "@/components/Theme";
 import {

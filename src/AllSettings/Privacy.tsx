@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SettingDiv, SettingTitle } from "./components";
+import { SettingDiv } from "./components";
 import { useProfileStore } from "@/store/profile";
 import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/Spinner";

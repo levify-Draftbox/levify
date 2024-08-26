@@ -55,7 +55,7 @@ const Profile = () => {
   const [fileType, setFileType] = useState<string | null>("");
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [dummyImg, setdummyImg] = useState("");
-  const [imageChanged, setImageChanged] = useState(false);
+  const [, setImageChanged] = useState(false);
   const [showSaveDiscard, setshowSaveDiscard] = useState(false);
   const [initialValues, setInitialValues] = useState<InitialValues>({
     nickname: "",

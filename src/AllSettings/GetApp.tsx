@@ -3,8 +3,6 @@ import { SettingDiv, SettingHr, SettingTitle } from "./components";
 import { useProfileStore } from "@/store/profile";
 
 const GetApp = () => {
-  const { allSetting } = useProfileStore();
-  const theme = allSetting?.appearance?.theme;
 
   return (
     <div>
