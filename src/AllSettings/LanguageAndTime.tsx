@@ -28,7 +28,8 @@ const LanguageAndTime: React.FC = () => {
   const [selectedTimeZone, setSelectedTimeZone] = useState<string>("");
   const [autoTimeZone, setAutoTimeZone] = useState<boolean>(false);
 
-  const languages: string[] = ["English", "Hindi", "Chinese", "Spanish"];
+  const languages: string[] = ["English / English", "हिंदी / Hindi", "中文 / Chinese", "Español / Spanish"];
+
 
   const timeZones: TimeZone[] = moment.tz.names().map((tz) => {
     const zone = moment.tz(tz);

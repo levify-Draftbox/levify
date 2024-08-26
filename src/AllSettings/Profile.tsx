@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SettingDiv, SettingHr, SettingTitle } from "./components";
 import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
 import Cropper, { Area } from "react-easy-crop";
 import {
   Select,
@@ -20,17 +19,21 @@ import getCroppedImg from "@/lib/cropImage";
 import ResizeableModel from "@/components/ui/ResizeableModel";
 import api from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  const [showMenu, setShowMenu] = useState<boolean>(false);
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [_, setShowNicknameInEmail] =
-    useState<boolean>(false);
+  const [_, setShowNicknameInEmail] = useState<boolean>(false);
   const [nameInEmail, setnameInEmail] = useState<boolean | null>(false);
   const {
     emails: userEmails,
@@ -47,9 +50,10 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-   const [finalImg, setFinalImg] = useState("");
+  const [finalImg, setFinalImg] = useState("");
   const [fileType, setFileType] = useState<string | null>("");
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [dummyImg, setdummyImg] = useState("");
 
   useEffect(() => {
     if (profile) {
@@ -58,19 +62,15 @@ const Profile = () => {
       setFullName(profile.full_name || "");
       setSelectedEmail(profile.default_email || "");
       setShowNicknameInEmail(profile.showNicknameInEmail || false);
-      setCroppedImage(profile.croppedImage || null);
-      console.log(allSetting.profile?.image);
-      
       setFinalImg(allSetting.profile?.image || "");
       setIsImageLoading(false);
     }
-  }, [profile]);
+  }, [allSetting.profile?.image, profile]);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
       setCroppedArea(croppedAreaPixels);
       console.log(croppedArea);
-
     },
     []
   );
@@ -102,7 +102,6 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
-        setShowMenu(false);
       };
       reader.readAsDataURL(file);
     }
@@ -143,8 +142,7 @@ const Profile = () => {
     try {
       setIsImageLoading(true);
       const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
-      setCroppedImage(gravatarUrl);
-      setShowMenu(false);
+      setFinalImg(gravatarUrl);
       await updateProfile({ image: gravatarUrl });
     } catch (error) {
       console.error("Error updating profile with Gravatar image:", error);
@@ -156,8 +154,6 @@ const Profile = () => {
   const handleRemovePhoto = async () => {
     try {
       setIsImageLoading(true);
-      setCroppedImage("");
-      setShowMenu(false);
       await updateProfile({ image: "" });
     } finally {
       setIsImageLoading(false);
@@ -193,7 +189,6 @@ const Profile = () => {
       console.log(response.data.error);
     } catch (error: unknown) {
       // setError(error.response.data.error);
-
       // setError("An error occurred while changing the password.");
     } finally {
       setIsDisabled(false);
@@ -207,7 +202,14 @@ const Profile = () => {
     updateProfile({ nameInMail: value });
   };
 
-  console.log(selectedEmail);
+  useEffect(() => {
+    if (nickname) {
+      const data = nickname.charAt(0).toUpperCase();
+      setdummyImg(data);
+    } else {
+      setdummyImg("");
+    }
+  }, [nickname]);
 
   return (
     <div>
@@ -215,89 +217,64 @@ const Profile = () => {
       <SettingHr />
 
       <SettingDiv>
-        <div className="flex items-center gap-6">
-          <div className="flex w-14 justify-center">
-            <Tooltip tip="Your Profile">
-              {isImageLoading ? (
-                <Spinner size={30} />
-              ) : (
-                <img
-                  src={finalImg || ""}
-                  alt="Profile"
-                  className="w-14 h-14 rounded-full"
-                />
-              )}
-            </Tooltip>
+        <div className="flex items-center gap-5">
+          <div className="flex flex-col gap-2 items-center w-20 justify-center">
+            <div className="h-14 w-14 flex justify-center items-center">
+              <Tooltip tip="Your Profile">
+                {isImageLoading ? (
+                  <Spinner size={30} />
+                ) : (
+                  <Avatar className="w-14 h-14">
+                    <AvatarImage src={finalImg || ""} />
+                    <AvatarFallback>{dummyImg}</AvatarFallback>
+                  </Avatar>
+                )}
+              </Tooltip>
+            </div>
+
+            <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="text-sm text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] ">
+                  Add Photo
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="z-[999999999]">
+                  <DropdownMenuItem
+                    onClick={() =>
+                      document.getElementById("fileInput")?.click()
+                    }
+                  >
+                    {" "}
+                    From Device
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleGravatar}>
+                    From Gravatar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleRemovePhoto}>
+                    {" "}
+                    Remove Photo
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+            </div>
           </div>
           <div>
             <Input
               id="nickname"
               label="Nickname"
+              className="mb-4"
               type="text"
-              onBlur={() => {
-                updateProfile({
-                  nickname,
-                });
-              }}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
           </div>
-        </div>
-        <div className="relative">
-          <button
-            className="text-sm mt-2 text-gray-400"
-            onClick={() => setShowMenu((prev) => !prev)}
-          >
-            Add Photo
-          </button>
-
-          {showMenu && (
-            <motion.div
-              initial={{ y: -30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="absolute mt-2 border bg-white rounded-md border-gray-300 shadow-lg dark:bg-black"
-            >
-              <ul>
-                <li>
-                  <button
-                    className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
-                    onClick={() =>
-                      document.getElementById("fileInput")?.click()
-                    }
-                  >
-                    From Device
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="block text-sm px-4 py-2 hover:bg-secondary rounded-md w-full text-left"
-                    onClick={handleGravatar}
-                  >
-                    From Gravatar
-                  </button>
-                </li>
-                {croppedImage && (
-                  <li>
-                    <button
-                      className="block text-sm px-4 py-2 hover:bg-secondary w-full text-left"
-                      onClick={handleRemovePhoto}
-                    >
-                      Remove Photo
-                    </button>
-                  </li>
-                )}
-              </ul>
-            </motion.div>
-          )}
-
-          <input
-            id="fileInput"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-          />
         </div>
       </SettingDiv>
 
@@ -343,32 +320,27 @@ const Profile = () => {
 
       <SettingDiv>
         <div className="flex justify-between items-center">
-        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Full name
-            </h2>
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Full name
+          </h2>
           <Input
             id="fullname"
             type="text"
-            className="w-72"
+            className="w-60"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            onBlur={() => {
-              updateProfile({
-                full_name: fullName,
-              });
-            }}
           />
         </div>
 
         <div className="flex items-center justify-between my-5">
-        <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Default email
-            </h2>
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+            Default email
+          </h2>
           <Select
             onValueChange={(value) => setSelectedEmail(value)}
             value={selectedEmail}
           >
-            <SelectTrigger className="w-72">
+            <SelectTrigger className="w-60">
               <SelectValue placeholder="Select an email" />
             </SelectTrigger>
             <SelectContent position="item-aligned">
@@ -384,21 +356,21 @@ const Profile = () => {
         </div>
 
         <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-            Name in mail
-          </h2>
-          <div className="flex mt-1 items-center justify-between">
-            <Label
-              htmlFor="nikname-switch"
-              className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1"
-            >
-              Show full name in email
-            </Label>
-            <Switch
-              id="nikname-switch"
-              checked={nameInEmail as boolean}
-              onCheckedChange={handleNameSwitch}
-            />
-          </div>
+          Name in mail
+        </h2>
+        <div className="flex mt-1 items-center justify-between">
+          <Label
+            htmlFor="nikname-switch"
+            className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1"
+          >
+            Show full name in email
+          </Label>
+          <Switch
+            id="nikname-switch"
+            checked={nameInEmail as boolean}
+            onCheckedChange={handleNameSwitch}
+          />
+        </div>
       </SettingDiv>
 
       <SettingTitle>Password and Security</SettingTitle>
@@ -406,7 +378,6 @@ const Profile = () => {
       <SettingHr />
 
       <SettingDiv>
-
         <div>
           <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
             Change password
@@ -424,7 +395,6 @@ const Profile = () => {
             </Button>
           </div>
         </div>
-
 
         {changePassword && (
           <ResizeableModel
@@ -472,9 +442,7 @@ const Profile = () => {
                     disabled={isDisabled}
                   />
                 </div>
-                {error && (
-                  <p className="text-red-500 text-sm mt-2">{error}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 <div className="mt-4 w-full flex justify-end">
                   <Button
                     className="w-40"
@@ -507,8 +475,8 @@ const Profile = () => {
 
         <div className="flex items-center justify-between">
           <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-            Log out of all other active sessions on other devices besides
-            this one.
+            Log out of all other active sessions on other devices besides this
+            one.
           </p>
           <Button variant={"destructive"}>Log Out</Button>
         </div>
@@ -534,9 +502,7 @@ const Profile = () => {
             </div>
           </div>
         </SettingDiv>
-
       </div>
-
     </div>
   );
 };

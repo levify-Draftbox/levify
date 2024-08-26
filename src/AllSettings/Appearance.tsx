@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useProfileStore } from "@/store/profile";
 import { SettingDiv, SettingTitle } from "./components";
 import { Spinner } from "@/components/Spinner";
@@ -52,12 +52,7 @@ const Appearance = () => {
   const ThemeOptions: any = {
     system: (
       <div className="flex gap-2 items-center">
-        <div
-          className="h-4 w-6 border border-input rounded-sm"
-          style={{
-            background: "linear-gradient(to left, white 50%, #1a1a1a 50%)",
-          }}
-        />
+        <div className="h-4 w-6  border-input bg-gradient-to-r from-black to-white rounded-sm" />
         System
       </div>
     ),
@@ -102,7 +97,10 @@ const Appearance = () => {
         <SettingTitle>Theme</SettingTitle>
 
         <SettingDiv>
-          <div>
+          <div className="flex justify-between items-center">
+            <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            Sets the default visual theme for the application, including colors and styles.
+            </p>
             <Select
               onValueChange={(v) => updateAppearance({ theme: v })}
               value={allSetting?.appearance?.theme || "system"}
@@ -126,53 +124,63 @@ const Appearance = () => {
         <SettingTitle>Colors</SettingTitle>
 
         <SettingDiv>
-          <Select
-            onValueChange={(v) => updateAppearance({ color: v })}
-            value={allSetting?.appearance?.color || "purple"}
-          >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Select Theme" />
-            </SelectTrigger>
-            <SelectContent position="item-aligned">
-              <SelectGroup>
-                {Object.keys(ThemeColors).map((e: string, i) => (
-                  <SelectItem key={i} value={e} dontShowCheck>
-                    <div className="flex gap-2 items-center capitalize">
-                      <div
-                        className="h-4 w-6 border border-input rounded-sm"
-                        style={{
-                          background: ThemeColors[e],
-                        }}
-                      />
-                      {e}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex justify-between items-center">
+            <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            Customizes the color scheme to match user preferences or branding.
+            </p>
+            <Select
+              onValueChange={(v) => updateAppearance({ color: v })}
+              value={allSetting?.appearance?.color || "purple"}
+            >
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Select Theme" />
+              </SelectTrigger>
+              <SelectContent position="item-aligned">
+                <SelectGroup>
+                  {Object.keys(ThemeColors).map((e: string, i) => (
+                    <SelectItem key={i} value={e} dontShowCheck>
+                      <div className="flex gap-2 items-center capitalize">
+                        <div
+                          className="h-4 w-6 border border-input rounded-sm"
+                          style={{
+                            background: ThemeColors[e],
+                          }}
+                        />
+                        {e}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </SettingDiv>
 
         <SettingTitle>Layout</SettingTitle>
 
         <SettingDiv>
-          <Select
-            onValueChange={(v) => updateAppearance({ layout: v })}
-            value={allSetting?.appearance?.layout || "columan"}
-          >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Select layout" />
-            </SelectTrigger>
-            <SelectContent position="item-aligned">
-              <SelectGroup>
-                {Object.keys(layout).map((e: string, i) => (
-                  <SelectItem key={i} value={e} dontShowCheck>
-                    {layout[e]}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex justify-between items-center">
+            <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            Adjusts the arrangement and design of the application's interface elements.
+            </p>
+            <Select
+              onValueChange={(v) => updateAppearance({ layout: v })}
+              value={allSetting?.appearance?.layout || "columan"}
+            >
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Select layout" />
+              </SelectTrigger>
+              <SelectContent position="item-aligned">
+                <SelectGroup>
+                  {Object.keys(layout).map((e: string, i) => (
+                    <SelectItem key={i} value={e} dontShowCheck>
+                      {layout[e]}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </SettingDiv>
       </div>
     </div>

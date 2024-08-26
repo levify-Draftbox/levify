@@ -21,12 +21,13 @@ const Composer = () => {
   const { allSetting, updateSettings } = useProfileStore();
 
   const [content, setContent] = useState<string>("");
-  const [notiEnable, setNotiEnable] = useState(false);
+  const [DefaultComposer, setDefaultComposer] = useState(false);
   const [size, setSize] = useState(false);
   const [isAddingSignature, setIsAddingSignature] = useState(false);
   const [signatureName, setSignatureName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedReply, setSelectedReply] = useState("replyOne");
+
   const [, setIsFirstLoad] = useState(true);
   const [signatures, setSignatures] = useState<
     Array<{ name: string; content: string }>
@@ -46,7 +47,7 @@ const Composer = () => {
         replay,
       } = allSetting.compose;
 
-      setNotiEnable(!!useDefaultBrowserComposer);
+      setDefaultComposer(!!useDefaultBrowserComposer);
       setSize(composerFullScreen);
       setSignatures(signature || []);
       setSelectedReply(replay || "replyOne");
@@ -139,7 +140,6 @@ const Composer = () => {
     setContent("");
     setIsAddingSignature(false);
 
-    // Reset selected signature to the previously selected one if exists
     if (selectedSignature) {
       const signature = signatures.find(
         (sig) => sig.name === selectedSignature
@@ -179,10 +179,38 @@ const Composer = () => {
   }, [isAddingSignature]);
 
   const handleBrowserComposer = () => {
-    const newNotiEnable = !notiEnable;
+    if (DefaultComposer) {
+      localStorage.removeItem("composer");
+    } else {
+      localStorage.setItem("composer", "true");
+    }
+    if (!DefaultComposer) {
+      if (typeof window !== "undefined" && navigator.registerProtocolHandler) {
+        const currentOrigin = window.location.origin;
+        const targetOrigin =
+          window.location.hostname === "localhost"
+            ? new URL("http://localhost:5173/composer").origin
+            : new URL("https://dev.rellitel.ink/composer").origin;
 
-    setNotiEnable(newNotiEnable);
-    updateComposer({ useDefaultBrowserComposer: newNotiEnable });
+        if (currentOrigin === targetOrigin) {
+          navigator.registerProtocolHandler(
+            "mailto",
+            `${targetOrigin}/composer?to=%s`
+          );
+        } else {
+          console.warn(
+            "Origins do not match. Cannot register protocol handler."
+          );
+        }
+      } else {
+        console.warn(
+          "registerProtocolHandler is not supported by this browser."
+        );
+      }
+    }
+    const newDefaultComposer = !DefaultComposer;
+    setDefaultComposer(newDefaultComposer);
+    updateComposer({ useDefaultBrowserComposer: newDefaultComposer });
   };
 
   const handleSize = () => {
@@ -201,17 +229,22 @@ const Composer = () => {
       {isLoading && <Spinner className="absolute" />}
       <SettingTitle>Default Browser Composer</SettingTitle>
       <SettingDiv>
-        <Button
-          className="w-fit px-4"
-          onClick={handleBrowserComposer}
-          variant={!notiEnable ? "primary" : "secondary"}
-        >
-          {!notiEnable ? (
-            <div className="flex gap-1 items-center">Enable</div>
-          ) : (
-            <div className="flex gap-1 items-center">Disable</div>
-          )}
-        </Button>
+        <div className="flex justify-between items-center">
+          <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+          Sets the default email composer for new messages.
+          </p>
+          <Button
+            className="w-fit px-4"
+            onClick={handleBrowserComposer}
+            variant={!DefaultComposer ? "primary" : "secondary"}
+          >
+            {!DefaultComposer ? (
+              <div className="flex gap-1 items-center">Enable</div>
+            ) : (
+              <div className="flex gap-1 items-center">Disable</div>
+            )}
+          </Button>
+        </div>
       </SettingDiv>
 
       <SettingTitle>Composer size</SettingTitle>
@@ -231,7 +264,7 @@ const Composer = () => {
       <SettingTitle>Email Signature</SettingTitle>
       <SettingDiv className="!mb-0">
         <div>
-          <p className="text-sm">
+          <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
             Edit and choose Signature that will be automatically added to your
             email message.
           </p>
