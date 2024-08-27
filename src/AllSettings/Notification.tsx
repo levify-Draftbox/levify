@@ -18,7 +18,7 @@ const sounds = [
   { name: "Pop", src: "/sounds/pop.wav" },
 ];
 
-const Notification = () => {
+const NotificationSetting = () => {
   const { allSetting, updateSettings } = useProfileStore();
   const [notiEnable, setNotiEnable] = useState(false);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
@@ -70,22 +70,22 @@ const Notification = () => {
   };
 
   const handleNotificationToggle = async () => {
-    // if (!notiEnable) {
-    //   // Notification logic
-    //   if (!("Notification" in window)) {
-    //     // Check if the browser supports notifications
-    //     alert("This browser does not support desktop notifications");
-    //   } else if (Notification.permission === "granted") {
-    //     // If permissions are already granted, create a notification
-    //     new Notification("Hi there!");
-    //   } else if (Notification.permission !== "denied") {
-    //     // Request permission from the user
-    //     const permission = await Notification.requestPermission();
-    //     if (permission === "granted") {
-    //       new Notification("Hi there!");
-    //     }
-    //   }
-    // }
+    if (!notiEnable) {
+      // Notification logic
+      if (!("Notification" in window)) {
+        // Check if the browser supports notifications
+        alert("This browser does not support desktop notifications");
+      } else if (Notification.permission === "granted") {
+        // If permissions are already granted, create a notification
+        new Notification("Hi there!");
+      } else if (Notification.permission !== "denied") {
+        // Request permission from the user
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          new Notification("Hi there!");
+        }
+      }
+    }
 
     const newNotiEnable = !notiEnable;
     setNotiEnable(newNotiEnable);
@@ -183,4 +183,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default NotificationSetting;

@@ -24,7 +24,7 @@ const Main = () => {
   let theme = "dark";
 
   useEffect(() => {
-    if (Notification.permission !== 'granted') Notification.requestPermission()
+    // if (Notification.permission !== 'granted') Notification.requestPermission()
 
     setAllowComposer()
     fetchAllProfiles()
