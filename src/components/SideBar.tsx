@@ -135,6 +135,7 @@ const SideBar = () => {
         <Button
           variant={"secondary"}
           onClick={() => setSettingOpen(true)}
+          className="w-full"
         >
           <Gear />
           Setting

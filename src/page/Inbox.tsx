@@ -1,15 +1,23 @@
 import ToolBar from "@/components/ToolBar";
 import api from "@/lib/api";
-import { useVirtual } from 'react-virtual';
+import { useVirtual } from "react-virtual";
 import React, { useEffect, useRef, useState } from "react";
 import MailRow from "@/components/MailRow";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
 import { sendToWs, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
 import useloadInboxModal from "@/store/loadinbox";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowBendDoubleUpLeft, ArrowBendUpLeft, ArrowBendUpRight, X } from "@phosphor-icons/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip } from "@/components/ui/tooltip";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -29,71 +37,75 @@ export type EmailObject = {
   mode: "receive" | "send";
   path: "inbox" | "sent" | "drafts" | "trash" | string;
   unread: boolean;
-
   from_profile: string;
 };
 
-const Inbox = () => {
-  const parentRef = useRef(null);
-  const [emailList, setEmailList] = useState<EmailObject[]>([])
+const Inbox: React.FC = () => {
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [emailList, setEmailList] = useState<EmailObject[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const { allSetting } = useProfileStore()
+  const { allSetting } = useProfileStore();
 
-  const { setLoad: setLoadInbox } = useloadInboxModal()
+  const { setLoad: setLoadInbox } = useloadInboxModal();
 
   function playSound() {
-    const notificationSound = new Audio(allSetting?.notification?.notificationSound);
-    notificationSound.play().catch(error => {
-      console.error('Error playing sound:', error);
+    const notificationSound = new Audio(
+      allSetting?.notification?.notificationSound || ""
+    );
+    notificationSound.play().catch((error) => {
+      console.error("Error playing sound:", error);
     });
-  };
+  }
 
   useEffect(() => {
     setUnReadFunc((d) => {
-      const { email_id, unread } = d as { email_id: number, unread: boolean }
-      setUnread(email_id, unread)
-    })
+      const { email_id, unread } = d as { email_id: number; unread: boolean };
+      setUnread(email_id, unread);
+    });
 
-    setNotifyFunc(d => {
-      let { mode, notify, mail } = d as {
-        mode: "append" | "remove",
-        notify: boolean,
-        mail: EmailObject
-      }
+    setNotifyFunc((d) => {
+      const { mode, notify, mail } = d as {
+        mode: "append" | "remove";
+        notify: boolean;
+        mail: EmailObject;
+      };
 
       if (mode == "append") {
-        setEmailList(l => [mail, ...l])
+        setEmailList((l) => [mail, ...l]);
         if (notify) {
           if (document.hasFocus()) {
             toast.success(`New message from: ${mail.b_from}`, {
-              description: mail.b_subject
-            })
+              description: mail.b_subject,
+            });
           } else {
             let n = new Notification(`From: ${mail.b_from}`, {
               body: mail.b_subject,
               icon: "/favicon.png",
-            })
+            });
             n.onclick = () => {
               console.log("Click");
-            }
+            };
           }
-          playSound()
+          playSound();
         }
       } else {
         // TODO:
       }
-    })
-  }, [])
-
+    });
+  }, []);
 
   const setUnread = (email_id: number, unread: boolean) => {
-    setEmailList(e => e.map(e => {
-      e.unread = e.id == email_id ? unread : e.unread
-      return e
-    }))
-  }
+    setEmailList((e) =>
+      e.map((email) => {
+        if (email.id === email_id) {
+          return { ...email, unread };
+        }
+        return email;
+      })
+    );
+  };
 
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
@@ -105,11 +117,22 @@ const Inbox = () => {
     }
 
     const email = emailList[index];
-    return <MailRow onClick={() => {
-      setEmailOpen(true)
-      setOpenEmail(email)
-      setUnread(email.id, false)
-    }} {...email} />
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <MailRow
+          onClick={() => {
+            setEmailOpen(true);
+            setOpenEmail(email);
+            setUnread(email.id, false);
+          }}
+          {...email}
+        />
+      </motion.div>
+    );
   };
 
   const rowVirtualizer = useVirtual({
@@ -127,13 +150,16 @@ const Inbox = () => {
     isFetchingRef.current = true;
     setIsLoading(true);
     try {
-      let res = await api.post<{ hasMore: boolean, emails: EmailObject[] }>("/listing", { page });
-      setEmailList(prevEmails => [...prevEmails, ...res.data.emails]);
+      const res = await api.post<{ hasMore: boolean; emails: EmailObject[] }>(
+        "/listing",
+        { page }
+      );
+      setEmailList((prevEmails) => [...prevEmails, ...res.data.emails]);
       setHasMore(res.data.hasMore);
-      setPage(prevPage => prevPage + 1);
-      setLoadInbox()
+      setPage((prevPage) => prevPage + 1);
+      setLoadInbox();
     } catch (error) {
-      console.error('Error fetching emails:', error);
+      console.error("Error fetching emails:", error);
     } finally {
       setIsLoading(false);
       isFetchingRef.current = false;
@@ -142,16 +168,25 @@ const Inbox = () => {
 
   useEffect(() => {
     const [lastItem] = rowVirtualizer.virtualItems.slice(-1);
-    if (lastItem && lastItem.index >= emailList.length - 1 && hasMore && !isLoading) {
+    if (
+      lastItem &&
+      lastItem.index >= emailList.length - 1 &&
+      hasMore &&
+      !isLoading
+    ) {
       fetchEmails();
     }
   }, [rowVirtualizer.virtualItems, hasMore, isLoading, emailList.length]);
 
-  const [emailOpen, setEmailOpen] = useState(false)
-  const [openEmail, setOpenEmail] = useState<EmailObject>()
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [openEmail, setOpenEmail] = useState<EmailObject | undefined>();
+
+  const handleClose = () => {
+    setEmailOpen(!emailOpen);
+  };
 
   return (
-    <div className="w-full flex flex-col flex-1 overflow-hidden">
+    <motion.div className="w-full flex flex-col flex-1 overflow-hidden">
       <ToolBar className={""} />
 
       <ResizablePanelGroup
@@ -166,26 +201,26 @@ const Inbox = () => {
               style={{
                 height: `100%`,
                 width: `100%`,
-                overflow: 'auto',
+                overflow: "auto",
               }}
             >
               <div
                 className="scroll-bar"
                 style={{
                   height: `${rowVirtualizer.totalSize}px`,
-                  width: '100%',
-                  position: 'relative',
+                  width: "100%",
+                  position: "relative",
                 }}
               >
-                {rowVirtualizer.virtualItems.map(virtualRow => (
+                {rowVirtualizer.virtualItems.map((virtualRow) => (
                   <div
                     key={virtualRow.index}
                     ref={virtualRow.measureRef}
                     style={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 0,
                       left: 0,
-                      width: '100%',
+                      width: "100%",
                       transform: `translateY(${virtualRow.start}px)`,
                     }}
                   >
@@ -193,79 +228,135 @@ const Inbox = () => {
                   </div>
                 ))}
               </div>
-
             </div>
           </div>
         </ResizablePanel>
 
         <ResizableHandle />
 
-        {
-          emailOpen &&
-          <>
-            <ResizablePanel minSize={30} maxSize={55} defaultSize={20} >
-              <MailViewer key={openEmail?.id || 0} email={openEmail as EmailObject} />
-            </ResizablePanel>
-          </>
-        }
-
+        <AnimatePresence>
+          {emailOpen && (
+            <motion.div
+              initial={{ width: "40%", opacity: 0 }}
+              animate={{ width: "60%", opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ResizablePanel minSize={30} maxSize={70} defaultSize={60}>
+                <MailViewer
+                  key={openEmail?.id || 0}
+                  email={openEmail as EmailObject}
+                  onClose={handleClose}
+                />
+              </ResizablePanel>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </ResizablePanelGroup>
-    </div>
+    </motion.div>
   );
 };
 
-const MailViewer: React.FC<{ email: EmailObject, key: number }> = ({ email, key }) => {
-
-  const [viewMode, setViewMode] = useState(email.b_html && email.b_html != "" ? "html" : "text")
-  const htmlView = useRef<HTMLIFrameElement>(null)
+const MailViewer: React.FC<{
+  email: EmailObject;
+  key: number;
+  onClose: () => void;
+}> = ({ email, key, onClose }) => {
+  const [viewMode, setViewMode] = useState(
+    email.b_html && email.b_html !== "" ? "html" : "text"
+  );
+  const htmlView = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     if (htmlView.current) {
-      let d = htmlView.current.contentWindow?.document ||
+      let d =
+        htmlView.current.contentWindow?.document ||
         htmlView.current.contentDocument;
 
       d?.open();
       d?.write(email.b_html);
       d?.close();
     }
-  }, [viewMode, key])
+  }, [viewMode, key]);
 
   useEffect(() => {
-    sendToWs(JSON.stringify({
-      event: "unread",
-      data: {
-        email_id: email.id,
-        unread: false
-      }
-    }))
-  }, [])
+    sendToWs(
+      JSON.stringify({
+        event: "unread",
+        data: {
+          email_id: email.id,
+          unread: false,
+        },
+      })
+    );
+  }, []);
 
   return (
-    <div className="p-2">
-      <h1>From: {email.b_from_name || ""} {email.from}</h1>
-      <h1>To: {email.b_to.join(",")}</h1>
-      <h1>Cc: {email.b_cc.join(",")}</h1>
+    <motion.div className="p-2">
+      <div className="flex w-full justify-between px-1">
+        <div className="w-full px-1">
+          <Tooltip tip={email.b_subject}>
+            <h1 className="text-xl font-medium text-start line-clamp-2">
+              {email.b_subject}
+            </h1>
+          </Tooltip>
+        </div>
+        <div>
+          <Button variant={"toolbutton"} onClick={onClose}>
+            <X size={18} />
+          </Button>
+        </div>
+      </div>
+      <div className="my-2 mx-2 flex gap-3">
+        <Avatar className="w-12 h-12">
+          <AvatarImage src="" />
+          <AvatarFallback>R</AvatarFallback>
+        </Avatar>
+        <div>
+          <h2 className="font-medium">{email.b_from_name || "unknown"}</h2>
+          <div className="flex items-center gap-1 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            <p className="text-sm">To:</p>
+            <p className="text-sm">{email.b_to.join(", ")}</p>
+          </div>
+        </div>
+      </div>
 
-      <hr className="my-2" />
+      <div className="m-1 border-[1px] p-2 rounded-md shadow">
+        <div>
+          <Button
+            className="w-fit"
+            variant={viewMode == "html" ? "secondary" : "primary"}
+            onClick={() => setViewMode((v) => (v === "html" ? "text" : "html"))}
+          >
+            <span className="capitalize">
+              {viewMode === "html" ? "Text" : "HTML"}
+            </span>
+          </Button>
+        </div>
 
-      <Button className="w-fit" variant={viewMode == "html" ? "secondary" : "primary"} onClick={() => setViewMode(v => v == "html" ? "text" : "html")}>
-        <span className="capitalize">
-          {viewMode == "html" ? "Text" : "HTML"}
-        </span>
-      </Button>
-
-      <hr className="my-2" />
-      {
-        viewMode == "text" ?
-          <pre className="text-sm">
-            {email.b_text}
-          </pre>
-          :
+        <hr className="my-2 " />
+        {viewMode === "text" ? (
+          <pre className="text-sm">{email.b_text}</pre>
+        ) : (
           <iframe className="bg-white w-full h-[500px]" ref={htmlView} />
-      }
-
-    </div>
-  )
-}
+        )}
+      </div>
+      <div className="mx-1 mt-4 flex gap-2">
+        <Button variant={"secondary"}>
+          <ArrowBendUpLeft size={18} />
+          <p>Reply</p>
+        </Button>
+        <Button variant={"secondary"}>
+          <ArrowBendDoubleUpLeft size={18} />
+          <p>Reply All</p>
+        </Button>
+        <Button variant={"secondary"}>
+          <ArrowBendUpRight size={18} />
+          <p>Forward</p>
+        </Button>
+      </div>
+    </motion.div>
+  );
+};
 
 export default Inbox;

@@ -65,6 +65,9 @@ const Profile = () => {
     image: "",
   });
 
+console.log("initialwebihf",allSetting.profile?.image);
+
+
   useEffect(() => {
     if (profile) {
       setIsImageLoading(true);
@@ -73,7 +76,7 @@ const Profile = () => {
       const newSelectedEmail = profile.default_email || "";
       const newNameInEmail = profile.showNicknameInEmail || false;
       const newImage = allSetting.profile?.image || "";
-  
+
       setNickname(newNickname);
       setFullName(newFullName);
       setSelectedEmail(newSelectedEmail);
@@ -81,7 +84,7 @@ const Profile = () => {
       setnameInEmail(newNameInEmail);
       setFinalImg(newImage);
       setIsImageLoading(false);
-  
+
       setInitialValues({
         nickname: newNickname,
         fullName: newFullName,
@@ -90,7 +93,7 @@ const Profile = () => {
         image: newImage,
       });
     }
-  }, [allSetting.profile?.image, profile]);
+  }, [allSetting, profile]);
 
   useEffect(() => {
     const hasChanges =
@@ -99,7 +102,7 @@ const Profile = () => {
       selectedEmail !== initialValues.selectedEmail ||
       nameInEmail !== initialValues.nameInEmail ||
       finalImg !== initialValues.image;
-  
+
     setshowSaveDiscard(hasChanges);
   }, [nickname, fullName, selectedEmail, nameInEmail, finalImg, initialValues]);
 
@@ -123,16 +126,14 @@ const Profile = () => {
     nickname: string;
     full_name: string;
     default_email: string;
-    croppedImage: string;
     showNicknameInEmail: boolean;
     image: string;
     nameInMail: boolean | null;
   }
 
-
-
   const updateProfile = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
+ 
     try {
       await updateUserProfile("profile", obj);
     } catch (error) {
@@ -216,6 +217,7 @@ const Profile = () => {
     setIsLoading(true);
     try {
       const newemail = selectedEmail;
+
       const updateData: Partial<ProfileSettings> = {
         nickname,
         full_name: fullName,
@@ -223,9 +225,9 @@ const Profile = () => {
         nameInMail: nameInEmail,
         image: finalImg,
       };
-  
+
       await updateProfile(updateData);
-  
+
       setInitialValues({
         nickname,
         fullName,
@@ -250,8 +252,6 @@ const Profile = () => {
     setImageChanged(false);
   };
 
-
-  // @ts-ignore
   const handleLogOut = () => {
     localStorage.removeItem("token");
     window.location.reload();
@@ -292,9 +292,6 @@ const Profile = () => {
       setdummyImg("");
     }
   }, [nickname]);
-
-  console.log("switch",nameInEmail);
-  
 
   return (
     <div>
@@ -563,7 +560,9 @@ const Profile = () => {
             Log out of all other active sessions on other devices besides this
             one.
           </p>
-          <Button variant={"destructive"}>Log Out</Button>
+          <Button variant={"destructive"} onClick={handleLogOut}>
+            Log Out
+          </Button>
         </div>
       </SettingDiv>
 
@@ -605,3 +604,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

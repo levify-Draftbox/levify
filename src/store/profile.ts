@@ -14,7 +14,7 @@ interface SettingsState {
   updateProfile: (
     type: string,
     newProfile: Record<string, any>
-  ) => Promise<void>
+  ) => Promise<void>;
 }
 
 // let updateInProgress = false;
@@ -27,6 +27,8 @@ export const useProfileStore = create<SettingsState>()((set) => ({
   fetchAllProfiles: async () => {
     try {
       const response = await api.get("/profile/all");
+      console.log("database image",response.data.setting.profile.image);
+      
       set((s) => ({
         ...s,
         allSetting: response.data.setting,
@@ -52,18 +54,12 @@ export const useProfileStore = create<SettingsState>()((set) => ({
     }));
 
     try {
-      const token = localStorage.getItem("token");
       console.log(newSettings);
 
-      const response = await api.put(`/profile/${type}`, newSettings, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.put(`/profile/${type}`, newSettings, {});
 
       if (response.data.success) {
-
+        //
       } else {
         console.error(
           `Failed to update ${type} settings:`,
@@ -75,7 +71,7 @@ export const useProfileStore = create<SettingsState>()((set) => ({
     }
   },
 
-  updateProfile: async (type: string = 'profile', newPofile) => {
+  updateProfile: async (type: string = "profile", newPofile) => {
     set((state) => ({
       ...state,
       profile: {
@@ -85,17 +81,10 @@ export const useProfileStore = create<SettingsState>()((set) => ({
     }));
 
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await api.put(`/profile/${type}`, newPofile, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.put(`/profile/${type}`, newPofile, {});
 
       if (response.data.success) {
-
+        //
       } else {
         console.error(
           `Failed to update ${type} settings:`,
