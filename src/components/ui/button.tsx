@@ -12,6 +12,7 @@ const button = cva(
       variant: {
         primary:
           "items-center justify-center w-full bg-core hover:bg-core-lite active:bg-core shadow !text-[#fff]",
+
         secondary:
           "w-full gap-2 justify-center items-center bg-input dark:bg-button border-input-border hover:border-input-border-hover dark:hover:bg-button-hover dark:hover:bg-button-hover dark:active:bg-button-active active:bg-button dark:active:bg-button-active border shadow-sm",
         destructive:
@@ -20,19 +21,21 @@ const button = cva(
         link: "text-core text-xs underline-offset-4 hover:underline",
         navlink:
           "group !w-full gap-2 px-3 items-center text-normal justify-between hover:bg-button dark:hover:bg-button-hover active:!bg-button-active",
-        toolbutton: "w-fit !py-2 !px-2 items-center hover:bg-button-hover active:bg-button-active",
+        toolbutton:
+          "w-fit !py-2 !px-2 items-center hover:bg-button-hover active:bg-button-active",
         star: "hover:text-yellow-500",
-        whiteButton: "bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
+        whiteButton:
+          "bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
       },
       active: {
         true: "is-active bg-button dark:bg-button-hover dark:active:bg-button-active !font-[500]",
       },
       size: {
-        default: "!rounded-md !py-2 h-[32px] w-fit text-[14px]",
+        default: " !py-2 h-[32px] w-fit text-[14px]",
         sm: "h-9 px-3",
         lg: "h-11 h-[38px]",
         icon: "h-10 w-10",
-        toolsize: "py-1"
+        toolsize: "py-1",
       },
     },
     defaultVariants: {
@@ -44,7 +47,7 @@ const button = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof button> {
+    VariantProps<typeof button> {
   asChild?: boolean;
   loading?: boolean;
 }
@@ -75,9 +78,7 @@ const Button = React.forwardRef<
       {...props}
       disabled={props.loading}
     >
-      {props.loading && (
-        <Spinner size={16} className="mr-2 !border-t-white"/>
-      )}
+      {props.loading && <Spinner size={16} className="mr-2 !border-t-white" />}
       {children}
     </Comp>
   );

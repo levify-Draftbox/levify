@@ -15,9 +15,20 @@ import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
 import useloadInboxModal from "@/store/loadinbox";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowBendDoubleUpLeft, ArrowBendUpLeft, ArrowBendUpRight, X } from "@phosphor-icons/react";
+import {
+  ArrowBendDoubleUpLeft,
+  ArrowBendUpLeft,
+  ArrowBendUpRight,
+  X,
+} from "@phosphor-icons/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 // TODO: move to type file
 export type EmailObject = {
@@ -236,20 +247,25 @@ const Inbox: React.FC = () => {
 
         <AnimatePresence>
           {emailOpen && (
-            <motion.div
-              initial={{ width: "40%", opacity: 0 }}
-              animate={{ width: "60%", opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ResizablePanel minSize={30} maxSize={70} defaultSize={60}>
-                <MailViewer
-                  key={openEmail?.id || 0}
-                  email={openEmail as EmailObject}
-                  onClose={handleClose}
-                />
-              </ResizablePanel>
-            </motion.div>
+           <ResizablePanel minSize={30} maxSize={65} defaultSize={60}>
+           <motion.div
+             initial={{ x: 100, opacity: 0 }}
+             animate={{ x: 0, opacity: 1 }}
+             exit={{ x: 100, opacity: 0 }}
+             transition={{
+               type: "spring",
+               stiffness: 300,
+               damping: 30,
+               duration: 0.5
+             }}
+           >
+             <MailViewer
+               key={openEmail?.id || 0}
+               email={openEmail as EmailObject}
+               onClose={handleClose}
+             />
+           </motion.div>
+         </ResizablePanel>
           )}
         </AnimatePresence>
       </ResizablePanelGroup>
@@ -262,7 +278,7 @@ const MailViewer: React.FC<{
   key: number;
   onClose: () => void;
 }> = ({ email, key, onClose }) => {
-  const [viewMode, setViewMode] = useState(
+  const [viewMode] = useState(
     email.b_html && email.b_html !== "" ? "html" : "text"
   );
   const htmlView = useRef<HTMLIFrameElement>(null);
@@ -307,50 +323,68 @@ const MailViewer: React.FC<{
           </Button>
         </div>
       </div>
-      <div className="my-2 mx-2 flex gap-3">
-        <Avatar className="w-12 h-12">
-          <AvatarImage src="" />
-          <AvatarFallback>R</AvatarFallback>
-        </Avatar>
-        <div>
-          <h2 className="font-medium">{email.b_from_name || "unknown"}</h2>
-          <div className="flex items-center gap-1 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-            <p className="text-sm">To:</p>
-            <p className="text-sm">{email.b_to.join(", ")}</p>
+
+      <div className="flex justify-between">
+        <div className="my-2 mx-2 flex gap-3">
+          <Avatar className="w-12 h-12">
+            <AvatarImage src={email.from_profile} />
+            <AvatarFallback>R</AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="font-medium ">{email.b_from_name || "unknown"}</h2>
+            <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+              <p className="text-sm">To:</p>
+              {email.b_to.map((recipient, index) => (
+                <HoverCard key={index}>
+                  <HoverCardTrigger>
+                    <Badge
+                      variant="secondary"
+                      className="text-sm cursor-pointer"
+                    >
+                      {recipient}
+                    </Badge>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-fit">
+                    <div className="flex gap-3 flex-col">
+                      <p className="text-sm">{recipient}</p>
+                      <Button variant={"primary"} className="gap-2 w-full !rounded-full">
+                        <ArrowBendUpLeft size={18} />
+                        <p>Reply</p>
+                      </Button>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              ))}
+            </div>
           </div>
+        </div>
+        <div>
+          <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
+            {email.b_datetime}
+          </p>
         </div>
       </div>
 
-      <div className="m-1 border-[1px] p-2 rounded-md shadow">
-        <div>
-          <Button
-            className="w-fit"
-            variant={viewMode == "html" ? "secondary" : "primary"}
-            onClick={() => setViewMode((v) => (v === "html" ? "text" : "html"))}
-          >
-            <span className="capitalize">
-              {viewMode === "html" ? "Text" : "HTML"}
-            </span>
-          </Button>
-        </div>
-
-        <hr className="my-2 " />
+      <div className="m-1 mt-5 rounded-md shadow">
         {viewMode === "text" ? (
           <pre className="text-sm">{email.b_text}</pre>
         ) : (
-          <iframe className="bg-white w-full h-[500px]" ref={htmlView} />
+          <iframe
+            className="bg-white w-full rounded-md h-[500px]"
+            ref={htmlView}
+          />
         )}
       </div>
       <div className="mx-1 mt-4 flex gap-2">
-        <Button variant={"secondary"}>
+        <Button variant={"primary"}  className="gap-2 !rounded-full">
           <ArrowBendUpLeft size={18} />
           <p>Reply</p>
         </Button>
-        <Button variant={"secondary"}>
+        <Button variant={"secondary"} className="!rounded-full">
           <ArrowBendDoubleUpLeft size={18} />
           <p>Reply All</p>
         </Button>
-        <Button variant={"secondary"}>
+        <Button variant={"secondary"} className="!rounded-full">
           <ArrowBendUpRight size={18} />
           <p>Forward</p>
         </Button>
