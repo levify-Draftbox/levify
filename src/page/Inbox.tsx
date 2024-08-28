@@ -358,7 +358,25 @@ const MailViewer: React.FC<{
             <AvatarFallback>R</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="font-medium ">{email.b_from_name || "unknown"}</h2>
+            <HoverCard>
+              <HoverCardTrigger>
+                <h2 className="font-medium cursor-pointer">
+                  {email.b_from_name || "unknown"}
+                </h2>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-fit">
+                <div className="flex gap-3 flex-col">
+                  <p className="text-sm">{email.b_from || "unknown"}</p>
+                  <Button
+                    variant="primary"
+                    className="gap-2 w-full !rounded-full"
+                  >
+                    <ArrowBendUpLeft size={18} />
+                    <p>Reply</p>
+                  </Button>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
             <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               <p className="text-sm">To:</p>
               {email.b_to.map((recipient, index) => (
@@ -375,7 +393,7 @@ const MailViewer: React.FC<{
                     <div className="flex gap-3 flex-col">
                       <p className="text-sm">{recipient}</p>
                       <Button
-                        variant={"primary"}
+                        variant="primary"
                         className="gap-2 w-full !rounded-full"
                       >
                         <ArrowBendUpLeft size={18} />
