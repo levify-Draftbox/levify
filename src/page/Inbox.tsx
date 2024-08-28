@@ -270,15 +270,15 @@ const Inbox: React.FC = () => {
           {emailOpen && (
             <ResizablePanel minSize={30} maxSize={65} defaultSize={60}>
               <motion.div
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 100, opacity: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                  duration: 0.5,
-                }}
+                // initial={{ x: 100, opacity: 0 }}
+                // animate={{ x: 0, opacity: 1 }}
+                // exit={{ x: 100, opacity: 0 }}
+                // transition={{
+                //   type: "spring",
+                //   stiffness: 300,
+                //   damping: 30,
+                //   duration: 0.5,
+                // }}
               >
                 <MailViewer
                   key={openEmail?.id || 0}
