@@ -355,21 +355,36 @@ const MailViewer: React.FC<{
         <div className="my-2 mx-2 flex gap-3">
           <Avatar className="w-12 h-12">
             <AvatarImage src={email.from_profile} />
-            <AvatarFallback>R</AvatarFallback>
+            <AvatarFallback>
+              {email.b_from_name?.charAt(0) || "DB"}
+            </AvatarFallback>
           </Avatar>
           <div>
             <HoverCard>
               <HoverCardTrigger>
                 <h2 className="font-medium cursor-pointer">
-                  {email.b_from_name || "unknown"}
+                  {email.b_from_name || email.b_from}
                 </h2>
               </HoverCardTrigger>
               <HoverCardContent className="w-fit">
-                <div className="flex gap-3 flex-col">
-                  <p className="text-sm">{email.b_from || "unknown"}</p>
+                <div className="flex gap-3 items-center">
+                  <Avatar className="w-14 h-14">
+                    <AvatarImage src={email.from_profile} />
+                    <AvatarFallback>
+                      {email.b_from_name?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">
+                      {email.b_from_name || email.b_from}
+                    </p>
+                    <p className="text-sm">{email.b_from || "unknown"}</p>
+                  </div>
+                </div>
+                <div>
                   <Button
                     variant="primary"
-                    className="gap-2 w-full !rounded-full"
+                    className="gap-2 mt-3 w-full !rounded-full"
                   >
                     <ArrowBendUpLeft size={18} />
                     <p>Reply</p>
@@ -390,8 +405,18 @@ const MailViewer: React.FC<{
                     </Badge>
                   </HoverCardTrigger>
                   <HoverCardContent className="w-fit">
-                    <div className="flex gap-3 flex-col">
-                      <p className="text-sm">{recipient}</p>
+                    <div className="flex gap-3  items-center">
+                      <Avatar className="w-14 h-14">
+                        <AvatarImage src={`/api/placeholder/32/32`} />
+                        <AvatarFallback>{recipient.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      {/* <p className="text-sm font-medium">
+                        {email.b_to || email.b_from}
+                      </p> */}
+                      <p className="text-sm font-medium">{recipient}</p>
+                    </div>
+
+                    <div className="mt-3">
                       <Button
                         variant="primary"
                         className="gap-2 w-full !rounded-full"
