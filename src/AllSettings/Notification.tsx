@@ -179,6 +179,12 @@ const NotificationSetting = () => {
           </div>
         </div>
       </SettingDiv>
+
+      <SettingDiv className="relative w-full !mb-0 pt-1">
+        <div className="w-full">
+          <div className="flex gap-3 justify-end"></div>
+        </div>
+      </SettingDiv>
     </div>
   );
 };

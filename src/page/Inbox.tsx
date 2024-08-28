@@ -450,12 +450,12 @@ const MailViewer: React.FC<{
         </div>
       </div>
 
-      <div className="m-1 mt-5 rounded-md shadow">
+      <div className="m-1 mt-5  shadow">
         {viewMode === "text" ? (
           <pre className="text-sm p-2">{email.b_text}</pre>
         ) : (
           <iframe
-            className="bg-white w-full rounded-md  h-[500px]"
+            className="bg-white w-full  h-[500px]"
             ref={htmlView}
           />
         )}
