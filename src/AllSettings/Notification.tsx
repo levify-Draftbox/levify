@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { SettingDiv, SettingHr } from "./components";
+import { SettingDiv } from "./components";
 import {
   Select,
   SelectContent,
@@ -11,7 +11,6 @@ import { useState, useCallback, useEffect } from "react";
 import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react";
 import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
-import { AnimatePresence, motion } from "framer-motion";
 
 const sounds = [
   { name: "Bell", src: "/sounds/bell.wav" },
@@ -25,7 +24,6 @@ const NotificationSetting = () => {
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [isNotiLoading, setIsNotiLoading] = useState(false);
-  const [isOverallLoading, setIsOverallLoading] = useState(false);
 
   useEffect(() => {
     if (allSetting.notification) {
@@ -50,14 +48,12 @@ const NotificationSetting = () => {
     loadingSetter: (loading: boolean) => void
   ) => {
     loadingSetter(true);
-    setIsOverallLoading(true);
     try {
       await updateSettings("notification", obj);
     } catch (error) {
       console.error("Error updating settings:", error);
     } finally {
       loadingSetter(false);
-      setIsOverallLoading(false);
     }
   };
 
@@ -77,10 +73,13 @@ const NotificationSetting = () => {
     if (!notiEnable) {
       // Notification logic
       if (!("Notification" in window)) {
+        // Check if the browser supports notifications
         alert("This browser does not support desktop notifications");
       } else if (Notification.permission === "granted") {
+        // If permissions are already granted, create a notification
         new Notification("Hi there!");
       } else if (Notification.permission !== "denied") {
+        // Request permission from the user
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
           new Notification("Hi there!");
@@ -90,6 +89,7 @@ const NotificationSetting = () => {
 
     const newNotiEnable = !notiEnable;
     setNotiEnable(newNotiEnable);
+    // Update appearance settings
     await updateAppearance(
       { desktopNotificationSound: newNotiEnable },
       setIsNotiLoading
@@ -179,28 +179,6 @@ const NotificationSetting = () => {
           </div>
         </div>
       </SettingDiv>
-
-      <AnimatePresence>
-        {isOverallLoading && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.4 }}
-            className="pb-4 sticky bottom-0 bg-background-secondary"
-          >
-            <SettingHr className="!m-0" />
-            <SettingDiv className="relative w-full !mb-0 pt-1">
-              <div className="w-full">
-                <div className="flex items-center justify-center">
-                  <Spinner />
-                  <span className="ml-2 text-sm text-gray-500">Updating settings...</span>
-                </div>
-              </div>
-            </SettingDiv>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

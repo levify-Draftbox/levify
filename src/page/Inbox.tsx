@@ -16,9 +16,11 @@ import { Spinner } from "@/components/Spinner";
 import useloadInboxModal from "@/store/loadinbox";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  AddressBookTabs,
   ArrowBendDoubleUpLeft,
   ArrowBendUpLeft,
   ArrowBendUpRight,
+  EnvelopeSimple,
   X,
 } from "@phosphor-icons/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -233,8 +235,7 @@ const Inbox: React.FC = () => {
       >
         <AnimatePresence>
           <ResizablePanel className="!overflow-hidden h-full">
-            <motion.div className="bg-inbox-bg !overflow-hidden h-full"
-            >
+            <motion.div className="bg-inbox-bg !overflow-hidden h-full">
               <div
                 className="h-full w-full overflow-auto scroll-bar"
                 ref={parentRef}
@@ -369,19 +370,26 @@ const MailViewer: React.FC<{
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">
-                      {email.b_from_name || email.b_from}
+                      {email.b_from_name || email.b_from.split("@")[0]}
                     </p>
                     <p className="text-sm">{email.b_from || "unknown"}</p>
                   </div>
                 </div>
-                <div>
-                  <Button
-                    variant="primary"
-                    className="gap-2 mt-3 w-full !rounded-full"
-                  >
+                <div className="flex items-center gap-2 mt-3">
+                  <Button variant="primary" className="gap-2  w-full ">
                     <ArrowBendUpLeft size={18} />
                     <p>Reply</p>
                   </Button>
+                  <Tooltip tip="Send mail">
+                    <Button variant={"secondary"}>
+                      <EnvelopeSimple size={18} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip tip="Add to contact">
+                    <Button variant={"secondary"}>
+                      <AddressBookTabs size={18} />
+                    </Button>
+                  </Tooltip>
                 </div>
               </HoverCardContent>
             </HoverCard>
@@ -403,20 +411,31 @@ const MailViewer: React.FC<{
                         <AvatarImage src={`/api/placeholder/32/32`} />
                         <AvatarFallback>{recipient.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      {/* <p className="text-sm font-medium">
-                        {email.b_to || email.b_from}
-                      </p> */}
-                      <p className="text-sm font-medium">{recipient}</p>
+                      <div className="flex flex-col">
+                        <p className="text-sm font-medium">
+                          {recipient.split("@")[0]}
+                        </p>
+                        <p className="text-sm ">{recipient}</p>
+                      </div>
                     </div>
 
-                    <div className="mt-3">
-                      <Button
-                        variant="primary"
-                        className="gap-2 w-full !rounded-full"
-                      >
-                        <ArrowBendUpLeft size={18} />
-                        <p>Reply</p>
-                      </Button>
+                    <div className="mt-3 flex gap-2">
+                    <div className="flex items-center gap-2 mt-3">
+                  <Button variant="primary" className="gap-2  w-full ">
+                    <ArrowBendUpLeft size={18} />
+                    <p>Reply</p>
+                  </Button>
+                  <Tooltip tip="Send mail">
+                    <Button variant={"secondary"}>
+                      <EnvelopeSimple size={18} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip tip="Add to contact">
+                    <Button variant={"secondary"}>
+                      <AddressBookTabs size={18} />
+                    </Button>
+                  </Tooltip>
+                </div>
                     </div>
                   </HoverCardContent>
                 </HoverCard>
@@ -431,7 +450,7 @@ const MailViewer: React.FC<{
         </div>
       </div>
 
-      <div className="m-1 mt-5 rounded-md p-2 shadow">
+      <div className="m-1 mt-5 rounded-md shadow">
         {viewMode === "text" ? (
           <pre className="text-sm p-2">{email.b_text}</pre>
         ) : (
@@ -440,20 +459,17 @@ const MailViewer: React.FC<{
             ref={htmlView}
           />
         )}
-        {/* <div>
-          <img src={email.}/>
-        </div> */}
       </div>
       <div className="mx-1 mt-4 flex gap-2">
-        <Button variant={"primary"} className="gap-2 !rounded-full">
+        <Button variant={"primary"} className="gap-2 ">
           <ArrowBendUpLeft size={18} />
           <p>Reply</p>
         </Button>
-        <Button variant={"secondary"} className="!rounded-full">
+        <Button variant={"secondary"}>
           <ArrowBendDoubleUpLeft size={18} />
           <p>Reply All</p>
         </Button>
-        <Button variant={"secondary"} className="!rounded-full">
+        <Button variant={"secondary"}>
           <ArrowBendUpRight size={18} />
           <p>Forward</p>
         </Button>
