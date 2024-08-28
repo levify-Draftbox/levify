@@ -1,7 +1,7 @@
 import ToolBar from "@/components/ToolBar";
 import api from "@/lib/api";
 import { useVirtual } from "react-virtual";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import MailRow from "@/components/MailRow";
 import {
   ResizableHandle,
@@ -58,6 +58,7 @@ const Inbox: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const { allSetting } = useProfileStore();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { setLoad: setLoadInbox } = useloadInboxModal();
 
@@ -91,7 +92,7 @@ const Inbox: React.FC = () => {
               description: mail.b_subject,
             });
           } else {
-            let n = new Notification(`From: ${mail.b_from}`, {
+            const n = new Notification(`From: ${mail.b_from}`, {
               body: mail.b_subject,
               icon: "/favicon.png",
             });
@@ -130,7 +131,7 @@ const Inbox: React.FC = () => {
     const email = emailList[index];
     const isSelected = openEmail?.id === email.id;
     console.log(isSelected);
-    
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -144,7 +145,11 @@ const Inbox: React.FC = () => {
             setUnread(email.id, false);
           }}
           {...email}
-          className={isSelected ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.08)]' : ''}
+          className={
+            isSelected
+              ? "bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.08)]"
+              : ""
+          }
         />
       </motion.div>
     );
@@ -159,7 +164,7 @@ const Inbox: React.FC = () => {
   // TODO: implement react query!
   const isFetchingRef = useRef(false);
 
-  const fetchEmails = async () => {
+  const fetchEmails = async (isRefresh = false) => {
     if (isFetchingRef.current) return;
 
     isFetchingRef.current = true;
@@ -167,17 +172,26 @@ const Inbox: React.FC = () => {
     try {
       const res = await api.post<{ hasMore: boolean; emails: EmailObject[] }>(
         "/listing",
-        { page }
+        { page: isRefresh ? 1 : page }
       );
-      setEmailList((prevEmails) => [...prevEmails, ...res.data.emails]);
+      if (isRefresh) {
+        setEmailList(res.data.emails);
+        setPage(2);
+      } else {
+        setEmailList((prevEmails) => [...prevEmails, ...res.data.emails]);
+        setPage((prevPage) => prevPage + 1);
+      }
       setHasMore(res.data.hasMore);
-      setPage((prevPage) => prevPage + 1);
       setLoadInbox();
     } catch (error) {
       console.error("Error fetching emails:", error);
+      toast.error("Failed to fetch emails. Please try again.");
     } finally {
       setIsLoading(false);
       isFetchingRef.current = false;
+      if (isRefresh) {
+        setIsRefreshing(false);
+      }
     }
   };
 
@@ -200,9 +214,18 @@ const Inbox: React.FC = () => {
     setEmailOpen(!emailOpen);
   };
 
+  const refreshEmails = useCallback(() => {
+    setIsRefreshing(true);
+    fetchEmails(true);
+  }, []);
+
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden">
-      <ToolBar className={""} />
+      <ToolBar
+        className={""}
+        onRefresh={refreshEmails}
+        isRefreshing={isRefreshing}
+      />
 
       <ResizablePanelGroup
         direction="horizontal"
@@ -251,25 +274,25 @@ const Inbox: React.FC = () => {
 
         <AnimatePresence>
           {emailOpen && (
-           <ResizablePanel minSize={30} maxSize={65} defaultSize={60}>
-           <motion.div
-             initial={{ x: 100, opacity: 0 }}
-             animate={{ x: 0, opacity: 1 }}
-             exit={{ x: 100, opacity: 0 }}
-             transition={{
-               type: "spring",
-               stiffness: 300,
-               damping: 30,
-               duration: 0.5
-             }}
-           >
-             <MailViewer
-               key={openEmail?.id || 0}
-               email={openEmail as EmailObject}
-               onClose={handleClose}
-             />
-           </motion.div>
-         </ResizablePanel>
+            <ResizablePanel minSize={30} maxSize={65} defaultSize={60}>
+              <motion.div
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 100, opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                  duration: 0.5,
+                }}
+              >
+                <MailViewer
+                  key={openEmail?.id || 0}
+                  email={openEmail as EmailObject}
+                  onClose={handleClose}
+                />
+              </motion.div>
+            </ResizablePanel>
           )}
         </AnimatePresence>
       </ResizablePanelGroup>
@@ -289,7 +312,7 @@ const MailViewer: React.FC<{
 
   useEffect(() => {
     if (htmlView.current) {
-      let d =
+      const d =
         htmlView.current.contentWindow?.document ||
         htmlView.current.contentDocument;
 
@@ -351,7 +374,10 @@ const MailViewer: React.FC<{
                   <HoverCardContent className="w-fit">
                     <div className="flex gap-3 flex-col">
                       <p className="text-sm">{recipient}</p>
-                      <Button variant={"primary"} className="gap-2 w-full !rounded-full">
+                      <Button
+                        variant={"primary"}
+                        className="gap-2 w-full !rounded-full"
+                      >
                         <ArrowBendUpLeft size={18} />
                         <p>Reply</p>
                       </Button>
@@ -383,7 +409,7 @@ const MailViewer: React.FC<{
         </div> */}
       </div>
       <div className="mx-1 mt-4 flex gap-2">
-        <Button variant={"primary"}  className="gap-2 !rounded-full">
+        <Button variant={"primary"} className="gap-2 !rounded-full">
           <ArrowBendUpLeft size={18} />
           <p>Reply</p>
         </Button>

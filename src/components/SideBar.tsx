@@ -1,7 +1,6 @@
 import { Button } from "./ui/button";
 import {
   Archive,
-  ArrowClockwise,
   CalendarBlank,
   CaretDown,
   CaretRight,
@@ -183,10 +182,7 @@ function SidebarNavLink(p: SidebarNavLinkProp) {
       </div>
       <div>
         <div className=" flex justify-center gap-2 items-center">
-          <ArrowClockwise
-            size={16}
-            className="hover:rotate-90 transition-all hidden group-[.is-active]:block"
-          />
+         
           {
             p.unread && p.unread > 0 &&
             <p className="text-white text-sm px-[10px] bg-core rounded-full py-[1px] !font-bold">
