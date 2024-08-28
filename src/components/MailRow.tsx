@@ -1,3 +1,4 @@
+import React from 'react';
 import { Envelope, TrashSimple } from "@phosphor-icons/react";
 import { Archive, Clock, Star } from "lucide-react";
 import { Button } from "./ui/button";
@@ -11,9 +12,25 @@ import { EmailObject } from "@/page/Inbox";
 import moment from "moment"
 import { cn } from "@/lib/utils";
 
-const MailRow: React.FC<Partial<{
-  onClick: () => void
-} & EmailObject>> = ({ onClick, b_subject, b_from, from_profile, b_datetime, unread, b_from_name, b_text }) => {
+interface MailRowProps extends Partial<EmailObject> {
+  onClick?: () => void;
+  className?: string;
+}
+
+const MailRow: React.FC<MailRowProps> = ({ 
+  onClick, 
+  b_subject, 
+  b_from, 
+  from_profile, 
+  b_datetime, 
+  unread, 
+  b_from_name, 
+  b_text,
+  className 
+}) => {
+
+  console.log(className);
+  
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -21,13 +38,14 @@ const MailRow: React.FC<Partial<{
           onClick={() => onClick && onClick()}
           className={cn(
             "group",
-            "w-full h-[50px] border-b py-3 px-4 flex justify-between items-center cursor-pointer text-[15px] font-thin",
-            unread ? "font-medium" : ""
+            "w-full h-[50px] border-b py-1 px-4 flex justify-between items-center cursor-pointer text-[15px] font-thin rounded-md",
+            unread ? "font-medium" : "",
+            className
           )}
         >
           <div className="w-[75%] flex flex-1 items-center gap-4">
             <div className="min-w-7 w-7 h-7 border overflow-hidden rounded-md flex items-center justify-center">
-              <img src={from_profile} className="h-full w-full" />
+              <img src={from_profile} className="h-full w-full" alt="Profile" />
             </div>
 
             <Button className="" variant={"star"} size={"toolsize"}>
@@ -62,7 +80,6 @@ const MailRow: React.FC<Partial<{
               {moment(new Date(b_datetime || "")).fromNow()}
             </p>
           </div>
-
         </div>
       </ContextMenuTrigger>
 
@@ -80,6 +97,5 @@ function getUserName(fromName: string | undefined, fromEmail: string): string {
   if (fromName) return fromName
   return fromEmail.split("@")[0]
 }
-
 
 export default MailRow;

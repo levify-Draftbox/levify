@@ -128,6 +128,9 @@ const Inbox: React.FC = () => {
     }
 
     const email = emailList[index];
+    const isSelected = openEmail?.id === email.id;
+    console.log(isSelected);
+    
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -141,6 +144,7 @@ const Inbox: React.FC = () => {
             setUnread(email.id, false);
           }}
           {...email}
+          className={isSelected ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.08)]' : ''}
         />
       </motion.div>
     );
@@ -365,15 +369,18 @@ const MailViewer: React.FC<{
         </div>
       </div>
 
-      <div className="m-1 mt-5 rounded-md shadow">
+      <div className="m-1 mt-5 rounded-md p-2 shadow">
         {viewMode === "text" ? (
-          <pre className="text-sm">{email.b_text}</pre>
+          <pre className="text-sm p-2">{email.b_text}</pre>
         ) : (
           <iframe
-            className="bg-white w-full rounded-md h-[500px]"
+            className="bg-white w-full rounded-md  h-[500px]"
             ref={htmlView}
           />
         )}
+        {/* <div>
+          <img src={email.}/>
+        </div> */}
       </div>
       <div className="mx-1 mt-4 flex gap-2">
         <Button variant={"primary"}  className="gap-2 !rounded-full">
