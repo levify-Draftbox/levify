@@ -231,44 +231,37 @@ const Inbox: React.FC = () => {
         direction="horizontal"
         className="max-w-full !flex-1 !h-full"
       >
-        <ResizablePanel className="!overflow-hidden h-full">
-          <div className="bg-inbox-bg !overflow-hidden h-full">
-            <div
-              className="scroll-bar"
-              ref={parentRef}
-              style={{
-                height: `100%`,
-                width: `100%`,
-                overflow: "auto",
-              }}
+        <AnimatePresence>
+          <ResizablePanel className="!overflow-hidden h-full">
+            <motion.div className="bg-inbox-bg !overflow-hidden h-full"
             >
               <div
-                className="scroll-bar"
-                style={{
-                  height: `${rowVirtualizer.totalSize}px`,
-                  width: "100%",
-                  position: "relative",
-                }}
+                className="h-full w-full overflow-auto scroll-bar"
+                ref={parentRef}
               >
-                {rowVirtualizer.virtualItems.map((virtualRow) => (
-                  <div
-                    key={virtualRow.index}
-                    ref={virtualRow.measureRef}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                  >
-                    {renderEmail(virtualRow.index)}
-                  </div>
-                ))}
+                <div
+                  className="scroll-bar w-full relative"
+                  style={{
+                    height: `${rowVirtualizer.totalSize}px`,
+                  }}
+                >
+                  {rowVirtualizer.virtualItems.map((virtualRow) => (
+                    <div
+                      key={virtualRow.index}
+                      ref={virtualRow.measureRef}
+                      className="absolute top-0 left-0 w-full"
+                      style={{
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      {renderEmail(virtualRow.index)}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </div>
-        </ResizablePanel>
+            </motion.div>
+          </ResizablePanel>
+        </AnimatePresence>
 
         <ResizableHandle />
 
