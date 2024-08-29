@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/hover-card";
 
 // TODO: move to type file
-export type EmailObject = {
+export type Email = {
   id: number;
   uid: string;
   dateandtime: string;
@@ -51,11 +51,21 @@ export type EmailObject = {
   path: "inbox" | "sent" | "drafts" | "trash" | string;
   unread: boolean;
   from_profile: string;
+  thread_id: string;
 };
+
+export type EmailObj = {
+  thread_id: string,
+  unread: boolean,
+  subject: string,
+  latest_date: string,
+  emails: Email[]
+}
 
 const Inbox: React.FC = () => {
   const parentRef = useRef<HTMLDivElement>(null);
-  const [emailList, setEmailList] = useState<EmailObject[]>([]);
+
+  const [emailList, setEmailList] = useState<EmailObj[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -75,19 +85,44 @@ const Inbox: React.FC = () => {
 
   useEffect(() => {
     setUnReadFunc((d) => {
-      const { email_id, unread } = d as { email_id: number; unread: boolean };
-      setUnread(email_id, unread);
+      // const { email_id, unread } = d as { email_id: number; unread: boolean };
+      // setUnread(email_id, unread);
     });
 
     setNotifyFunc((d) => {
       const { mode, notify, mail } = d as {
         mode: "append" | "remove";
         notify: boolean;
-        mail: EmailObject;
+        mail: Email;
       };
 
       if (mode == "append") {
-        setEmailList((l) => [mail, ...l]);
+        setEmailList((l) => {
+          const emailObj = l.find(eo => eo.thread_id == mail.thread_id);
+          if (!emailObj) {
+            return [{
+              emails: [mail],
+              latest_date: mail.dateandtime,
+              subject: mail.b_subject,
+              thread_id: mail.thread_id,
+              unread: mail.unread
+            }, ...l] as EmailObj[]
+          }
+
+          console.log("email obj", emailObj);
+          
+          
+          let oldMailList = l.filter(eo => eo.thread_id != mail.thread_id)
+          emailObj.emails.push(mail)
+          emailObj.latest_date = mail.dateandtime
+          emailObj.subject = mail.b_subject
+          emailObj.unread = mail.unread
+          
+          console.log("new", oldMailList);
+          
+          return [emailObj, ...oldMailList]
+        });
+
         if (notify) {
           if (document.hasFocus()) {
             toast.success(`New message from: ${mail.b_from}`, {
@@ -110,13 +145,13 @@ const Inbox: React.FC = () => {
     });
   }, []);
 
-  const setUnread = (email_id: number, unread: boolean) => {
+  const setUnread = (threadId: string, unread: boolean) => {
     setEmailList((e) =>
-      e.map((email) => {
-        if (email.id === email_id) {
-          return { ...email, unread };
+      e.map((eo) => {
+        if (eo.thread_id === threadId) {
+          return { ...eo, unread };
         }
-        return email;
+        return eo;
       })
     );
   };
@@ -130,8 +165,8 @@ const Inbox: React.FC = () => {
       );
     }
 
-    const email = emailList[index];
-    const isSelected = openEmail?.id === email.id;
+    const e = emailList[index];
+    const isSelected = openEmail?.thread_id === e.thread_id;
     console.log(isSelected);
 
     return (
@@ -143,10 +178,21 @@ const Inbox: React.FC = () => {
         <MailRow
           onClick={() => {
             setEmailOpen(true);
-            setOpenEmail(email);
-            setUnread(email.id, false);
+            setOpenEmail(e);
+            setUnread(e.thread_id, false);
           }}
-          {...email}
+
+          datetime={e.latest_date}
+          text={e.emails[0].b_text}
+          unread={e.unread}
+          subject={e.subject}
+          count={e.emails.length}
+          fromNames={e.emails.map(e => ({
+            email: e.b_from,
+            name: e.b_from_name,
+            profile: e.from_profile,
+          }))}
+
           className={
             isSelected
               ? "bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.08)]"
@@ -172,7 +218,7 @@ const Inbox: React.FC = () => {
     isFetchingRef.current = true;
     setIsLoading(true);
     try {
-      const res = await api.post<{ hasMore: boolean; emails: EmailObject[] }>(
+      const res = await api.post<{ hasMore: boolean; emails: EmailObj[] }>(
         "/listing",
         { page: isRefresh ? 1 : page }
       );
@@ -210,7 +256,7 @@ const Inbox: React.FC = () => {
   }, [rowVirtualizer.virtualItems, hasMore, isLoading, emailList.length]);
 
   const [emailOpen, setEmailOpen] = useState(false);
-  const [openEmail, setOpenEmail] = useState<EmailObject | undefined>();
+  const [openEmail, setOpenEmail] = useState<EmailObj | undefined>();
 
   const handleClose = () => {
     setEmailOpen(!emailOpen);
@@ -268,21 +314,21 @@ const Inbox: React.FC = () => {
 
         <AnimatePresence>
           {emailOpen && (
-            <ResizablePanel minSize={30} maxSize={65} defaultSize={60}>
+            <ResizablePanel minSize={30} maxSize={50} defaultSize={60}>
               <motion.div
-                // initial={{ x: 100, opacity: 0 }}
-                // animate={{ x: 0, opacity: 1 }}
-                // exit={{ x: 100, opacity: 0 }}
-                // transition={{
-                //   type: "spring",
-                //   stiffness: 300,
-                //   damping: 30,
-                //   duration: 0.5,
-                // }}
+              // initial={{ x: 100, opacity: 0 }}
+              // animate={{ x: 0, opacity: 1 }}
+              // exit={{ x: 100, opacity: 0 }}
+              // transition={{
+              //   type: "spring",
+              //   stiffness: 300,
+              //   damping: 30,
+              //   duration: 0.5,
+              // }}
               >
                 <MailViewer
-                  key={openEmail?.id || 0}
-                  email={openEmail as EmailObject}
+                  key={openEmail?.thread_id || ""}
+                  emails={openEmail as EmailObj}
                   onClose={handleClose}
                 />
               </motion.div>
@@ -295,12 +341,15 @@ const Inbox: React.FC = () => {
 };
 
 const MailViewer: React.FC<{
-  email: EmailObject;
-  key: number;
+  emails: EmailObj;
+  key: number | string;
   onClose: () => void;
-}> = ({ email, key, onClose }) => {
+}> = ({ emails, key, onClose }) => {
+
+  let e = emails.emails[0]
+
   const [viewMode] = useState(
-    email.b_html && email.b_html !== "" ? "html" : "text"
+    e.b_html && e.b_html !== "" ? "html" : "text"
   );
   const htmlView = useRef<HTMLIFrameElement>(null);
 
@@ -311,7 +360,7 @@ const MailViewer: React.FC<{
         htmlView.current.contentDocument;
 
       d?.open();
-      d?.write(email.b_html);
+      d?.write(e.b_html);
       d?.close();
     }
   }, [viewMode, key]);
@@ -321,7 +370,7 @@ const MailViewer: React.FC<{
       JSON.stringify({
         event: "unread",
         data: {
-          email_id: email.id,
+          email_id: e.id,
           unread: false,
         },
       })
@@ -332,9 +381,9 @@ const MailViewer: React.FC<{
     <motion.div className="p-2">
       <div className="flex w-full justify-between px-1">
         <div className="w-full px-1">
-          <Tooltip tip={email.b_subject}>
+          <Tooltip tip={e.b_subject}>
             <h1 className="text-xl font-medium text-start line-clamp-2">
-              {email.b_subject}
+              {e.b_subject}
             </h1>
           </Tooltip>
         </div>
@@ -348,31 +397,31 @@ const MailViewer: React.FC<{
       <div className="flex justify-between">
         <div className="my-2 mx-2 flex gap-3">
           <Avatar className="w-12 h-12">
-            <AvatarImage src={email.from_profile} />
+            <AvatarImage src={e.from_profile} />
             <AvatarFallback>
-              {email.b_from_name?.charAt(0) || "DB"}
+              {e.b_from_name?.charAt(0) || "DB"}
             </AvatarFallback>
           </Avatar>
           <div>
             <HoverCard>
               <HoverCardTrigger>
                 <h2 className="font-medium cursor-pointer">
-                  {email.b_from_name || email.b_from}
+                  {e.b_from_name || e.b_from}
                 </h2>
               </HoverCardTrigger>
               <HoverCardContent className="w-fit">
                 <div className="flex gap-3 items-center">
                   <Avatar className="w-14 h-14">
-                    <AvatarImage src={email.from_profile} />
+                    <AvatarImage src={e.from_profile} />
                     <AvatarFallback>
-                      {email.b_from_name?.charAt(0) || "U"}
+                      {e.b_from_name?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">
-                      {email.b_from_name || email.b_from.split("@")[0]}
+                      {e.b_from_name || e.b_from.split("@")[0]}
                     </p>
-                    <p className="text-sm">{email.b_from || "unknown"}</p>
+                    <p className="text-sm">{e.b_from || "unknown"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-3">
@@ -395,7 +444,7 @@ const MailViewer: React.FC<{
             </HoverCard>
             <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               <p className="text-sm">To:</p>
-              {email.b_to.map((recipient, index) => (
+              {e.b_to.map((recipient, index) => (
                 <HoverCard key={index}>
                   <HoverCardTrigger>
                     <Badge
@@ -420,22 +469,22 @@ const MailViewer: React.FC<{
                     </div>
 
                     <div className="mt-3 flex gap-2">
-                    <div className="flex items-center gap-2 mt-3">
-                  <Button variant="primary" className="gap-2  w-full ">
-                    <ArrowBendUpLeft size={18} />
-                    <p>Reply</p>
-                  </Button>
-                  <Tooltip tip="Send mail">
-                    <Button variant={"secondary"}>
-                      <EnvelopeSimple size={18} />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip tip="Add to contact">
-                    <Button variant={"secondary"}>
-                      <AddressBookTabs size={18} />
-                    </Button>
-                  </Tooltip>
-                </div>
+                      <div className="flex items-center gap-2 mt-3">
+                        <Button variant="primary" className="gap-2  w-full ">
+                          <ArrowBendUpLeft size={18} />
+                          <p>Reply</p>
+                        </Button>
+                        <Tooltip tip="Send mail">
+                          <Button variant={"secondary"}>
+                            <EnvelopeSimple size={18} />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip tip="Add to contact">
+                          <Button variant={"secondary"}>
+                            <AddressBookTabs size={18} />
+                          </Button>
+                        </Tooltip>
+                      </div>
                     </div>
                   </HoverCardContent>
                 </HoverCard>
@@ -445,14 +494,14 @@ const MailViewer: React.FC<{
         </div>
         <div>
           <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
-            {email.b_datetime}
+            {e.b_datetime}
           </p>
         </div>
       </div>
 
       <div className="m-1 mt-5 rounded-md shadow">
         {viewMode === "text" ? (
-          <pre className="text-sm p-2">{email.b_text}</pre>
+          <pre className="text-sm p-2">{e.b_text}</pre>
         ) : (
           <iframe
             className="bg-white w-full rounded-md  h-[500px]"

@@ -8,29 +8,41 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import { EmailObject } from "@/page/Inbox";
 import moment from "moment"
 import { cn } from "@/lib/utils";
 
-interface MailRowProps extends Partial<EmailObject> {
-  onClick?: () => void;
-  className?: string;
+export type FromName = {
+  name?: string,
+  email: string,
+  profile: string,
 }
 
-const MailRow: React.FC<MailRowProps> = ({ 
-  onClick, 
-  b_subject, 
-  b_from, 
-  from_profile, 
-  b_datetime, 
-  unread, 
-  b_from_name, 
-  b_text,
-  className 
+interface MailRowProps {
+  onClick?: () => void;
+  className?: string;
+
+  datetime: string,
+  text: string,
+  unread: boolean;
+  count: number;
+  fromNames: FromName[]
+  subject: string
+}
+
+const MailRow: React.FC<MailRowProps> = ({
+  onClick,
+  className,
+
+  datetime,
+  text,
+  unread,
+  count,
+  fromNames,
+  subject
 }) => {
 
-  console.log(className);
-  
+  const filterdFromName = removeDuplicateFromName(fromNames)
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -38,26 +50,39 @@ const MailRow: React.FC<MailRowProps> = ({
           onClick={() => onClick && onClick()}
           className={cn(
             "group",
-            "w-full h-[50px] border-b py-1 px-4 flex justify-between items-center cursor-pointer text-[15px] font-thin rounded-md",
+            "w-full h-[50px] border-b py-1 px-4 flex justify-between items-center cursor-pointer text-[15px] font-thin",
             unread ? "font-medium" : "",
             className
           )}
         >
           <div className="w-[75%] flex flex-1 items-center gap-4">
             <div className="min-w-7 w-7 h-7 border overflow-hidden rounded-md flex items-center justify-center">
-              <img src={from_profile} className="h-full w-full" alt="Profile" />
+              <img src={fromNames[0].profile} className="h-full w-full" alt="Profile" />
             </div>
 
             <Button className="" variant={"star"} size={"toolsize"}>
               <Star size={15} />
             </Button>
             <div className="min-w-[130px] w-[18%]">
-              <p className="w-full overflow-hidden">{getUserName(b_from_name, b_from as string)}</p>
+              <p className="w-full overflow-hidden">
+                <span title={filterdFromName[0].email}>
+                  {getUserName(filterdFromName[0].name, filterdFromName[0].email)}
+                </span>
+
+                {filterdFromName.length > 1 &&
+                  <>,&nbsp;
+                    <span title={filterdFromName[1].email}>
+                      {getUserName(filterdFromName[1].name, filterdFromName[1].email)}
+                    </span>
+                  </>
+                }
+              </p>
             </div>
             <p className="max-w-[60%] font-thin flex items-center whitespace-nowrap overflow-hidden">
               {unread && <div className="w-[10px] h-[10px] bg-core rounded-full mr-3"></div>}
-              {b_subject ? b_subject : <span className="text-gray-500 dark:text-gray-400 italic">No Subject</span>}
-              {(b_text && b_text != "") && <span className="text-gray-500 dark:text-gray-300 overflow-hidden text-ellipsis">&nbsp;- {b_text.split("\n")[0].split(" ").splice(0, 7).join(" ")}...</span>}
+              {count > 1 && <> [{count}]&nbsp;</>}
+              {subject ? subject : <span className="text-gray-500 dark:text-gray-400 italic">No Subject</span>}
+              {(count == 1 && text && text != "") && <span className="text-gray-500 dark:text-gray-300 overflow-hidden text-ellipsis">&nbsp;- {text.split("\n")[0].split(" ").splice(0, 7).join(" ")}...</span>}
             </p>
           </div>
 
@@ -77,7 +102,7 @@ const MailRow: React.FC<MailRowProps> = ({
               </Button>
             </div>
             <p className="text-sm font-thin group-hover:hidden">
-              {moment(new Date(b_datetime || "")).fromNow()}
+              {moment(new Date(datetime || "")).fromNow()}
             </p>
           </div>
         </div>
@@ -96,6 +121,19 @@ const MailRow: React.FC<MailRowProps> = ({
 function getUserName(fromName: string | undefined, fromEmail: string): string {
   if (fromName) return fromName
   return fromEmail.split("@")[0]
+}
+
+function removeDuplicateFromName(array: FromName[]): FromName[] {
+  const emailSet = new Set<string>();
+
+  return array.filter(item => {
+    if (emailSet.has(item.email)) {
+      return false;  // This email has been seen before, so filter it out
+    } else {
+      emailSet.add(item.email);  // Add this email to the set
+      return true;  // Keep this item in the array
+    }
+  });
 }
 
 export default MailRow;
