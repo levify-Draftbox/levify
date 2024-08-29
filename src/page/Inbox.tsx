@@ -361,8 +361,8 @@ const MailViewer: React.FC<{
   }, []);
 
   return (
-    <div className="p-2 h-full overflow-auto scroll-bar">
-      <div className="flex w-full justify-between my-1 items-center">
+    <div className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background">
+      <div className="flex w-full justify-between my-4 items-center">
         <div className="flex-1">
           <h1 className="text-xl font-medium text-start line-clamp-2" title={e.b_subject}>
             {e.b_subject}
@@ -375,7 +375,26 @@ const MailViewer: React.FC<{
         </div>
       </div>
 
-      <EmailBlock {...e} panelWidth={htmlWidth} />
+      <div className="flex flex-col gap-4">
+        {emails.emails.map((e) => {
+          return <EmailBlock {...e} panelWidth={htmlWidth} />
+        })}
+      </div>
+
+      <div className="mt-4 flex gap-2">
+        <Button variant={"primary"} className="gap-2 ">
+          <ArrowBendUpLeft size={18} />
+          <p>Reply</p>
+        </Button>
+        <Button variant={"secondary"}>
+          <ArrowBendDoubleUpLeft size={18} />
+          <p>Reply All</p>
+        </Button>
+        <Button variant={"secondary"}>
+          <ArrowBendUpRight size={18} />
+          <p>Forward</p>
+        </Button>
+      </div>
 
     </div>
   );
@@ -474,9 +493,9 @@ const EmailBlock = (e: Email & { panelWidth: number }) => {
   useEffect(() => injectCSS(), [])
 
   return (
-    <>
+    <div className="p-4 border border-border rounded-md bg-background-secondary">
       <div className="flex justify-between">
-        <div className="my-2 flex gap-3">
+        <div className="my-0 flex gap-3">
           <img
             className="w-12 h-12 rounded-md"
             src={e.from_profile}
@@ -599,22 +618,7 @@ const EmailBlock = (e: Email & { panelWidth: number }) => {
           />
         )}
       </div>
-      <div className="mx-1 mt-4 flex gap-2">
-        <Button variant={"primary"} className="gap-2 ">
-          <ArrowBendUpLeft size={18} />
-          <p>Reply</p>
-        </Button>
-        <Button variant={"secondary"}>
-          <ArrowBendDoubleUpLeft size={18} />
-          <p>Reply All</p>
-        </Button>
-        <Button variant={"secondary"}>
-          <ArrowBendUpRight size={18} />
-          <p>Forward</p>
-        </Button>
-      </div>
-
-    </>
+    </div>
   )
 }
 
