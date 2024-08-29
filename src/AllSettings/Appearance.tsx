@@ -12,11 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Rows,
   TextAlignJustify,
   TextColumns,
-  EnvelopeSimple,
-  UserCircle,
 } from "@phosphor-icons/react";
 
 const Appearance = () => {
