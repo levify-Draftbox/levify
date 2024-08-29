@@ -317,7 +317,7 @@ console.log("initialwebihf",allSetting.profile?.image);
             <div>
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-sm text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] ">
-                  Add Photo
+                  Edit Photo
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="z-[999999999]">
                   <DropdownMenuItem
@@ -533,7 +533,7 @@ console.log("initialwebihf",allSetting.profile?.image);
                     }}
                     variant="primary"
                   >
-                    {!isLoading ? `chenge password` : <Spinner />}
+                    {!isLoading ? `Chenge password` : <Spinner />}
                   </Button>
                 </div>
               </div>

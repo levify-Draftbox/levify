@@ -11,32 +11,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Rows, TextAlignJustify, TextColumns } from "@phosphor-icons/react";
+import {
+  Rows,
+  TextAlignJustify,
+  TextColumns,
+  EnvelopeSimple,
+  UserCircle,
+} from "@phosphor-icons/react";
 
 const Appearance = () => {
   const { allSetting, updateSettings } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLayout, setSelectedLayout] = useState<string>(
+    allSetting?.appearance?.layout || "Columan"
+  );
+  const [selectedTheme, setSelectedTheme] = useState<string>(
+    allSetting?.appearance?.theme || "system"
+  );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    allSetting?.appearance?.color || "purple"
+  );
+  const [selectedDisplayOrder, setSelectedDisplayOrder] = useState<string>(
+    allSetting?.appearance?.displayOrder || "Subject First"
+  );
 
   interface AppearanceSettings extends Record<string, unknown> {
     color?: string;
     theme?: string;
     layout?: string;
-    mailLayout?: string;
+    displayOrder?: string;
   }
-
-  // const [selectedMailLayout, setSelectedMailLayout] = useState<string | null>(
-  //   allSetting?.appearance?.mailLayout || null
-  // );
-
-  // const handleImageClick = (index: number, layout: string) => {
-  //   setSelectedImage(index);
-  //   updateAppearance({ layout });
-  // };
-
-  // const handleMailLayoutClick = (Maillayout: string) => {
-  //   setSelectedMailLayout(Maillayout);
-  //   updateAppearance({ mailLayout: Maillayout });
-  // };
 
   const updateAppearance = async (obj: AppearanceSettings) => {
     setIsLoading(true);
@@ -49,10 +53,30 @@ const Appearance = () => {
     }
   };
 
+  const handleThemeChange = (theme: string) => {
+    setSelectedTheme(theme);
+    updateAppearance({ theme });
+  };
+
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    updateAppearance({ color });
+  };
+
+  const handleLayoutChange = (layout: string) => {
+    setSelectedLayout(layout);
+    updateAppearance({ layout });
+  };
+
+  const handleDisplayOrderChange = (order: string) => {
+    setSelectedDisplayOrder(order);
+    updateAppearance({ displayOrder: order });
+  };
+
   const ThemeOptions: any = {
     system: (
       <div className="flex gap-2 items-center">
-        <div className="h-4 w-6  rounded-sm bg-[length:100%_100%] bg-[left_calc(50%)_top] bg-[linear-gradient(to_right,#000_55%,#fff_45%)]" />
+        <div className="h-4 w-6 rounded-sm bg-[length:100%_100%] bg-[left_calc(50%)_top] bg-[linear-gradient(to_right,#000_55%,#fff_45%)]" />
         System
       </div>
     ),
@@ -80,65 +104,65 @@ const Appearance = () => {
     Row: (
       <div className="flex gap-2 items-center">
         <TextAlignJustify size={20} />
-        row
+        Row
       </div>
     ),
     Open: (
-      <div className="flex gap-2 items-center">
-        <Rows size={20} />
-        new tab
+      <div className="flex gap-2 !items-center">
+        <img className="h-6 mt-1" src="/new tab.svg" />
+        <p>New Tab</p>
       </div>
     ),
   };
+
+  const displayOrder: any = {
+    "Subject First": (
+      <div className="flex gap-2 items-center">Subject First</div>
+    ),
+    "Sender First": <div className="flex gap-2 items-center">Sender First</div>,
+  };
+
   return (
     <div className="w-full h-full">
       {isLoading && <Spinner className="absolute" />}
       <div>
-        <div>
-          <SettingDiv>
-            <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-              Theme
-            </h2>
-            <div className="flex mt-1 justify-between items-center">
-              <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-                Sets the default visual theme for the application, including
-                colors and styles.
-              </p>
-              <Select
-                onValueChange={(v) => updateAppearance({ theme: v })}
-                value={allSetting?.appearance?.theme || "system"}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Select Theme" />
-                </SelectTrigger>
-                <SelectContent position="item-aligned">
-                  <SelectGroup>
-                    {Object.keys(ThemeOptions).map((e: string, i) => (
-                      <SelectItem key={i} value={e} dontShowCheck>
-                        {ThemeOptions[e]}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </SettingDiv>
-        </div>
+        <SettingDiv>
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-whitex">
+            Theme
+          </h2>
+          <div className="flex mt-1 justify-between items-center">
+            <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+              Set the default visual theme for the application, including colors
+              and styles.
+            </p>
+            <Select onValueChange={handleThemeChange} value={selectedTheme}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Select Theme" />
+              </SelectTrigger>
+              <SelectContent position="item-aligned">
+                <SelectGroup>
+                  {Object.keys(ThemeOptions).map((e: string, i) => (
+                    <SelectItem key={i} value={e} dontShowCheck>
+                      {ThemeOptions[e]}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </SettingDiv>
 
         <SettingDiv>
-          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-whitex">
             Colors
           </h2>
           <div className="flex mt-1 justify-between items-center">
-            <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-              Customizes the color scheme to match user preferences or branding.
+            <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+              Customize the color scheme to match user preferences or branding.
             </p>
-            <Select
-              onValueChange={(v) => updateAppearance({ color: v })}
-              value={allSetting?.appearance?.color || "purple"}
-            >
+            <Select onValueChange={handleColorChange} value={selectedColor}>
               <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Select Theme" />
+                <SelectValue placeholder="Select Color" />
               </SelectTrigger>
               <SelectContent position="item-aligned">
                 <SelectGroup>
@@ -147,9 +171,7 @@ const Appearance = () => {
                       <div className="flex gap-2 items-center capitalize">
                         <div
                           className="h-4 w-6 border border-input rounded-sm"
-                          style={{
-                            background: ThemeColors[e],
-                          }}
+                          style={{ background: ThemeColors[e] }}
                         />
                         {e}
                       </div>
@@ -162,20 +184,17 @@ const Appearance = () => {
         </SettingDiv>
 
         <SettingDiv>
-          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
+          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-whitex">
             Layout
           </h2>
           <div className="flex mt-1 justify-between items-center">
-            <p className="text-xs  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-              Adjusts the arrangement and design of the application's interface
+            <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+              Adjust the arrangement and design of the application's interface
               elements.
             </p>
-            <Select
-              onValueChange={(v) => updateAppearance({ layout: v })}
-              value={allSetting?.appearance?.layout || "columan"}
-            >
+            <Select onValueChange={handleLayoutChange} value={selectedLayout}>
               <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Select layout" />
+                <SelectValue placeholder="Select Layout" />
               </SelectTrigger>
               <SelectContent position="item-aligned">
                 <SelectGroup>
@@ -189,6 +208,34 @@ const Appearance = () => {
             </Select>
           </div>
         </SettingDiv>
+
+        {selectedLayout === "Columan" && (
+          <SettingDiv>
+            <h3 className="text-sm leading-none">Display Order</h3>
+            <div className="flex mt-1 justify-between items-center">
+              <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                Set whether emails display the subject or sender name first.
+              </p>
+              <Select
+                onValueChange={handleDisplayOrderChange}
+                value={selectedDisplayOrder}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Select Order" />
+                </SelectTrigger>
+                <SelectContent position="item-aligned">
+                  <SelectGroup>
+                    {Object.keys(displayOrder).map((e: string, i) => (
+                      <SelectItem key={i} value={e} dontShowCheck>
+                        {displayOrder[e]}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </SettingDiv>
+        )}
       </div>
     </div>
   );
