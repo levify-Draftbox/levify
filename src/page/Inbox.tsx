@@ -31,6 +31,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import moment from "moment";
 
 // TODO: move to type file
 export type Email = {
@@ -109,17 +110,12 @@ const Inbox: React.FC = () => {
             }, ...l] as EmailObj[]
           }
 
-          console.log("email obj", emailObj);
-          
-          
           let oldMailList = l.filter(eo => eo.thread_id != mail.thread_id)
           emailObj.emails.push(mail)
           emailObj.latest_date = mail.dateandtime
           emailObj.subject = mail.b_subject
           emailObj.unread = mail.unread
-          
-          console.log("new", oldMailList);
-          
+
           return [emailObj, ...oldMailList]
         });
 
@@ -167,7 +163,6 @@ const Inbox: React.FC = () => {
 
     const e = emailList[index];
     const isSelected = openEmail?.thread_id === e.thread_id;
-    console.log(isSelected);
 
     return (
       <motion.div
@@ -267,6 +262,8 @@ const Inbox: React.FC = () => {
     fetchEmails(true);
   }, []);
 
+  const [htmlViewWidth, setHtmlViewWidth] = useState(50)
+
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden">
       <ToolBar
@@ -314,24 +311,26 @@ const Inbox: React.FC = () => {
 
         <AnimatePresence>
           {emailOpen && (
-            <ResizablePanel minSize={30} maxSize={50} defaultSize={60}>
-              <motion.div
-              // initial={{ x: 100, opacity: 0 }}
-              // animate={{ x: 0, opacity: 1 }}
-              // exit={{ x: 100, opacity: 0 }}
-              // transition={{
-              //   type: "spring",
-              //   stiffness: 300,
-              //   damping: 30,
-              //   duration: 0.5,
-              // }}
+            <ResizablePanel minSize={30} maxSize={65} defaultSize={htmlViewWidth} onResize={(e) => setHtmlViewWidth(e)}>
+              <div
+                // initial={{ x: 100, opacity: 0 }}
+                // animate={{ x: 0, opacity: 1 }}
+                // exit={{ x: 100, opacity: 0 }}
+                // transition={{
+                //   type: "spring",
+                //   stiffness: 300,
+                //   damping: 30,
+                //   duration: 0.5,
+                // }}
+                className="!h-full"
               >
                 <MailViewer
                   key={openEmail?.thread_id || ""}
                   emails={openEmail as EmailObj}
                   onClose={handleClose}
+                  width={htmlViewWidth}
                 />
-              </motion.div>
+              </div>
             </ResizablePanel>
           )}
         </AnimatePresence>
@@ -344,26 +343,10 @@ const MailViewer: React.FC<{
   emails: EmailObj;
   key: number | string;
   onClose: () => void;
-}> = ({ emails, key, onClose }) => {
+  width: number;
+}> = ({ emails, onClose, width: htmlWidth }) => {
 
   let e = emails.emails[0]
-
-  const [viewMode] = useState(
-    e.b_html && e.b_html !== "" ? "html" : "text"
-  );
-  const htmlView = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    if (htmlView.current) {
-      const d =
-        htmlView.current.contentWindow?.document ||
-        htmlView.current.contentDocument;
-
-      d?.open();
-      d?.write(e.b_html);
-      d?.close();
-    }
-  }, [viewMode, key]);
 
   useEffect(() => {
     sendToWs(
@@ -378,14 +361,12 @@ const MailViewer: React.FC<{
   }, []);
 
   return (
-    <motion.div className="p-2">
-      <div className="flex w-full justify-between px-1">
-        <div className="w-full px-1">
-          <Tooltip tip={e.b_subject}>
-            <h1 className="text-xl font-medium text-start line-clamp-2">
-              {e.b_subject}
-            </h1>
-          </Tooltip>
+    <div className="p-2 h-full overflow-auto scroll-bar">
+      <div className="flex w-full justify-between my-1 items-center">
+        <div className="flex-1">
+          <h1 className="text-xl font-medium text-start line-clamp-2" title={e.b_subject}>
+            {e.b_subject}
+          </h1>
         </div>
         <div>
           <Button variant={"toolbutton"} onClick={onClose}>
@@ -394,14 +375,114 @@ const MailViewer: React.FC<{
         </div>
       </div>
 
+      <EmailBlock {...e} panelWidth={htmlWidth} />
+
+    </div>
+  );
+};
+
+const EmailBlock = (e: Email & { panelWidth: number }) => {
+  const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
+  const htmlView = useRef<HTMLIFrameElement>(null);
+  const [emailHeight, setEmailHeight] = useState<number>(10)
+
+  const injectCSS = () => {
+    if (htmlView.current) {
+      const d =
+        htmlView.current.contentWindow?.document ||
+        htmlView.current.contentDocument;
+
+      if (d) {
+        const styleElement = d.createElement('style');
+        styleElement.innerHTML = `
+            body::-webkit-scrollbar { 
+              display: none; 
+            }
+            body {
+              -ms-overflow-style: none;  /* IE and Edge */
+              scrollbar-width: none;  /* Firefox */
+            }
+          `;
+        d.head.appendChild(styleElement);
+      }
+    }
+  };
+
+  const updateHeight = () => {
+    if (htmlView.current) {
+      const d =
+        htmlView.current.contentWindow?.document ||
+        htmlView.current.contentDocument;
+
+      if (d) {
+        const newHeight = d.body.scrollHeight || d.documentElement.scrollHeight;
+        setEmailHeight(newHeight > 0 ? newHeight : 300); // Fallback to 300px if height is 0
+      }
+    }
+  };
+
+  useEffect(() => {
+    const observeImages = (document: Document) => {
+      const images = document.querySelectorAll('img');
+      images.forEach((img) => {
+        img.addEventListener('load', updateHeight);
+        img.addEventListener('error', updateHeight); // Handle errors
+      });
+    };
+
+    const initializeIframe = () => {
+      if (htmlView.current) {
+        const d =
+          htmlView.current.contentWindow?.document ||
+          htmlView.current.contentDocument;
+
+        if (d) {
+          d.open();
+          d.write(e.b_html); // Assuming e.b_html contains the HTML content
+          d.close();
+
+          observeImages(d); // Attach listeners to images for dynamic height adjustment
+          updateHeight(); // Initial height adjustment
+        }
+      }
+    };
+
+    initializeIframe();
+
+    // Adjust height on window resize
+    window.addEventListener('resize', updateHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+
+      // Cleanup image load listeners
+      if (htmlView.current) {
+        const d =
+          htmlView.current.contentWindow?.document ||
+          htmlView.current.contentDocument;
+        if (d) {
+          const images = d.querySelectorAll('img');
+          images.forEach((img) => {
+            img.removeEventListener('load', updateHeight);
+            img.removeEventListener('error', updateHeight);
+          });
+        }
+      }
+    };
+  }, [viewMode, e.panelWidth]);
+
+  useEffect(() => injectCSS(), [])
+
+  return (
+    <>
       <div className="flex justify-between">
-        <div className="my-2 mx-2 flex gap-3">
-          <Avatar className="w-12 h-12">
-            <AvatarImage src={e.from_profile} />
-            <AvatarFallback>
-              {e.b_from_name?.charAt(0) || "DB"}
-            </AvatarFallback>
-          </Avatar>
+        <div className="my-2 flex gap-3">
+          <img
+            className="w-12 h-12 rounded-md"
+            src={e.from_profile}
+            alt={e.b_from_name || e.b_from.split("@")[0]}
+            title={e.b_from_name || e.b_from.split("@")[0]}
+          />
           <div>
             <HoverCard>
               <HoverCardTrigger>
@@ -494,18 +575,27 @@ const MailViewer: React.FC<{
         </div>
         <div>
           <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
-            {e.b_datetime}
+            {moment(e.b_datetime).format("lll")}
           </p>
         </div>
       </div>
 
-      <div className="m-1 mt-5  shadow">
+      <div className="mt-2 shadow">
         {viewMode === "text" ? (
-          <pre className="text-sm p-2">{e.b_text}</pre>
+          <pre className="font-sans bg-white text-black rounded-md p-4" style={{
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+          }}>
+            {e.b_text}
+          </pre>
         ) : (
           <iframe
-            className="bg-white w-full  h-[500px]"
+            style={{
+              height: emailHeight
+            }}
+            className="bg-white w-full h-[500px] rounded-md overflow-hidden"
             ref={htmlView}
+            scrolling="no"
           />
         )}
       </div>
@@ -523,8 +613,9 @@ const MailViewer: React.FC<{
           <p>Forward</p>
         </Button>
       </div>
-    </motion.div>
-  );
-};
+
+    </>
+  )
+}
 
 export default Inbox;
