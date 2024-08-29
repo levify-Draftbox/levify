@@ -40,6 +40,7 @@ const Profile = () => {
     emails: userEmails,
     profile,
     updateProfile: updateUserProfile,
+    updateSettings: updateUserSettings,
     allSetting,
   } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -143,6 +144,18 @@ console.log("initialwebihf",allSetting.profile?.image);
     }
   };
 
+  const updateSettings = async (obj: Partial<ProfileSettings>) => {
+    setIsLoading(true);
+ 
+    try {
+      await updateUserSettings("profile", obj);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setFileType(file?.type as string);
@@ -172,7 +185,7 @@ console.log("initialwebihf",allSetting.profile?.image);
           });
           const image = response.data.url;
           setFinalImg(image);
-          await updateProfile({ image });
+          await updateSettings({ image });
         };
         setImage("");
       } catch (error) {
@@ -281,7 +294,7 @@ console.log("initialwebihf",allSetting.profile?.image);
   const handleNameSwitch = () => {
     setnameInEmail(!nameInEmail);
     const value = nameInEmail;
-    updateProfile({ nameInMail: value });
+    updateSettings({ nameInMail: value });
   };
 
   useEffect(() => {
