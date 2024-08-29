@@ -84,7 +84,7 @@ const Inbox: React.FC = () => {
   }
 
   useEffect(() => {
-    setUnReadFunc((d) => {
+    setUnReadFunc((_) => {
       // const { email_id, unread } = d as { email_id: number; unread: boolean };
       // setUnread(email_id, unread);
     });
