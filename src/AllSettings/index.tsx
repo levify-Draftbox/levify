@@ -17,6 +17,8 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import SettingsList from "./list";
 import { ModalSidebarLayout } from "@/components/ui/Modal";
+import { AnimatePresence, motion } from "framer-motion"
+import { useProfileStore } from "@/store/profile";
 
 type SidebarNavLinkProp = {
   icon: React.ReactNode;
@@ -28,6 +30,7 @@ const AllSettings = () => {
   const [activeSetting, setActiveSetting] = useState("profile");
   const scrollChildDivRef = useRef<HTMLDivElement>(null);
   const [childTop, setChildTop] = useState(true);
+  const { settingUpdating } = useProfileStore()
 
   const SidebarNavLink = (p: SidebarNavLinkProp) => {
     return (
@@ -150,9 +153,8 @@ const AllSettings = () => {
       {SettingsList[activeSetting] ? (
         <div className="h-full flex flex-col">
           <div
-            className={`flex flex-col sticky top-0 bg-background-secondary py-5 px-16 gap-1 ${
-              !childTop ? "border-b" : ""
-            } z-[9]`}
+            className={`flex flex-col sticky top-0 bg-background-secondary py-5 px-16 gap-1 ${!childTop ? "border-b" : ""
+              } z-[9]`}
           >
             <h1 className="text-2xl font-[500]">
               {SettingsList[activeSetting].name}
@@ -165,10 +167,33 @@ const AllSettings = () => {
           </div>
 
           <div
-            className="overflow-auto scroll-bar flex-1"
+            className="overflow-auto scroll-bar flex-1 flex flex-col"
             ref={scrollChildDivRef}
           >
-            {SettingsList[activeSetting].component}
+            <div className="flex-1">
+              {SettingsList[activeSetting].component}
+            </div>
+
+            <AnimatePresence>
+              {settingUpdating &&
+                <motion.div
+                  initial={{
+                    y: "100%"
+                  }}
+                  animate={{
+                    y: 0
+                  }}
+                  exit={{
+                    y: "100%"
+                  }}
+                  transition={{
+                    ease: "easeInOut"
+                  }}
+                  className="border-t border-border py-2 text-gray-300 text-center bottom-0 sticky bg-background">
+                  Setting Updating...
+                </motion.div>}
+            </AnimatePresence>
+
           </div>
         </div>
       ) : (

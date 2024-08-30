@@ -32,7 +32,7 @@ const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>("");
-  
+
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
   const [nameInEmail, setnameInEmail] = useState(false);
@@ -58,7 +58,7 @@ const Profile = () => {
   const [dummyImg, setDummyImg] = useState("");
   const [, setImageChanged] = useState(false);
   const [showSaveDiscard, setshowSaveDiscard] = useState(false);
-  
+
   const [initialValues, setInitialValues] = useState<InitialValues>({
     nickname: "",
     fullName: "",
@@ -73,25 +73,32 @@ const Profile = () => {
       const newNickname = profile.nickname || "";
       const newFullName = profile.full_name || "";
       const newSelectedEmail = profile.default_email || "";
-      const newNameInEmail = allSetting.profile.nameInMail || false;
-      const newImage = allSetting.profile?.image || "";
 
       setNickname(newNickname);
       setFullName(newFullName);
       setSelectedEmail(newSelectedEmail);
-      setnameInEmail(newNameInEmail);
-      setFinalImg(newImage);
       setIsImageLoading(false);
 
-      setInitialValues({
+      setInitialValues(s => ({
+        ...s,
         nickname: newNickname,
         fullName: newFullName,
-        selectedEmail: newSelectedEmail,
-        nameInEmail: newNameInEmail,
-        image: newImage,
-      });
+        selectedEmail: newSelectedEmail
+      }));
     }
-  }, [allSetting, profile]);
+  }, [profile]);
+
+  useEffect(() => {
+    setFinalImg(allSetting.profile?.image || "");
+    setnameInEmail(allSetting.profile.nameInMail || false);
+
+    setInitialValues((e) => ({
+      ...e,
+      image: allSetting.profile?.image,
+      nameInEmail: allSetting.profile.nameInMail
+    }))
+
+  }, [profile])
 
   useEffect(() => {
     const hasChanges =
@@ -102,7 +109,7 @@ const Profile = () => {
       finalImg !== initialValues.image;
 
     setshowSaveDiscard(hasChanges);
-  }, [nickname, fullName, selectedEmail, nameInEmail, finalImg, initialValues]);
+  }, [nickname, fullName, selectedEmail, nameInEmail, finalImg]);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -239,8 +246,8 @@ const Profile = () => {
         image: finalImg,
       };
 
-      await updateProfile(updateData);
       await updateSettings({ nameInMail: nameInEmail });
+      await updateProfile(updateData);
 
       setInitialValues({
         nickname,
@@ -249,6 +256,9 @@ const Profile = () => {
         nameInEmail,
         image: finalImg,
       });
+
+      setshowSaveDiscard(false)
+      
       setImageChanged(false);
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -292,10 +302,6 @@ const Profile = () => {
     }
   };
 
-  const handleNameSwitch = () => {
-    setnameInEmail(!nameInEmail);
-  };
-
   useEffect(() => {
     if (nickname && !finalImg) {
       const data = nickname.charAt(0).toUpperCase();
@@ -314,19 +320,19 @@ const Profile = () => {
         <div className="flex items-center gap-5">
           <div className="flex flex-col gap-2 items-center w-20 justify-center">
             <div className="h-14 w-14 flex justify-center items-center">
-            <Tooltip tip="Your Profile">
-              {isImageLoading ? (
-                <Spinner size={30} />
-              ) : (
-                <Avatar className="w-14 h-14">
-                  {finalImg ? (
-                    <AvatarImage src={finalImg} alt="Profile" />
-                  ) : (
-                    <AvatarFallback>{dummyImg}</AvatarFallback>
-                  )}
-                </Avatar>
-              )}
-            </Tooltip>
+              <Tooltip tip="Your Profile">
+                {isImageLoading ? (
+                  <Spinner size={30} />
+                ) : (
+                  <Avatar className="w-14 h-14">
+                    {finalImg ? (
+                      <AvatarImage src={finalImg} alt="Profile" />
+                    ) : (
+                      <AvatarFallback>{dummyImg}</AvatarFallback>
+                    )}
+                  </Avatar>
+                )}
+              </Tooltip>
             </div>
 
             <div>
@@ -453,19 +459,19 @@ const Profile = () => {
         </div>
 
         <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
-          Name in mail
+          Full Name in mail
         </h2>
         <div className="flex mt-1 items-center justify-between">
           <Label
             htmlFor="nikname-switch"
             className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1"
           >
-            Show full name in email
+            Show full name in sent email
           </Label>
           <Switch
             id="nikname-switch"
             checked={nameInEmail}
-            onCheckedChange={handleNameSwitch}
+            onCheckedChange={() => setnameInEmail(!nameInEmail)}
           />
         </div>
       </SettingDiv>

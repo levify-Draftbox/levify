@@ -6,6 +6,8 @@ interface SettingsState {
   emails: string[];
   profile: { [_: string]: any };
   load: boolean;
+  settingAbort: AbortController | undefined;
+  settingUpdating: boolean;
   fetchAllProfiles: () => Promise<void>;
   updateSettings: (
     type: string,
@@ -19,16 +21,18 @@ interface SettingsState {
 
 // let updateInProgress = false;
 
-export const useProfileStore = create<SettingsState>()((set) => ({
+export const useProfileStore = create<SettingsState>()((set, get) => ({
   allSetting: {},
   profile: {},
   emails: [],
   load: false,
+  settingAbort: undefined,
+  settingUpdating: false,
   fetchAllProfiles: async () => {
     try {
       const response = await api.get("/profile/all");
-      console.log("database image",response.data.setting.profile.image);
-      
+      console.log("database image", response.data.setting.profile.image);
+
       set((s) => ({
         ...s,
         allSetting: response.data.setting,
@@ -42,8 +46,17 @@ export const useProfileStore = create<SettingsState>()((set) => ({
   },
 
   updateSettings: async (type: string, newSettings) => {
+
+    let ac = get().settingAbort
+    if (ac) {
+      ac.abort()
+    }
+
+    ac = new AbortController()
     set((state) => ({
       ...state,
+      settingAbort: ac,
+      settingUpdating: true,
       allSetting: {
         ...state.allSetting,
         [type]: {
@@ -56,10 +69,15 @@ export const useProfileStore = create<SettingsState>()((set) => ({
     try {
       console.log(newSettings);
 
-      const response = await api.put(`/profile/${type}`, newSettings, {});
+      const response = await api.put(`/profile/${type}`, newSettings, {
+        signal: ac.signal
+      });
 
       if (response.data.success) {
-        //
+        set(s => ({
+          ...s,
+          settingUpdating: false
+        }))
       } else {
         console.error(
           `Failed to update ${type} settings:`,
@@ -68,6 +86,11 @@ export const useProfileStore = create<SettingsState>()((set) => ({
       }
     } catch (error) {
       console.error(`Failed to update ${type} settings:`, error);
+    } finally {
+      set(s => ({
+        ...s,
+        settingAbort: undefined
+      }))
     }
   },
 

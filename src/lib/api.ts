@@ -45,7 +45,9 @@ api.interceptors.response.use(
         toggleModal()
       }
     } else {
-      alert("Server errro")
+      if (axios.isCancel(error)) { } else {
+        alert("Error")
+      }
     }
     return Promise.reject(error);
   }

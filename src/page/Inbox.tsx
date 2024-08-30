@@ -105,7 +105,10 @@ const Inbox: React.FC = () => {
     setEmailList(eol => eol.map(eo => {
       if (eo.thread_id == thread_id) {
         eo.emails = eo.emails.map(e => {
-          if (e.id == email_id) e.unread = unread
+          if (e.id == email_id) {
+            e.unread = unread
+            e.new = false
+          }
           return e
         })
       }
@@ -406,6 +409,7 @@ const MailViewer: React.FC<{
         {emails.emails.map((e, i) => {
           if (true)
             return <EmailBlock
+              totalEmail={emails.emails.length}
               last={i == emails.emails.length - 1}
               setUnreadfunc={unreadFunc}
               openBlock={e.uid == lastEmail.uid}
@@ -434,11 +438,11 @@ const MailViewer: React.FC<{
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc, last: boolean }) => {
+const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc, last: boolean, totalEmail: number }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10)
-  const [openBlock, setOpenBlock] = useState(e.new ? false : e.openBlock)
+  const [openBlock, setOpenBlock] = useState(e.totalEmail == 1 ? true : (e.new ? false : e.openBlock))
 
   const injectCSS = () => {
     if (htmlView.current) {

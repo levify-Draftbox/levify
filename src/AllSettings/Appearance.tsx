@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProfileStore } from "@/store/profile";
 import { SettingDiv } from "./components";
 import { Spinner } from "@/components/Spinner";
@@ -19,18 +19,13 @@ import {
 const Appearance = () => {
   const { allSetting, updateSettings } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedLayout, setSelectedLayout] = useState<string>(
-    allSetting?.appearance?.layout || "Columan"
-  );
-  const [selectedTheme, setSelectedTheme] = useState<string>(
-    allSetting?.appearance?.theme || "system"
-  );
-  const [selectedColor, setSelectedColor] = useState<string>(
-    allSetting?.appearance?.color || "purple"
-  );
-  const [selectedDisplayOrder, setSelectedDisplayOrder] = useState<string>(
-    allSetting?.appearance?.displayOrder || "Subject First"
-  );
+
+  const [options, setOptions] = useState({
+    layout: allSetting?.appearance?.layout || "Columan",
+    theme: allSetting?.appearance?.theme || "system",
+    color: allSetting?.appearance?.color || "purple",
+    displayOrder: allSetting?.appearance?.displayOrder || "Subject First"
+  })
 
   interface AppearanceSettings extends Record<string, unknown> {
     color?: string;
@@ -48,26 +43,6 @@ const Appearance = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleThemeChange = (theme: string) => {
-    setSelectedTheme(theme);
-    updateAppearance({ theme });
-  };
-
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color);
-    updateAppearance({ color });
-  };
-
-  const handleLayoutChange = (layout: string) => {
-    setSelectedLayout(layout);
-    updateAppearance({ layout });
-  };
-
-  const handleDisplayOrderChange = (order: string) => {
-    setSelectedDisplayOrder(order);
-    updateAppearance({ displayOrder: order });
   };
 
   const ThemeOptions: any = {
@@ -124,7 +99,7 @@ const Appearance = () => {
       {isLoading && <Spinner className="absolute" />}
       <div>
         <SettingDiv>
-          <h2 className="text-sm mt-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-whitex">
+          <h2 className="text-sm  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-whitex">
             Theme
           </h2>
           <div className="flex mt-1 justify-between items-center">
@@ -132,7 +107,16 @@ const Appearance = () => {
               Set the default visual theme for the application, including colors
               and styles.
             </p>
-            <Select onValueChange={handleThemeChange} value={selectedTheme}>
+            <Select onValueChange={(v) => {
+              setOptions((o) => ({
+                ...o,
+                theme: v
+              }))
+              updateAppearance({
+                ...options,
+                theme: v
+              })
+            }} value={options.theme}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Select Theme" />
               </SelectTrigger>
@@ -157,7 +141,16 @@ const Appearance = () => {
             <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               Customize the color scheme to match user preferences or branding.
             </p>
-            <Select onValueChange={handleColorChange} value={selectedColor}>
+            <Select onValueChange={(v) => {
+              setOptions((o) => ({
+                ...o,
+                color: v
+              }))
+              updateAppearance({
+                ...options,
+                color: v
+              })
+            }} value={options.color}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Select Color" />
               </SelectTrigger>
@@ -189,7 +182,16 @@ const Appearance = () => {
               Adjust the arrangement and design of the application's interface
               elements.
             </p>
-            <Select onValueChange={handleLayoutChange} value={selectedLayout}>
+            <Select onValueChange={(v) => {
+              setOptions((o) => ({
+                ...o,
+                layout: v
+              }))
+              updateAppearance({
+                ...options,
+                layout: v
+              })
+            }} value={options.layout}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Select Layout" />
               </SelectTrigger>
@@ -206,7 +208,7 @@ const Appearance = () => {
           </div>
         </SettingDiv>
 
-        {selectedLayout === "Columan" && (
+        {options.layout === "Columan" && (
           <SettingDiv>
             <h3 className="text-sm leading-none">Display Order</h3>
             <div className="flex mt-1 justify-between items-center">
@@ -214,8 +216,17 @@ const Appearance = () => {
                 Set whether emails display the subject or sender name first.
               </p>
               <Select
-                onValueChange={handleDisplayOrderChange}
-                value={selectedDisplayOrder}
+                onValueChange={(v) => {
+                  setOptions((o) => ({
+                    ...o,
+                    displayOrder: v
+                  }))
+                  updateAppearance({
+                    ...options,
+                    displayOrder: v
+                  })
+                }}
+                value={options.displayOrder}
               >
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Select Order" />
