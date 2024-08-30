@@ -34,8 +34,7 @@ const Profile = () => {
   const [nickname, setNickname] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [_, setShowNicknameInEmail] = useState<boolean>(false);
-  const [nameInEmail, setnameInEmail] = useState<boolean | undefined>(false);
+  const [nameInEmail, setnameInEmail] = useState(false);
   const {
     emails: userEmails,
     profile,
@@ -66,22 +65,18 @@ const Profile = () => {
     image: "",
   });
 
-console.log("initialwebihf",allSetting.profile?.image);
-
-
   useEffect(() => {
     if (profile) {
       setIsImageLoading(true);
       const newNickname = profile.nickname || "";
       const newFullName = profile.full_name || "";
       const newSelectedEmail = profile.default_email || "";
-      const newNameInEmail = profile.showNicknameInEmail || false;
+      const newNameInEmail = allSetting.profile.nameInMail || false;
       const newImage = allSetting.profile?.image || "";
 
       setNickname(newNickname);
       setFullName(newFullName);
       setSelectedEmail(newSelectedEmail);
-      setShowNicknameInEmail(newNameInEmail);
       setnameInEmail(newNameInEmail);
       setFinalImg(newImage);
       setIsImageLoading(false);
@@ -127,14 +122,13 @@ console.log("initialwebihf",allSetting.profile?.image);
     nickname: string;
     full_name: string;
     default_email: string;
-    showNicknameInEmail: boolean;
     image: string;
     nameInMail: boolean | null;
   }
 
   const updateProfile = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
- 
+
     try {
       await updateUserProfile("profile", obj);
     } catch (error) {
@@ -146,7 +140,7 @@ console.log("initialwebihf",allSetting.profile?.image);
 
   const updateSettings = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
- 
+
     try {
       await updateUserSettings("profile", obj);
     } catch (error) {
@@ -178,11 +172,15 @@ console.log("initialwebihf",allSetting.profile?.image);
         const reader = new FileReader();
         reader.readAsArrayBuffer(blob);
         reader.onloadend = async function () {
-          const response = await api.post("/fo", reader.result, {
-            headers: {
-              "X-File-Name": fileType,
-            },
-          });
+          const response = await api.post(
+            "/file/profileupload",
+            reader.result,
+            {
+              headers: {
+                "X-File-Name": fileType,
+              },
+            }
+          );
           const image = response.data.url;
           setFinalImg(image);
           await updateSettings({ image });
@@ -205,7 +203,7 @@ console.log("initialwebihf",allSetting.profile?.image);
       setIsImageLoading(true);
       const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
       setFinalImg(gravatarUrl);
-      await updateProfile({ image: gravatarUrl });
+      await updateSettings({ image: gravatarUrl });
       setImageChanged(true);
     } catch (error) {
       console.error("Error updating profile with Gravatar image:", error);
@@ -217,7 +215,7 @@ console.log("initialwebihf",allSetting.profile?.image);
     try {
       setIsImageLoading(true);
       setFinalImg("");
-      await updateProfile({ image: "" });
+      await updateSettings({ image: "" });
       setImageChanged(true);
     } catch (error) {
       console.error("Error removing profile photo:", error);
@@ -231,7 +229,7 @@ console.log("initialwebihf",allSetting.profile?.image);
     try {
       const newemail = selectedEmail;
 
-      const updateData: Partial<ProfileSettings> = {
+      const updateData = {
         nickname,
         full_name: fullName,
         default_email: newemail,
@@ -240,12 +238,13 @@ console.log("initialwebihf",allSetting.profile?.image);
       };
 
       await updateProfile(updateData);
+      await updateSettings({ nameInMail: nameInEmail });
 
       setInitialValues({
         nickname,
         fullName,
         selectedEmail: newemail,
-        nameInEmail: nameInEmail as boolean,
+        nameInEmail,
         image: finalImg,
       });
       setImageChanged(false);
@@ -293,8 +292,6 @@ console.log("initialwebihf",allSetting.profile?.image);
 
   const handleNameSwitch = () => {
     setnameInEmail(!nameInEmail);
-    const value = nameInEmail;
-    updateSettings({ nameInMail: value });
   };
 
   useEffect(() => {
@@ -617,4 +614,3 @@ console.log("initialwebihf",allSetting.profile?.image);
 };
 
 export default Profile;
-
