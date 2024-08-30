@@ -32,10 +32,10 @@ const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>("");
+  
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [_, setShowNicknameInEmail] = useState<boolean>(false);
-  const [nameInEmail, setnameInEmail] = useState<boolean | undefined>(false);
+  const [nameInEmail, setnameInEmail] = useState(false);
   const {
     emails: userEmails,
     profile,
@@ -55,9 +55,10 @@ const Profile = () => {
   const [finalImg, setFinalImg] = useState("");
   const [fileType, setFileType] = useState<string | null>("");
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [dummyImg, setdummyImg] = useState("");
+  const [dummyImg, setDummyImg] = useState("");
   const [, setImageChanged] = useState(false);
   const [showSaveDiscard, setshowSaveDiscard] = useState(false);
+  
   const [initialValues, setInitialValues] = useState<InitialValues>({
     nickname: "",
     fullName: "",
@@ -66,22 +67,18 @@ const Profile = () => {
     image: "",
   });
 
-console.log("initialwebihf",allSetting.profile?.image);
-
-
   useEffect(() => {
     if (profile) {
       setIsImageLoading(true);
       const newNickname = profile.nickname || "";
       const newFullName = profile.full_name || "";
       const newSelectedEmail = profile.default_email || "";
-      const newNameInEmail = profile.showNicknameInEmail || false;
+      const newNameInEmail = allSetting.profile.nameInMail || false;
       const newImage = allSetting.profile?.image || "";
 
       setNickname(newNickname);
       setFullName(newFullName);
       setSelectedEmail(newSelectedEmail);
-      setShowNicknameInEmail(newNameInEmail);
       setnameInEmail(newNameInEmail);
       setFinalImg(newImage);
       setIsImageLoading(false);
@@ -127,14 +124,13 @@ console.log("initialwebihf",allSetting.profile?.image);
     nickname: string;
     full_name: string;
     default_email: string;
-    showNicknameInEmail: boolean;
     image: string;
     nameInMail: boolean | null;
   }
 
   const updateProfile = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
- 
+
     try {
       await updateUserProfile("profile", obj);
     } catch (error) {
@@ -146,7 +142,7 @@ console.log("initialwebihf",allSetting.profile?.image);
 
   const updateSettings = async (obj: Partial<ProfileSettings>) => {
     setIsLoading(true);
- 
+
     try {
       await updateUserSettings("profile", obj);
     } catch (error) {
@@ -178,12 +174,16 @@ console.log("initialwebihf",allSetting.profile?.image);
         const reader = new FileReader();
         reader.readAsArrayBuffer(blob);
         reader.onloadend = async function () {
-          const response = await api.post("/fo", reader.result, {
-            headers: {
-              "X-File-Name": fileType,
-            },
-          });
-          const image = response.data.url;
+          const response = await api.post(
+            "/file/profileupload",
+            reader.result,
+            {
+              headers: {
+                "X-File-Name": fileType,
+              },
+            }
+          );
+          const image = response.data.Url;
           setFinalImg(image);
           await updateSettings({ image });
         };
@@ -205,7 +205,7 @@ console.log("initialwebihf",allSetting.profile?.image);
       setIsImageLoading(true);
       const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
       setFinalImg(gravatarUrl);
-      await updateProfile({ image: gravatarUrl });
+      await updateSettings({ image: gravatarUrl });
       setImageChanged(true);
     } catch (error) {
       console.error("Error updating profile with Gravatar image:", error);
@@ -217,7 +217,7 @@ console.log("initialwebihf",allSetting.profile?.image);
     try {
       setIsImageLoading(true);
       setFinalImg("");
-      await updateProfile({ image: "" });
+      await updateSettings({ image: "" });
       setImageChanged(true);
     } catch (error) {
       console.error("Error removing profile photo:", error);
@@ -231,7 +231,7 @@ console.log("initialwebihf",allSetting.profile?.image);
     try {
       const newemail = selectedEmail;
 
-      const updateData: Partial<ProfileSettings> = {
+      const updateData = {
         nickname,
         full_name: fullName,
         default_email: newemail,
@@ -240,12 +240,13 @@ console.log("initialwebihf",allSetting.profile?.image);
       };
 
       await updateProfile(updateData);
+      await updateSettings({ nameInMail: nameInEmail });
 
       setInitialValues({
         nickname,
         fullName,
         selectedEmail: newemail,
-        nameInEmail: nameInEmail as boolean,
+        nameInEmail,
         image: finalImg,
       });
       setImageChanged(false);
@@ -293,18 +294,16 @@ console.log("initialwebihf",allSetting.profile?.image);
 
   const handleNameSwitch = () => {
     setnameInEmail(!nameInEmail);
-    const value = nameInEmail;
-    updateSettings({ nameInMail: value });
   };
 
   useEffect(() => {
-    if (nickname) {
+    if (nickname && !finalImg) {
       const data = nickname.charAt(0).toUpperCase();
-      setdummyImg(data);
+      setDummyImg(data);
     } else {
-      setdummyImg("");
+      setDummyImg("");
     }
-  }, [nickname]);
+  }, [nickname, finalImg]);
 
   return (
     <div>
@@ -315,16 +314,19 @@ console.log("initialwebihf",allSetting.profile?.image);
         <div className="flex items-center gap-5">
           <div className="flex flex-col gap-2 items-center w-20 justify-center">
             <div className="h-14 w-14 flex justify-center items-center">
-              <Tooltip tip="Your Profile">
-                {isImageLoading ? (
-                  <Spinner size={30} />
-                ) : (
-                  <Avatar className="w-14 h-14">
-                    <AvatarImage src={finalImg || ""} />
+            <Tooltip tip="Your Profile">
+              {isImageLoading ? (
+                <Spinner size={30} />
+              ) : (
+                <Avatar className="w-14 h-14">
+                  {finalImg ? (
+                    <AvatarImage src={finalImg} alt="Profile" />
+                  ) : (
                     <AvatarFallback>{dummyImg}</AvatarFallback>
-                  </Avatar>
-                )}
-              </Tooltip>
+                  )}
+                </Avatar>
+              )}
+            </Tooltip>
             </div>
 
             <div>
@@ -617,4 +619,3 @@ console.log("initialwebihf",allSetting.profile?.image);
 };
 
 export default Profile;
-
