@@ -35,7 +35,7 @@ import { htmlToText } from "html-to-text";
 import { toast } from "sonner";
 import api from "@/lib/api";
 
-const BlockEditor = lazy(() => import("./blockNote"))
+const BlockEditor = lazy(() => import("./editor"))
 
 type StyleProps =
   | boolean
