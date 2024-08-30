@@ -54,6 +54,7 @@ export type Email = {
   unread: boolean;
   from_profile: string;
   thread_id: string;
+  new: boolean;
 };
 
 export type EmailObj = {
@@ -134,6 +135,8 @@ const Inbox: React.FC = () => {
       if (mode == "append") {
         setEmailList((l) => {
           const emailObj = l.find(eo => eo.thread_id == mail.thread_id);
+          mail.new = true;
+
           if (!emailObj) {
             return [{
               emails: [mail],
@@ -363,9 +366,9 @@ const MailViewer: React.FC<{
   unreadFunc: UnreadFunc
 }> = ({ emails, onClose, width: htmlWidth, unreadFunc }) => {
 
-
   let e = emails.emails[0]
-  let lastEmail = emails.emails[emails.emails.length - 1]
+  let revArray = emails.emails.slice().reverse()
+  let lastEmail = revArray.find((e) => e.new == false || !e.new) || revArray[0]
 
   useEffect(() => {
     if (lastEmail.unread) {
@@ -401,8 +404,14 @@ const MailViewer: React.FC<{
 
       <div className="flex flex-col gap-4">
         {emails.emails.map((e, i) => {
-          if (true) return <EmailBlock setUnreadfunc={unreadFunc} openBlock={emails.emails.length == i + 1} {...e} panelWidth={htmlWidth} />
-          return <>Hewllo</>
+          if (true)
+            return <EmailBlock
+              last={i == emails.emails.length - 1}
+              setUnreadfunc={unreadFunc}
+              openBlock={e.uid == lastEmail.uid}
+              panelWidth={htmlWidth}
+              {...e}
+            />
         })}
       </div>
 
@@ -425,11 +434,11 @@ const MailViewer: React.FC<{
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc }) => {
+const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc, last: boolean }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10)
-  const [openBlock, setOpenBlock] = useState(e.openBlock)
+  const [openBlock, setOpenBlock] = useState(e.new ? false : e.openBlock)
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -603,8 +612,12 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
   }
 
   return (
-    <div className="p-4 border border-border rounded-md bg-background-secondary">
-      <div className="flex justify-between">
+    <div
+      className={cn(
+        "p-4 border border-border rounded-md bg-background-secondary"
+      )}
+    >
+      <div className="flex justify-between bs">
         <div className="my-0 flex gap-3">
           <img
             className="w-12 h-12 rounded-md"
