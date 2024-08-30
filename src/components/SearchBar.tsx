@@ -5,7 +5,7 @@ import { Tooltip } from "./ui/tooltip";
 
 const SearchBar = () => {
   return (
-    <div className="flex justify-between w-full h-[52px] border-b">
+    <div className="flex justify-between w-full h-[52px] bg-background">
       <div></div>
       <div className="flex h-full items-center justify-between px-3 py-[10px] gap-2">
         <div className="flex bg-input border border-input-border  h-full items-center px-3 rounded-lg w-[350px]">

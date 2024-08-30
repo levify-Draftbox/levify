@@ -32,7 +32,7 @@ function Inputs(): React.ReactNode {
 
     return (
         <>
-            <div className="overflow-auto scroll-bar w-full">
+            <div className="overflow-auto scroll-bar w-full ">
                 <div className="max-w-[500px]">
                     <div className="px-4 py-1">
                         <Input label="Username" placeholder="User Name" />

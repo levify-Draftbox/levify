@@ -265,7 +265,7 @@ const Inbox: React.FC = () => {
   const [htmlViewWidth, setHtmlViewWidth] = useState(50)
 
   return (
-    <motion.div className="w-full flex flex-col flex-1 overflow-hidden">
+    <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
       <ToolBar
         className={""}
         onRefresh={refreshEmails}

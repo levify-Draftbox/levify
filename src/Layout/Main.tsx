@@ -100,15 +100,19 @@ const Main = () => {
                 </div>
               </ResizablePanel>
 
-              <ResizableHandle />
+              <ResizableHandle className="bg-transparent" />
 
               <ResizablePanel defaultSize={87} onResize={setLayoutSize}>
                 <div
-                  className="w-full h-full bg-background-secondary flex flex-col relative"
+                  className="w-full h-full bg-background flex flex-col relative"
                   ref={mainLayout}
                 >
                   <SearchBar />
-                  <Outlet />
+                  
+                  <div className="border-l border-t border-border !rounded-tl-lg overflow-hidden flex-1 overflow bg-background-secondary">
+                    <Outlet />
+                  </div>
+
                   <Composer />
                 </div>
               </ResizablePanel>
