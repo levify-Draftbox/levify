@@ -32,6 +32,7 @@ const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>("");
+  
   const [fullName, setFullName] = useState<string>("");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
   const [nameInEmail, setnameInEmail] = useState(false);
@@ -54,9 +55,10 @@ const Profile = () => {
   const [finalImg, setFinalImg] = useState("");
   const [fileType, setFileType] = useState<string | null>("");
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [dummyImg, setdummyImg] = useState("");
+  const [dummyImg, setDummyImg] = useState("");
   const [, setImageChanged] = useState(false);
   const [showSaveDiscard, setshowSaveDiscard] = useState(false);
+  
   const [initialValues, setInitialValues] = useState<InitialValues>({
     nickname: "",
     fullName: "",
@@ -181,7 +183,7 @@ const Profile = () => {
               },
             }
           );
-          const image = response.data.url;
+          const image = response.data.Url;
           setFinalImg(image);
           await updateSettings({ image });
         };
@@ -295,13 +297,13 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (nickname) {
+    if (nickname && !finalImg) {
       const data = nickname.charAt(0).toUpperCase();
-      setdummyImg(data);
+      setDummyImg(data);
     } else {
-      setdummyImg("");
+      setDummyImg("");
     }
-  }, [nickname]);
+  }, [nickname, finalImg]);
 
   return (
     <div>
@@ -312,16 +314,19 @@ const Profile = () => {
         <div className="flex items-center gap-5">
           <div className="flex flex-col gap-2 items-center w-20 justify-center">
             <div className="h-14 w-14 flex justify-center items-center">
-              <Tooltip tip="Your Profile">
-                {isImageLoading ? (
-                  <Spinner size={30} />
-                ) : (
-                  <Avatar className="w-14 h-14">
-                    <AvatarImage src={finalImg || ""} />
+            <Tooltip tip="Your Profile">
+              {isImageLoading ? (
+                <Spinner size={30} />
+              ) : (
+                <Avatar className="w-14 h-14">
+                  {finalImg ? (
+                    <AvatarImage src={finalImg} alt="Profile" />
+                  ) : (
                     <AvatarFallback>{dummyImg}</AvatarFallback>
-                  </Avatar>
-                )}
-              </Tooltip>
+                  )}
+                </Avatar>
+              )}
+            </Tooltip>
             </div>
 
             <div>
