@@ -64,6 +64,8 @@ export type EmailObj = {
   emails: Email[]
 }
 
+export type UnreadFunc = (_: { unread: boolean, email_id: number, thread_id: string, notify: boolean }) => void
+
 const Inbox: React.FC = () => {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -85,10 +87,41 @@ const Inbox: React.FC = () => {
     });
   }
 
+  const setUnread: UnreadFunc = ({ notify, email_id, thread_id, unread }) => {
+    if (notify) {
+      sendToWs(
+        JSON.stringify({
+          event: "unread",
+          data: {
+            thread_id: thread_id,
+            email_id: email_id,
+            unread: unread,
+          },
+        })
+      );
+    }
+
+    setEmailList(eol => eol.map(eo => {
+      if (eo.thread_id == thread_id) {
+        eo.emails = eo.emails.map(e => {
+          if (e.id == email_id) e.unread = unread
+          return e
+        })
+      }
+      return eo
+    }))
+
+  }
+
   useEffect(() => {
-    setUnReadFunc((_) => {
-      // const { email_id, unread } = d as { email_id: number; unread: boolean };
-      // setUnread(email_id, unread);
+    setUnReadFunc((d) => {
+      const { email_id, unread, thread_id } = d as { email_id: number; unread: boolean, thread_id: string };
+      setUnread({
+        notify: false,
+        thread_id: thread_id,
+        email_id: email_id,
+        unread: unread
+      })
     });
 
     setNotifyFunc((d) => {
@@ -117,6 +150,9 @@ const Inbox: React.FC = () => {
           emailObj.subject = mail.b_subject
           emailObj.unread = mail.unread
 
+          console.log("new emails", emailObj);
+
+
           return [emailObj, ...oldMailList]
         });
 
@@ -142,17 +178,6 @@ const Inbox: React.FC = () => {
     });
   }, []);
 
-  const setUnread = (threadId: string, unread: boolean) => {
-    setEmailList((e) =>
-      e.map((eo) => {
-        if (eo.thread_id === threadId) {
-          return { ...eo, unread };
-        }
-        return eo;
-      })
-    );
-  };
-
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
       return (
@@ -174,8 +199,8 @@ const Inbox: React.FC = () => {
         <MailRow
           onClick={() => {
             setEmailOpen(true);
+            console.log(e);
             setOpenEmail(e);
-            setUnread(e.thread_id, false);
           }}
 
           datetime={e.latest_date}
@@ -312,20 +337,19 @@ const Inbox: React.FC = () => {
 
         <ResizableHandle className="bg-transparent" />
 
-        <AnimatePresence>
-          {emailOpen && (
-            <ResizablePanel minSize={30} maxSize={65} defaultSize={htmlViewWidth} onResize={(e) => setHtmlViewWidth(e)}>
-              <div className="!h-full border-l border-border">
-                <MailViewer
-                  key={openEmail?.thread_id || ""}
-                  emails={openEmail as EmailObj}
-                  onClose={handleClose}
-                  width={htmlViewWidth}
-                />
-              </div>
-            </ResizablePanel>
-          )}
-        </AnimatePresence>
+        {emailOpen && (
+          <ResizablePanel minSize={30} maxSize={65} defaultSize={htmlViewWidth} onResize={(e) => setHtmlViewWidth(e)}>
+            <div className="!h-full border-l border-border">
+              <MailViewer
+                key={openEmail?.thread_id || ""}
+                emails={openEmail as EmailObj}
+                onClose={handleClose}
+                width={htmlViewWidth}
+                unreadFunc={setUnread}
+              />
+            </div>
+          </ResizablePanel>
+        )}
       </ResizablePanelGroup>
     </motion.div>
   );
@@ -336,23 +360,24 @@ const MailViewer: React.FC<{
   key: number | string;
   onClose: () => void;
   width: number;
-}> = ({ emails, onClose, width: htmlWidth }) => {
+  unreadFunc: UnreadFunc
+}> = ({ emails, onClose, width: htmlWidth, unreadFunc }) => {
+
 
   let e = emails.emails[0]
   let lastEmail = emails.emails[emails.emails.length - 1]
 
   useEffect(() => {
     if (lastEmail.unread) {
-      sendToWs(
-        JSON.stringify({
-          event: "unread",
-          data: {
-            email_id: lastEmail.id,
-            unread: false,
-          },
-        })
-      );
+      unreadFunc({
+        notify: true,
+        thread_id: lastEmail.thread_id,
+        email_id: lastEmail.id,
+        unread: false
+      })
     }
+
+    console.log("111", emails);
   }, []);
 
   return (
@@ -376,7 +401,7 @@ const MailViewer: React.FC<{
 
       <div className="flex flex-col gap-4">
         {emails.emails.map((e, i) => {
-          if (true) return <EmailBlock openBlock={emails.emails.length == i + 1} {...e} panelWidth={htmlWidth} />
+          if (true) return <EmailBlock setUnreadfunc={unreadFunc} openBlock={emails.emails.length == i + 1} {...e} panelWidth={htmlWidth} />
           return <>Hewllo</>
         })}
       </div>
@@ -400,26 +425,11 @@ const MailViewer: React.FC<{
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean }) => {
+const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10)
-
   const [openBlock, setOpenBlock] = useState(e.openBlock)
-
-  useEffect(() => {
-    if (openBlock && e.unread) {
-      sendToWs(
-        JSON.stringify({
-          event: "unread",
-          data: {
-            email_id: e.id,
-            unread: false,
-          },
-        })
-      );
-    }
-  }, [openBlock])
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -451,7 +461,8 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean }) => {
 
       if (d) {
         const newHeight = d.body.scrollHeight || d.documentElement.scrollHeight;
-        setEmailHeight(newHeight > 0 ? newHeight : 300); // Fallback to 300px if height is 0
+        const bodyMargin = parseFloat(getComputedStyle(d.body).marginTop) + parseFloat(getComputedStyle(d.body).marginBottom);
+        setEmailHeight(newHeight > 0 ? newHeight + bodyMargin : 300); // Fallback to 300px if height is 0
       }
     }
   };
@@ -515,7 +526,17 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean }) => {
         {
           "border-core": e.unread
         }
-      )} onClick={() => setOpenBlock(true)} >
+      )} onClick={() => {
+        setOpenBlock(true)
+        if (e.unread) {
+          e.setUnreadfunc({
+            notify: true,
+            email_id: e.id,
+            thread_id: e.thread_id,
+            unread: false
+          })
+        }
+      }} >
         <div className="flex justify-between">
           <div className="my-0 flex gap-3">
             <img
