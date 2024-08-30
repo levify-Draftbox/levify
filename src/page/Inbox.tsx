@@ -376,8 +376,9 @@ const MailViewer: React.FC<{
       </div>
 
       <div className="flex flex-col gap-4">
-        {emails.emails.map((e) => {
-          return <EmailBlock {...e} panelWidth={htmlWidth} />
+        {emails.emails.map((e, i) => {
+          if (true) return <EmailBlock openBlock={emails.emails.length == i + 1} {...e} panelWidth={htmlWidth} />
+          return <>Hewllo</>
         })}
       </div>
 
@@ -400,10 +401,12 @@ const MailViewer: React.FC<{
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number }) => {
+const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10)
+
+  const [openBlock, setOpenBlock] = useState(e.openBlock)
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -488,9 +491,77 @@ const EmailBlock = (e: Email & { panelWidth: number }) => {
         }
       }
     };
-  }, [viewMode, e.panelWidth]);
+  }, [viewMode, e.panelWidth, openBlock]);
 
   useEffect(() => injectCSS(), [])
+
+  if (!openBlock) {
+    return (
+      <div className="p-4 border border-border rounded-md bg-background-secondary cursor-pointer" onClick={() => setOpenBlock(true)} >
+        <div className="flex justify-between">
+          <div className="my-0 flex gap-3">
+            <img
+              className="w-12 h-12 rounded-md"
+              src={e.from_profile}
+              alt={e.b_from_name || e.b_from.split("@")[0]}
+              title={e.b_from_name || e.b_from.split("@")[0]}
+            />
+            <div>
+              <HoverCard>
+                <HoverCardTrigger>
+                  <h2 className="font-medium cursor-pointer">
+                    {e.b_from_name || e.b_from}
+                  </h2>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-fit">
+                  <div className="flex gap-3 items-center">
+                    <Avatar className="w-14 h-14">
+                      <AvatarImage src={e.from_profile} />
+                      <AvatarFallback>
+                        {e.b_from_name?.charAt(0) || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium">
+                        {e.b_from_name || e.b_from.split("@")[0]}
+                      </p>
+                      <p className="text-sm">{e.b_from || "unknown"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3">
+                    <Button variant="primary" className="gap-2  w-full ">
+                      <ArrowBendUpLeft size={18} />
+                      <p>Reply</p>
+                    </Button>
+                    <Tooltip tip="Send mail">
+                      <Button variant={"secondary"}>
+                        <EnvelopeSimple size={18} />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip tip="Add to contact">
+                      <Button variant={"secondary"}>
+                        <AddressBookTabs size={18} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+              <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                <p className="text-sm text-start line-clamp-2">
+                  {htmlToText(viewMode == "html" ? e.b_html : e.b_text)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
+              {moment(e.b_datetime).format("lll")}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-4 border border-border rounded-md bg-background-secondary">
@@ -620,6 +691,14 @@ const EmailBlock = (e: Email & { panelWidth: number }) => {
       </div>
     </div>
   )
+}
+
+function htmlToText(htmlString: string): string {
+  const strippedHtml = htmlString.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = strippedHtml;
+  const text = tempDiv.innerText || tempDiv.textContent || '';
+  return text.split(" ").slice(0, 100).join(" ")
 }
 
 export default Inbox;

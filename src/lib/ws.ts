@@ -1,10 +1,11 @@
-const WsUrl = window.location.hostname == "localhost"
+const WsUrl = window.location.hostname != "localhost"
     ? "ws://localhost:5057"
     : "wss://ws.dev.rellitel.ink"
 
 let ws: WebSocket | undefined = undefined
 
 export function connectWS() {
+    if (ws) return
     try {
         const token = localStorage.getItem("token") as string;
 
