@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useProfileStore } from "@/store/profile";
 import { SettingDiv } from "./components";
 import { Spinner } from "@/components/Spinner";
