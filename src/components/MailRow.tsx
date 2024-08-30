@@ -81,7 +81,7 @@ const MailRow: React.FC<MailRowProps> = ({
               </p>
             </div>
             <p className="max-w-[60%] font-thin flex items-center whitespace-nowrap overflow-hidden">
-              {unread && <div className="w-[10px] h-[10px] bg-core rounded-full mr-3"></div>}
+              {unread && <div className="min-w-[10px] h-[10px] bg-core rounded-full mr-3"></div>}
               {subject ? subject : <span className="text-gray-500 dark:text-gray-400 italic">No Subject</span>}
               {(count == 1 && text && text != "") && <span className="text-gray-500 dark:text-gray-300 overflow-hidden text-ellipsis">&nbsp;- {text.split("\n")[0].split(" ").splice(0, 7).join(" ")}...</span>}
             </p>

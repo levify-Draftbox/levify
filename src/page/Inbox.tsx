@@ -32,6 +32,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import moment from "moment";
+import { cn } from "@/lib/utils";
 
 // TODO: move to type file
 export type Email = {
@@ -166,7 +167,7 @@ const Inbox: React.FC = () => {
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
@@ -179,7 +180,6 @@ const Inbox: React.FC = () => {
 
           datetime={e.latest_date}
           text={e.emails[0].b_text}
-          unread={e.unread}
           subject={e.subject}
           count={e.emails.length}
           fromNames={e.emails.map(e => ({
@@ -188,11 +188,14 @@ const Inbox: React.FC = () => {
             profile: e.from_profile,
           }))}
 
-          className={
-            isSelected
-              ? "bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.08)]"
-              : ""
-          }
+          unread={e.emails.find(e => e.unread)?.unread as boolean}
+
+          className={cn(
+            "hover:bg-[rgba(0,0,0,0.02)] dark:hover:bg-[rgba(255,255,255,0.025)]",
+            {
+              "!bg-[rgba(0,0,0,0.04)] dark:!bg-[rgba(255,255,255,0.04)] dark:!border-[rgba(255,255,255,0.04)]": isSelected
+            }
+          )}
         />
       </motion.div>
     );
@@ -307,23 +310,12 @@ const Inbox: React.FC = () => {
           </ResizablePanel>
         </AnimatePresence>
 
-        <ResizableHandle />
+        <ResizableHandle className="bg-transparent" />
 
         <AnimatePresence>
           {emailOpen && (
             <ResizablePanel minSize={30} maxSize={65} defaultSize={htmlViewWidth} onResize={(e) => setHtmlViewWidth(e)}>
-              <div
-                // initial={{ x: 100, opacity: 0 }}
-                // animate={{ x: 0, opacity: 1 }}
-                // exit={{ x: 100, opacity: 0 }}
-                // transition={{
-                //   type: "spring",
-                //   stiffness: 300,
-                //   damping: 30,
-                //   duration: 0.5,
-                // }}
-                className="!h-full"
-              >
+              <div className="!h-full border-l border-border">
                 <MailViewer
                   key={openEmail?.thread_id || ""}
                   emails={openEmail as EmailObj}
@@ -347,21 +339,28 @@ const MailViewer: React.FC<{
 }> = ({ emails, onClose, width: htmlWidth }) => {
 
   let e = emails.emails[0]
+  let lastEmail = emails.emails[emails.emails.length - 1]
 
   useEffect(() => {
-    sendToWs(
-      JSON.stringify({
-        event: "unread",
-        data: {
-          email_id: e.id,
-          unread: false,
-        },
-      })
-    );
+    if (lastEmail.unread) {
+      sendToWs(
+        JSON.stringify({
+          event: "unread",
+          data: {
+            email_id: lastEmail.id,
+            unread: false,
+          },
+        })
+      );
+    }
   }, []);
 
   return (
-    <div className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background">
+    <motion.div
+      initial={{ opacity: .5 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: .5 }}
+      className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background">
       <div className="flex w-full justify-between my-4 items-center">
         <div className="flex-1">
           <h1 className="text-xl font-medium text-start line-clamp-2" title={e.b_subject}>
@@ -397,7 +396,7 @@ const MailViewer: React.FC<{
         </Button>
       </div>
 
-    </div>
+    </motion.div>
   );
 };
 
@@ -407,6 +406,20 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean }) => {
   const [emailHeight, setEmailHeight] = useState<number>(10)
 
   const [openBlock, setOpenBlock] = useState(e.openBlock)
+
+  useEffect(() => {
+    if (openBlock && e.unread) {
+      sendToWs(
+        JSON.stringify({
+          event: "unread",
+          data: {
+            email_id: e.id,
+            unread: false,
+          },
+        })
+      );
+    }
+  }, [openBlock])
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -497,7 +510,12 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean }) => {
 
   if (!openBlock) {
     return (
-      <div className="p-4 border border-border rounded-md bg-background-secondary cursor-pointer" onClick={() => setOpenBlock(true)} >
+      <div className={cn(
+        "p-4 border border-border rounded-md bg-background-secondary cursor-pointer",
+        {
+          "border-core": e.unread
+        }
+      )} onClick={() => setOpenBlock(true)} >
         <div className="flex justify-between">
           <div className="my-0 flex gap-3">
             <img
