@@ -2,12 +2,9 @@ import "./app.css";
 
 import Home from "./Layout/Main";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./Auth/Login";
-import Inbox from "./page/Inbox";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import ShortcutLoad from "./lib/Shortcut";
-import Signup from "./Auth/Signup";
 import useInterServerModal from "./store/internalserver";
 import ResizeableModel from "./components/ui/ResizeableModel";
 import Inputs from "./page/Inputs";
@@ -17,6 +14,9 @@ import useComposerStore from "./store/composer";
 import { useProfileStore } from "./store/profile";
 import { useEffect, lazy, Suspense } from "react";
 
+const Login = lazy(() => import("./Auth/Login"))
+const Signup = lazy(() => import("./Auth/Signup"))
+const Inbox = lazy(() => import("./page/Inbox"))
 const LazyCalendar = lazy(() => import("./calendar/Main"));
 
 function App() {
@@ -82,18 +82,29 @@ function App() {
           <Routes>
             <Route
               path="/login"
-              element={NotLogin ? <Navigate to="/" replace /> : <Login />}
+              element={NotLogin ? <Navigate to="/" replace /> :
+                <Suspense fallback={"loading..."}>
+                  <Login />
+                </Suspense>
+              }
             />
             <Route
               path="/signup"
-              element={NotLogin ? <Navigate to="/" replace /> : <Signup />}
+              element={NotLogin ? <Navigate to="/" replace /> :
+                <Suspense fallback={"loading..."}>
+                  <Signup />
+                </Suspense>}
             />
 
             <Route
               path="/"
               element={NotLogin ? <Home /> : <Navigate to="/login" replace />}
             >
-              <Route index element={<Inbox />} />
+              <Route index element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Inbox />
+                </Suspense>
+              } />
               <Route path="input" element={<Inputs />} />
               <Route
                 path="composer"

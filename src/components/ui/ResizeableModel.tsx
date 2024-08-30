@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, ReactNode } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./resizable";
 import ScrollArea from "./ScrollArea";
@@ -48,7 +48,7 @@ const ResizeableModel: FC<ModalProps> = ({ onClose, children, key, modalKey, siz
     }
   }, [isVisible, onClose]);
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <AnimatePresence>
       {isVisible && (
         <motion.div
