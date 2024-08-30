@@ -34,6 +34,7 @@ import { useProfileStore } from "@/store/profile";
 import { htmlToText } from "html-to-text";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { Spinner } from "@/components/Spinner";
 
 const BlockEditor = lazy(() => import("./editor"))
 
@@ -425,9 +426,13 @@ const ComposerModal: React.FC<{
           </div>
           <div className="flex-1 overflow-hidden composer-editor">
             <ScrollArea noShadow>
-              <div className={`py-3 `}>
+              <div className={`py-3 h-full`}>
 
-                <Suspense fallback={<>Loading</>}>
+                <Suspense fallback={
+                  <div className="h-full w-full flex items-center justify-center">
+                    <Spinner />
+                  </div>
+                }>
                   <BlockEditor
                     onChange={setHtml}
                     theme={allSetting?.appearance?.theme as any}
