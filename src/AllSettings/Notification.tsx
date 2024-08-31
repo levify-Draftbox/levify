@@ -19,8 +19,8 @@ const sounds = [
 
 const NotificationSetting = () => {
   const { allSetting, updateSettings } = useProfileStore();
-  const [notiEnable, setNotiEnable] = useState(false);
-  const [selectedSound, setSelectedSound] = useState<string | null>(null);
+  const [notiEnable, setNotiEnable] = useState(allSetting.notification.desktopNotificationSound);
+  const [selectedSound, setSelectedSound] = useState<string | null>(allSetting.notification.notificationSound);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [isNotiLoading, setIsNotiLoading] = useState(false);
 

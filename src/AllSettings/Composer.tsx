@@ -20,8 +20,8 @@ const Composer = () => {
   const { allSetting, updateSettings } = useProfileStore();
 
   const [content, setContent] = useState<string>("");
-  const [DefaultComposer, setDefaultComposer] = useState(false);
-  const [size, setSize] = useState(false);
+  const [DefaultComposer, setDefaultComposer] = useState(allSetting.compose.useDefaultBrowserComposer );
+  const [size, setSize] = useState(allSetting.compose.composerFullScreen);
   const [isAddingSignature, setIsAddingSignature] = useState(false);
   const [signatureName, setSignatureName] = useState("");
   const [selectedReply, setSelectedReply] = useState("replyOne");
@@ -40,14 +40,11 @@ const Composer = () => {
     if (allSetting.compose) {
       const {
         useDefaultBrowserComposer,
-        composerFullScreen,
         signature,
         replay,
       } = allSetting.compose;
 
       setDefaultComposer(!!useDefaultBrowserComposer);
-      setSize(composerFullScreen);
-      setSignatures(signature || []);
       setSelectedReply(replay || "replyOne");
 
       // Set the first signature as the selected one when the component mounts
