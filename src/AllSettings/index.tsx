@@ -174,7 +174,7 @@ const AllSettings = () => {
           <div
             className="overflow-auto scroll-bar flex-1 flex flex-col"
             ref={scrollChildDivRef}
-          >
+          > 
             <div className="flex-1">
               {SettingsList[activeSetting].component}
             </div>

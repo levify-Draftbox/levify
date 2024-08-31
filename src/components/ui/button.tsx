@@ -12,7 +12,6 @@ const button = cva(
       variant: {
         primary:
           "items-center justify-center w-full bg-core hover:bg-core-lite active:bg-core shadow !text-[#fff]",
-
         secondary:
           "w-full gap-2 justify-center items-center bg-background-secondary dark:bg-button border-input-border hover:border-input-border-hover dark:hover:bg-button-hover dark:hover:bg-button-hover dark:active:bg-button-active active:bg-button dark:active:bg-button-active border shadow-sm",
         destructive:
@@ -24,6 +23,7 @@ const button = cva(
         toolbutton:
           "w-fit !py-2 !px-2 items-center hover:bg-button-hover active:bg-button-active",
         star: "hover:text-yellow-500",
+        mail: "w-full gap-2 justify-center items-center bg-background-secondary dark:bg-button border-input-border hover:border-input-border-hover dark:hover:bg-button-hover dark:hover:bg-button-hover dark:active:bg-button-active active:bg-button dark:active:bg-button-active border shadow-sm",
         whiteButton:
           "bg-white items-center justify-center w-full text-primary shadow-md hover:bg-[rgba(250,250,250,0.95)] dark:bg-[rgba(250,250,250,0.1)]",
       },
@@ -36,6 +36,7 @@ const button = cva(
         lg: "h-11 h-[38px]",
         icon: "h-10 w-10",
         toolsize: "py-1",
+        mail: "px-3 py-2",
       },
     },
     defaultVariants: {
@@ -77,7 +78,7 @@ const Button = React.forwardRef<
       className={cn(
         button({ variant, size, className, active: props.active }),
         {
-          [props.activeClass]: props.active
+          [props.activeClass]: props.active,
         }
       )}
       ref={ref}

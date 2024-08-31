@@ -21,7 +21,15 @@ import {
   ArrowBendUpLeft,
   ArrowBendUpRight,
   EnvelopeSimple,
+  Trash,
+  FolderPlus,
   X,
+  Tag,
+  Funnel,
+  DotsThree,
+  Archive,
+  CaretDown,
+  CaretUp
 } from "@phosphor-icons/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -58,14 +66,19 @@ export type Email = {
 };
 
 export type EmailObj = {
-  thread_id: string,
-  unread: boolean,
-  subject: string,
-  latest_date: string,
-  emails: Email[]
-}
+  thread_id: string;
+  unread: boolean;
+  subject: string;
+  latest_date: string;
+  emails: Email[];
+};
 
-export type UnreadFunc = (_: { unread: boolean, email_id: number, thread_id: string, notify: boolean }) => void
+export type UnreadFunc = (_: {
+  unread: boolean;
+  email_id: number;
+  thread_id: string;
+  notify: boolean;
+}) => void;
 
 const Inbox: React.FC = () => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -102,30 +115,35 @@ const Inbox: React.FC = () => {
       );
     }
 
-    setEmailList(eol => eol.map(eo => {
-      if (eo.thread_id == thread_id) {
-        eo.emails = eo.emails.map(e => {
-          if (e.id == email_id) {
-            e.unread = unread
-            e.new = false
-          }
-          return e
-        })
-      }
-      return eo
-    }))
-
-  }
+    setEmailList((eol) =>
+      eol.map((eo) => {
+        if (eo.thread_id == thread_id) {
+          eo.emails = eo.emails.map((e) => {
+            if (e.id == email_id) {
+              e.unread = unread;
+              e.new = false;
+            }
+            return e;
+          });
+        }
+        return eo;
+      })
+    );
+  };
 
   useEffect(() => {
     setUnReadFunc((d) => {
-      const { email_id, unread, thread_id } = d as { email_id: number; unread: boolean, thread_id: string };
+      const { email_id, unread, thread_id } = d as {
+        email_id: number;
+        unread: boolean;
+        thread_id: string;
+      };
       setUnread({
         notify: false,
         thread_id: thread_id,
         email_id: email_id,
-        unread: unread
-      })
+        unread: unread,
+      });
     });
 
     setNotifyFunc((d) => {
@@ -137,29 +155,31 @@ const Inbox: React.FC = () => {
 
       if (mode == "append") {
         setEmailList((l) => {
-          const emailObj = l.find(eo => eo.thread_id == mail.thread_id);
+          const emailObj = l.find((eo) => eo.thread_id == mail.thread_id);
           mail.new = true;
 
           if (!emailObj) {
-            return [{
-              emails: [mail],
-              latest_date: mail.dateandtime,
-              subject: mail.b_subject,
-              thread_id: mail.thread_id,
-              unread: mail.unread
-            }, ...l] as EmailObj[]
+            return [
+              {
+                emails: [mail],
+                latest_date: mail.dateandtime,
+                subject: mail.b_subject,
+                thread_id: mail.thread_id,
+                unread: mail.unread,
+              },
+              ...l,
+            ] as EmailObj[];
           }
 
-          let oldMailList = l.filter(eo => eo.thread_id != mail.thread_id)
-          emailObj.emails.push(mail)
-          emailObj.latest_date = mail.dateandtime
-          emailObj.subject = mail.b_subject
-          emailObj.unread = mail.unread
+          let oldMailList = l.filter((eo) => eo.thread_id != mail.thread_id);
+          emailObj.emails.push(mail);
+          emailObj.latest_date = mail.dateandtime;
+          emailObj.subject = mail.b_subject;
+          emailObj.unread = mail.unread;
 
           console.log("new emails", emailObj);
 
-
-          return [emailObj, ...oldMailList]
+          return [emailObj, ...oldMailList];
         });
 
         if (notify) {
@@ -208,23 +228,21 @@ const Inbox: React.FC = () => {
             console.log(e);
             setOpenEmail(e);
           }}
-
           datetime={e.latest_date}
           text={e.emails[0].b_text}
           subject={e.subject}
           count={e.emails.length}
-          fromNames={e.emails.map(e => ({
+          fromNames={e.emails.map((e) => ({
             email: e.b_from,
             name: e.b_from_name,
             profile: e.from_profile,
           }))}
-
-          unread={e.emails.find(e => e.unread)?.unread as boolean}
-
+          unread={e.emails.find((e) => e.unread)?.unread as boolean}
           className={cn(
             "hover:bg-[rgba(0,0,0,0.02)] dark:hover:bg-[rgba(255,255,255,0.025)]",
             {
-              "!bg-[rgba(0,0,0,0.04)] dark:!bg-[rgba(255,255,255,0.04)] dark:!border-[rgba(255,255,255,0.04)]": isSelected
+              "!bg-[rgba(0,0,0,0.04)] dark:!bg-[rgba(255,255,255,0.04)] dark:!border-[rgba(255,255,255,0.04)]":
+                isSelected,
             }
           )}
         />
@@ -296,7 +314,7 @@ const Inbox: React.FC = () => {
     fetchEmails(true);
   }, []);
 
-  const [htmlViewWidth, setHtmlViewWidth] = useState(50)
+  const [htmlViewWidth, setHtmlViewWidth] = useState(50);
 
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
@@ -344,7 +362,12 @@ const Inbox: React.FC = () => {
         <ResizableHandle className="bg-transparent" />
 
         {emailOpen && (
-          <ResizablePanel minSize={30} maxSize={65} defaultSize={htmlViewWidth} onResize={(e) => setHtmlViewWidth(e)}>
+          <ResizablePanel
+            minSize={30}
+            maxSize={65}
+            defaultSize={htmlViewWidth}
+            onResize={(e) => setHtmlViewWidth(e)}
+          >
             <div className="!h-full border-l border-border">
               <MailViewer
                 key={openEmail?.thread_id || ""}
@@ -366,12 +389,11 @@ const MailViewer: React.FC<{
   key: number | string;
   onClose: () => void;
   width: number;
-  unreadFunc: UnreadFunc
+  unreadFunc: UnreadFunc;
 }> = ({ emails, onClose, width: htmlWidth, unreadFunc }) => {
-
-  let e = emails.emails[0]
-  let revArray = emails.emails.slice().reverse()
-  let lastEmail = revArray.find((e) => e.new == false || !e.new) || revArray[0]
+  let e = emails.emails[0];
+  let revArray = emails.emails.slice().reverse();
+  let lastEmail = revArray.find((e) => e.new == false || !e.new) || revArray[0];
 
   useEffect(() => {
     if (lastEmail.unread) {
@@ -379,8 +401,8 @@ const MailViewer: React.FC<{
         notify: true,
         thread_id: lastEmail.thread_id,
         email_id: lastEmail.id,
-        unread: false
-      })
+        unread: false,
+      });
     }
 
     console.log("111", emails);
@@ -388,13 +410,13 @@ const MailViewer: React.FC<{
 
   return (
     <motion.div
-      initial={{ opacity: .5 }}
+      initial={{ opacity: 0.5 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: .5 }}
-      className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background">
+      exit={{ opacity: 0.5 }}
+      className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background"
+    >
       <div className="flex w-full justify-between my-4 items-center">
         <div className="flex-1">
-
           <h1
             className="text-xl font-medium text-start line-clamp-2"
             title={e.b_subject}
@@ -413,9 +435,7 @@ const MailViewer: React.FC<{
                     </span>
                   ))}
                   {/* Subject */}
-                  <span className="inline">
-                    {subjectInfo.cleanSubject}
-                  </span>
+                  <span className="inline">{subjectInfo.cleanSubject}</span>
                 </span>
               );
             })()}
@@ -431,41 +451,55 @@ const MailViewer: React.FC<{
       <div className="flex flex-col gap-4">
         {emails.emails.map((e, i) => {
           if (true)
-            return <EmailBlock
-              totalEmail={emails.emails.length}
-              last={i == emails.emails.length - 1}
-              setUnreadfunc={unreadFunc}
-              openBlock={e.uid == lastEmail.uid}
-              panelWidth={htmlWidth}
-              {...e}
-            />
+            return (
+              <EmailBlock
+                totalEmail={emails.emails.length}
+                last={i == emails.emails.length - 1}
+                setUnreadfunc={unreadFunc}
+                openBlock={e.uid == lastEmail.uid}
+                panelWidth={htmlWidth}
+                {...e}
+              />
+            );
         })}
       </div>
-
-      <div className="mt-4 flex gap-2">
-        <Button variant={"primary"} className="gap-2 ">
-          <ArrowBendUpLeft size={18} />
-          <p>Reply</p>
-        </Button>
-        <Button variant={"secondary"}>
-          <ArrowBendDoubleUpLeft size={18} />
-          <p>Reply All</p>
-        </Button>
-        <Button variant={"secondary"}>
-          <ArrowBendUpRight size={18} />
-          <p>Forward</p>
-        </Button>
-      </div>
-
     </motion.div>
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc, last: boolean, totalEmail: number }) => {
-  const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
+const EmailBlock = (
+  e: Email & {
+    panelWidth: number;
+    openBlock: boolean;
+    setUnreadfunc: UnreadFunc;
+    last: boolean;
+    totalEmail: number;
+  }
+) => {
+  const viewMode = e.b_html && e.b_html !== "" ? "html" : "text";
   const htmlView = useRef<HTMLIFrameElement>(null);
-  const [emailHeight, setEmailHeight] = useState<number>(10)
-  const [openBlock, setOpenBlock] = useState(e.totalEmail == 1 ? true : (e.new ? false : e.openBlock))
+  const [emailHeight, setEmailHeight] = useState<number>(10);
+  const [openBlock, setOpenBlock] = useState(
+    e.totalEmail == 1 ? true : e.new ? false : e.openBlock
+  );
+
+  const [showFullTimestamp, setShowFullTimestamp] = useState(false);
+
+  const formatShortTimestamp = (timestamp :string) => {
+    const now = moment();
+    const emailTime = moment(timestamp);
+    
+    if (now.diff(emailTime, 'hours') < 24) {
+      return emailTime.format('h:mm A');
+    } else {
+      return emailTime.format('MMM D');
+    }
+  };
+
+  const formatFullTimestamp = (timestamp : string) => {
+    return moment(timestamp).format('MMM D, YYYY h:mm A');
+  };
+
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -474,7 +508,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
         htmlView.current.contentDocument;
 
       if (d) {
-        const styleElement = d.createElement('style');
+        const styleElement = d.createElement("style");
         styleElement.innerHTML = `
             body::-webkit-scrollbar { 
               display: none; 
@@ -497,7 +531,9 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
 
       if (d) {
         const newHeight = d.body.scrollHeight || d.documentElement.scrollHeight;
-        const bodyMargin = parseFloat(getComputedStyle(d.body).marginTop) + parseFloat(getComputedStyle(d.body).marginBottom);
+        const bodyMargin =
+          parseFloat(getComputedStyle(d.body).marginTop) +
+          parseFloat(getComputedStyle(d.body).marginBottom);
         setEmailHeight(newHeight > 0 ? newHeight + bodyMargin : 300); // Fallback to 300px if height is 0
       }
     }
@@ -505,10 +541,10 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
 
   useEffect(() => {
     const observeImages = (document: Document) => {
-      const images = document.querySelectorAll('img');
+      const images = document.querySelectorAll("img");
       images.forEach((img) => {
-        img.addEventListener('load', updateHeight);
-        img.addEventListener('error', updateHeight); // Handle errors
+        img.addEventListener("load", updateHeight);
+        img.addEventListener("error", updateHeight); // Handle errors
       });
     };
 
@@ -520,7 +556,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
 
         if (d) {
           d.open();
-          d.write(e.b_html); 
+          d.write(e.b_html);
           d.close();
 
           observeImages(d); // Attach listeners to images for dynamic height adjustment
@@ -532,10 +568,10 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
     initializeIframe();
 
     // Adjust height on window resize
-    window.addEventListener('resize', updateHeight);
+    window.addEventListener("resize", updateHeight);
 
     return () => {
-      window.removeEventListener('resize', updateHeight);
+      window.removeEventListener("resize", updateHeight);
 
       // Cleanup image load listeners
       if (htmlView.current) {
@@ -543,38 +579,43 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
           htmlView.current.contentWindow?.document ||
           htmlView.current.contentDocument;
         if (d) {
-          const images = d.querySelectorAll('img');
+          const images = d.querySelectorAll("img");
           images.forEach((img) => {
-            img.removeEventListener('load', updateHeight);
-            img.removeEventListener('error', updateHeight);
+            img.removeEventListener("load", updateHeight);
+            img.removeEventListener("error", updateHeight);
           });
         }
       }
     };
   }, [viewMode, e.panelWidth, openBlock]);
 
-  useEffect(() => injectCSS(), [])
+  useEffect(() => injectCSS(), []);
 
   if (!openBlock) {
     return (
-      <div className={cn(
-        "p-4 border border-border rounded-md bg-background-secondary cursor-pointer",
-        {
-          "border-core": e.unread
-        }
-      )} onClick={() => {
-        setOpenBlock(true)
-        if (e.unread) {
-          e.setUnreadfunc({
-            notify: true,
-            email_id: e.id,
-            thread_id: e.thread_id,
-            unread: false
-          })
-        }
-      }} >
-        <div className="flex justify-between">
-          <div className="my-0 flex gap-3">
+      <div
+        className={cn(
+          "p-4 border border-border rounded-md bg-background-secondary cursor-pointer",
+          {
+            "border-core": e.unread,
+          }
+        )}
+      >
+        <div className="flex justify-between w-full items-center">
+          <div
+            className="my-0 w-[80%] flex gap-3"
+            onClick={() => {
+              setOpenBlock(true);
+              if (e.unread) {
+                e.setUnreadfunc({
+                  notify: true,
+                  email_id: e.id,
+                  thread_id: e.thread_id,
+                  unread: false,
+                });
+              }
+            }}
+          >
             <img
               className="w-12 h-12 rounded-md"
               src={e.from_profile}
@@ -621,21 +662,82 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
                   </div>
                 </HoverCardContent>
               </HoverCard>
-              <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-                <p className="text-sm text-start line-clamp-2">
+              <div className="flex items-center gap-2  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                <p className="text-sm text-start line-clamp-1">
                   {htmlToText(viewMode == "html" ? e.b_html : e.b_text)}
                 </p>
               </div>
             </div>
           </div>
-          <div>
-            <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
-              {moment(e.b_datetime).format("lll")}
-            </p>
+          <div className="w-[100px]">
+            <div className="w-full flex flex-col items-end">
+              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+                {formatShortTimestamp(e.b_datetime)}
+              </p>
+              <Button
+                variant={"toolbutton"}
+                size={"mail"}
+                className="!px-2 !py-1 mt-1"
+              >
+                <CaretDown size={15} />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-between py-1">
+          <div className="mt-4 flex gap-1">
+            <Tooltip tip="Archive">
+              <Button variant={"mail"} size={"mail"}>
+                <Archive size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Move to trash">
+              <Button variant={"mail"} size={"mail"}>
+                <Trash size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Move to">
+              <Button variant={"mail"} size={"mail"}>
+                <FolderPlus size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Add tag">
+              <Button variant={"mail"} size={"mail"}>
+                <Tag size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Filter">
+              <Button variant={"mail"} size={"mail"}>
+                <Funnel size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="More">
+              <Button variant={"mail"} size={"mail"}>
+                <DotsThree size={15} />
+              </Button>
+            </Tooltip>
+          </div>
+          <div className="mt-4 flex gap-1">
+            <Tooltip tip="Reply">
+              <Button variant={"mail"} size={"mail"}>
+                <ArrowBendUpLeft size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Reply all">
+              <Button variant={"mail"} size={"mail"}>
+                <ArrowBendDoubleUpLeft size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="forward">
+              <Button variant={"mail"} size={"mail"}>
+                <ArrowBendUpRight size={15} />
+              </Button>
+            </Tooltip>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -644,7 +746,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
         "p-4 border border-border rounded-md bg-background-secondary"
       )}
     >
-      <div className="flex justify-between bs">
+      <div className="flex justify-between items-end">
         <div className="my-0 flex gap-3">
           <img
             className="w-12 h-12 rounded-md"
@@ -742,25 +844,99 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
             </div>
           </div>
         </div>
-        <div>
-          <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
-            {moment(e.b_datetime).format("lll")}
+
+        <div className="w-[100px]">
+      <div className="w-full flex flex-col items-end">
+        <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+          {formatShortTimestamp(e.b_datetime)}
+        </p>
+        <Button
+          variant="toolbutton"
+          size="mail"
+          className="!px-2 !py-1 mt-1"
+          onClick={()=>{setShowFullTimestamp(!showFullTimestamp);}}
+        >
+          {showFullTimestamp ? <CaretUp size={15} /> : <CaretDown size={15} />}
+        </Button>
+        {showFullTimestamp && (
+          <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-xs mt-1">
+            {formatFullTimestamp(e.b_datetime)}
           </p>
+        )}
+      </div>
+    </div>
+
+
+
+      </div>
+
+      <div className="flex justify-between py-2">
+        <div className="mt-4 flex gap-1">
+          <Tooltip tip="Archive">
+            <Button variant={"mail"} size={"mail"}>
+              <Archive size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Move to trash">
+            <Button variant={"mail"} size={"mail"}>
+              <Trash size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Move to">
+            <Button variant={"mail"} size={"mail"}>
+              <FolderPlus size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Add tag">
+            <Button variant={"mail"} size={"mail"}>
+              <Tag size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Filter">
+            <Button variant={"mail"} size={"mail"}>
+              <Funnel size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="More">
+            <Button variant={"mail"} size={"mail"}>
+              <DotsThree size={15} />
+            </Button>
+          </Tooltip>
+        </div>
+        <div className="mt-4 flex gap-1">
+          <Tooltip tip="Reply">
+            <Button variant={"mail"} size={"mail"}>
+              <ArrowBendUpLeft size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Reply all">
+            <Button variant={"mail"} size={"mail"}>
+              <ArrowBendDoubleUpLeft size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="forward">
+            <Button variant={"mail"} size={"mail"}>
+              <ArrowBendUpRight size={15} />
+            </Button>
+          </Tooltip>
         </div>
       </div>
 
       <div className="mt-2 shadow">
         {viewMode === "text" ? (
-          <pre className="font-sans bg-white text-black rounded-md p-4" style={{
-            whiteSpace: "pre-wrap",
-            wordWrap: "break-word",
-          }}>
+          <pre
+            className="font-sans bg-white text-black rounded-md p-4"
+            style={{
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+            }}
+          >
             {e.b_text}
           </pre>
         ) : (
           <iframe
             style={{
-              height: emailHeight
+              height: emailHeight,
             }}
             className="bg-white w-full h-[500px] rounded-md overflow-hidden"
             ref={htmlView}
@@ -768,31 +944,36 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 function htmlToText(htmlString: string): string {
-  const strippedHtml = htmlString.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-  const tempDiv = document.createElement('div');
+  const strippedHtml = htmlString.replace(
+    /<style[^>]*>[\s\S]*?<\/style>/gi,
+    ""
+  );
+  const tempDiv = document.createElement("div");
   tempDiv.innerHTML = strippedHtml;
-  const text = tempDiv.innerText || tempDiv.textContent || '';
-  return text.split(" ").slice(0, 100).join(" ")
+  const text = tempDiv.innerText || tempDiv.textContent || "";
+  return text.split(" ").slice(0, 100).join(" ");
 }
 
 export function processEmailSubject(subject: string): {
-  tags: string[] | undefined
-  cleanSubject: string
+  tags: string[] | undefined;
+  cleanSubject: string;
 } {
   const tagRegex = /^\s*(\[[^\]]+\]\s*)+/g;
   const matches = subject.match(tagRegex);
   let tags: string[] | undefined = [];
   if (matches) {
-    tags = matches[0].match(/\[([^\]]+)\]/g)?.map(tag => tag.replace(/[\[\]]/g, ''));
+    tags = matches[0]
+      .match(/\[([^\]]+)\]/g)
+      ?.map((tag) => tag.replace(/[\[\]]/g, ""));
   }
-  const cleanSubject = subject.replace(tagRegex, '').trim();
+  const cleanSubject = subject.replace(tagRegex, "").trim();
   return {
     tags,
-    cleanSubject
+    cleanSubject,
   };
 }
 
