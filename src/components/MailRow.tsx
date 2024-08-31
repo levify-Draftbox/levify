@@ -52,7 +52,7 @@ const MailRow: React.FC<MailRowProps> = ({
           className={cn(
             "group",
             "w-full h-[50px] border-b py-1 px-4 flex justify-between items-center cursor-pointer text-[15px] font-[350]",
-            unread ? "font-[450] text-white" : "text-gray-300",
+            unread ? "font-[450] text-[#302a28]  dark:text-white bg-[rgba(0,0,0,0.025)] hover:!bg-[rgba(0,0,0,0.04)] dark:!bg-[rgba(255,255,255,0.015)] dark:hover:!bg-[rgba(255,255,255,0.06)]" : "text-gray-700/90 dark:text-gray-300",
             className
           )}
         >

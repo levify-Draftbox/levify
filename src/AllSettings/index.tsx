@@ -37,8 +37,8 @@ const AllSettings = () => {
       <Button
         variant={"navlink"}
         active={activeSetting === p.setting}
-        className={"text-gray-300/80 mt-1 !py-0 px-[10px] !h-[30px] font-[350]"}
-        activeClass={"text-white !font-[500]"}
+        className={"dark:text-gray-300/80 mt-1 !py-0 px-[10px] !h-[30px] font-[350]"}
+        activeClass={"dark:text-white !font-[500]"}
         onClick={() => setActiveSetting(p.setting)}
       >
         <div className="flex gap-2">
