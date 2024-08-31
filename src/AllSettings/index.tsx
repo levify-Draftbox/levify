@@ -179,7 +179,7 @@ const AllSettings = () => {
               {settingUpdating &&
                 <motion.div
                   initial={{
-                    y: "100%"
+                    y: "99%"
                   }}
                   animate={{
                     y: 0

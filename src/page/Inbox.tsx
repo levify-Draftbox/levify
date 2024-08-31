@@ -520,7 +520,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
 
         if (d) {
           d.open();
-          d.write(e.b_html); // Assuming e.b_html contains the HTML content
+          d.write(e.b_html); 
           d.close();
 
           observeImages(d); // Attach listeners to images for dynamic height adjustment

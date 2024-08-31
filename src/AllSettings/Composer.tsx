@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useProfileStore } from "@/store/profile";
-import { Spinner } from "@/components/Spinner";
 
 const Composer = () => {
   const { allSetting, updateSettings } = useProfileStore();
@@ -25,7 +24,6 @@ const Composer = () => {
   const [size, setSize] = useState(false);
   const [isAddingSignature, setIsAddingSignature] = useState(false);
   const [signatureName, setSignatureName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedReply, setSelectedReply] = useState("replyOne");
 
   const [, setIsFirstLoad] = useState(true);
@@ -70,15 +68,11 @@ const Composer = () => {
   }
 
   const updateComposer = async (obj: ComposerSettings) => {
-    setIsLoading(true);
-
     try {
       await updateSettings("compose", obj);
     } catch (error) {
       console.error("Error updating settings:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
 
   const handleChange = (value: string) => {
@@ -226,7 +220,6 @@ const Composer = () => {
 
   return (
     <div>
-      {isLoading && <Spinner className="absolute" />}
       <SettingDiv>
         <h2 className="text-sm mt-5 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70dark:text-whitex">
           Default Browser Composer
