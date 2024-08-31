@@ -50,6 +50,7 @@ export interface ButtonProps
     VariantProps<typeof button> {
   asChild?: boolean;
   loading?: boolean;
+  activeClass?: any;
 }
 
 const Button = React.forwardRef<
@@ -73,7 +74,12 @@ const Button = React.forwardRef<
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
-      className={cn(button({ variant, size, className, active: props.active }))}
+      className={cn(
+        button({ variant, size, className, active: props.active }),
+        {
+          [props.activeClass]: props.active
+        }
+      )}
       ref={ref}
       {...props}
       disabled={props.loading}

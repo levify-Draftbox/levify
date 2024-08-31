@@ -394,8 +394,31 @@ const MailViewer: React.FC<{
       className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background">
       <div className="flex w-full justify-between my-4 items-center">
         <div className="flex-1">
-          <h1 className="text-xl font-medium text-start line-clamp-2" title={e.b_subject}>
-            {e.b_subject}
+
+          <h1
+            className="text-xl font-medium text-start line-clamp-2"
+            title={e.b_subject}
+          >
+            {(() => {
+              const subjectInfo = processEmailSubject(e.b_subject);
+              return (
+                <span>
+                  {/* Tags */}
+                  {subjectInfo.tags?.map((s, k) => (
+                    <span
+                      key={k}
+                      className="bg-button-hover rounded-md px-2 whitespace-nowrap inline-block mr-2"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                  {/* Subject */}
+                  <span className="inline">
+                    {subjectInfo.cleanSubject}
+                  </span>
+                </span>
+              );
+            })()}
           </h1>
         </div>
         <div>
@@ -741,7 +764,6 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
             }}
             className="bg-white w-full h-[500px] rounded-md overflow-hidden"
             ref={htmlView}
-            scrolling="no"
           />
         )}
       </div>
@@ -755,6 +777,23 @@ function htmlToText(htmlString: string): string {
   tempDiv.innerHTML = strippedHtml;
   const text = tempDiv.innerText || tempDiv.textContent || '';
   return text.split(" ").slice(0, 100).join(" ")
+}
+
+export function processEmailSubject(subject: string): {
+  tags: string[] | undefined
+  cleanSubject: string
+} {
+  const tagRegex = /^\s*(\[[^\]]+\]\s*)+/g;
+  const matches = subject.match(tagRegex);
+  let tags: string[] | undefined = [];
+  if (matches) {
+    tags = matches[0].match(/\[([^\]]+)\]/g)?.map(tag => tag.replace(/[\[\]]/g, ''));
+  }
+  const cleanSubject = subject.replace(tagRegex, '').trim();
+  return {
+    tags,
+    cleanSubject
+  };
 }
 
 export default Inbox;

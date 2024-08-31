@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/context-menu"
 import moment from "moment"
 import { cn } from "@/lib/utils";
+import { processEmailSubject } from '@/page/Inbox';
 
 export type FromName = {
   name?: string,
@@ -50,8 +51,8 @@ const MailRow: React.FC<MailRowProps> = ({
           onClick={() => onClick && onClick()}
           className={cn(
             "group",
-            "w-full h-[50px] border-b py-1 px-4 flex justify-between items-center cursor-pointer text-[15px] font-thin",
-            unread ? "font-medium" : "",
+            "w-full h-[50px] border-b py-1 px-4 flex justify-between items-center cursor-pointer text-[15px] font-[350]",
+            unread ? "font-[450] text-white" : "text-gray-300",
             className
           )}
         >
@@ -80,10 +81,18 @@ const MailRow: React.FC<MailRowProps> = ({
                 {count > 1 && <span className='text-sm ml-1 !text-[13px] text-gray-400 dark:text-gray-300'> {count}</span>}
               </p>
             </div>
-            <p className="max-w-[60%] font-thin flex items-center whitespace-nowrap overflow-hidden">
+            <p className="max-w-[60%] flex items-center whitespace-nowrap overflow-hidden">
               {unread && <div className="min-w-[10px] h-[10px] bg-core rounded-full mr-3"></div>}
-              {subject ? subject : <span className="text-gray-500 dark:text-gray-400 italic">No Subject</span>}
-              {(count == 1 && text && text != "") && <span className="text-gray-500 dark:text-gray-300 overflow-hidden text-ellipsis">&nbsp;- {text.split("\n")[0].split(" ").splice(0, 7).join(" ")}...</span>}
+              {subject ?
+                (() => {
+                  const sub = processEmailSubject(subject)
+                  return <div className='flex gap-2'>
+                    {sub.tags?.map(s => <span className='bg-button-hover px-1 rounded-sm'>{s}</span>)}
+                    {sub.cleanSubject}
+                  </div>
+                })()
+                : <span className="text-gray-500 dark:text-gray-400 italic">No Subject</span>}
+              {(count == 1 && text && text != "") && <span className="text-gray-500 dark:text-gray-300/70 overflow-hidden text-ellipsis">&nbsp;- {text.split("\n")[0].split(" ").splice(0, 7).join(" ")}...</span>}
             </p>
           </div>
 
@@ -102,7 +111,7 @@ const MailRow: React.FC<MailRowProps> = ({
                 <Clock size={17} />
               </Button>
             </div>
-            <p className="text-sm font-thin group-hover:hidden">
+            <p className="text-sm font-[350] group-hover:hidden">
               {moment(new Date(datetime || "")).fromNow()}
             </p>
           </div>
