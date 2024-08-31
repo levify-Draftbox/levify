@@ -13,7 +13,6 @@ import {
 import {
   TextAlignJustify,
   TextColumns,
-  ArrowSquareIn,
 } from "@phosphor-icons/react";
 
 const Appearance = () => {
