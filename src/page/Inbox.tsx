@@ -9,9 +9,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { sendToWs, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
 import { toast } from "sonner";
-import { useProfileStore } from "@/store/profile";
 import { Spinner } from "@/components/Spinner";
 import useloadInboxModal from "@/store/loadinbox";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,6 +31,9 @@ import {
 } from "@/components/ui/hover-card";
 import moment from "moment";
 import { cn } from "@/lib/utils";
+
+import useList from "@/store/list";
+import useListPos from "@/store/listPos";
 
 // TODO: move to type file
 export type Email = {
@@ -65,124 +66,23 @@ export type EmailObj = {
   emails: Email[]
 }
 
-export type UnreadFunc = (_: { unread: boolean, email_id: number, thread_id: string, notify: boolean }) => void
 
 const Inbox: React.FC = () => {
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const [emailList, setEmailList] = useState<EmailObj[]>([]);
+  const { list: emailListObjs, setList } = useList()
+  const { listPos: listPosObj, setListPos } = useListPos()
+
+  let path = "inbox"
+  const emailList = emailListObjs[path] || []
+  const listPos = listPosObj[path]
+
+  // const [emailList, setEmailList] = useState<EmailObj[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const { allSetting } = useProfileStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { setLoad: setLoadInbox } = useloadInboxModal();
-
-  function playSound() {
-    const notificationSound = new Audio(
-      allSetting?.notification?.notificationSound || ""
-    );
-    notificationSound.play().catch((error) => {
-      console.error("Error playing sound:", error);
-    });
-  }
-
-  const setUnread: UnreadFunc = ({ notify, email_id, thread_id, unread }) => {
-    if (notify) {
-      sendToWs(
-        JSON.stringify({
-          event: "unread",
-          data: {
-            thread_id: thread_id,
-            email_id: email_id,
-            unread: unread,
-          },
-        })
-      );
-    }
-
-    setEmailList(eol => eol.map(eo => {
-      if (eo.thread_id == thread_id) {
-        eo.emails = eo.emails.map(e => {
-          if (e.id == email_id) {
-            e.unread = unread
-            e.new = false
-          }
-          return e
-        })
-      }
-      return eo
-    }))
-
-  }
-
-  useEffect(() => {
-    setUnReadFunc((d) => {
-      const { email_id, unread, thread_id } = d as { email_id: number; unread: boolean, thread_id: string };
-      setUnread({
-        notify: false,
-        thread_id: thread_id,
-        email_id: email_id,
-        unread: unread
-      })
-    });
-
-    setNotifyFunc((d) => {
-      const { mode, notify, mail } = d as {
-        mode: "append" | "remove";
-        notify: boolean;
-        mail: Email;
-      };
-
-      if (mode == "append") {
-        setEmailList((l) => {
-          const emailObj = l.find(eo => eo.thread_id == mail.thread_id);
-          mail.new = true;
-
-          if (!emailObj) {
-            return [{
-              emails: [mail],
-              latest_date: mail.dateandtime,
-              subject: mail.b_subject,
-              thread_id: mail.thread_id,
-              unread: mail.unread
-            }, ...l] as EmailObj[]
-          }
-
-          let oldMailList = l.filter(eo => eo.thread_id != mail.thread_id)
-          emailObj.emails.push(mail)
-          emailObj.latest_date = mail.dateandtime
-          emailObj.subject = mail.b_subject
-          emailObj.unread = mail.unread
-
-          console.log("new emails", emailObj);
-
-
-          return [emailObj, ...oldMailList]
-        });
-
-        if (notify) {
-          if (document.hasFocus()) {
-            toast.success(`New message from: ${mail.b_from}`, {
-              description: mail.b_subject,
-            });
-          } else {
-            const n = new Notification(`From: ${mail.b_from}`, {
-              body: mail.b_subject,
-              icon: "/favicon.png",
-            });
-            n.onclick = () => {
-              console.log("Click");
-            };
-          }
-          playSound();
-        }
-      } else {
-        // TODO:
-      }
-    });
-  }, []);
 
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
@@ -236,7 +136,9 @@ const Inbox: React.FC = () => {
     size: hasMore ? emailList.length + 1 : emailList.length,
     parentRef,
     estimateSize: React.useCallback(() => 100, []),
-  });
+  })
+
+  useEffect(() => rowVirtualizer.scrollToIndex(listPos), [])
 
   // TODO: implement react query!
   const isFetchingRef = useRef(false);
@@ -249,16 +151,10 @@ const Inbox: React.FC = () => {
     try {
       const res = await api.post<{ hasMore: boolean; emails: EmailObj[] }>(
         "/listing",
-        { page: isRefresh ? 1 : page }
+        { offset: emailList.length }
       );
-      if (isRefresh) {
-        setEmailList(res.data.emails);
-        setPage(2);
-      } else {
-        setEmailList((prevEmails) => [...prevEmails, ...res.data.emails]);
-        setPage((prevPage) => prevPage + 1);
-      }
-      setHasMore(res.data.hasMore);
+      setList(path, res.data.emails)
+      setHasMore(res.data.hasMore)
       setLoadInbox();
     } catch (error) {
       console.error("Error fetching emails:", error);
@@ -316,6 +212,11 @@ const Inbox: React.FC = () => {
               <div
                 className="h-full w-full overflow-auto scroll-bar"
                 ref={parentRef}
+                onScroll={() => {
+                  const firstItem = rowVirtualizer.virtualItems[0]
+                  console.log(firstItem);
+                  setListPos(path, firstItem.index)
+                }}
               >
                 <div
                   className="scroll-bar w-full relative"
@@ -351,7 +252,7 @@ const Inbox: React.FC = () => {
                 emails={openEmail as EmailObj}
                 onClose={handleClose}
                 width={htmlViewWidth}
-                unreadFunc={setUnread}
+                path={path}
               />
             </div>
           </ResizablePanel>
@@ -366,8 +267,10 @@ const MailViewer: React.FC<{
   key: number | string;
   onClose: () => void;
   width: number;
-  unreadFunc: UnreadFunc
-}> = ({ emails, onClose, width: htmlWidth, unreadFunc }) => {
+  path: string
+}> = ({ emails, onClose, width: htmlWidth, path }) => {
+
+  const { setUnread } = useList()
 
   let e = emails.emails[0]
   let revArray = emails.emails.slice().reverse()
@@ -375,15 +278,14 @@ const MailViewer: React.FC<{
 
   useEffect(() => {
     if (lastEmail.unread) {
-      unreadFunc({
+      setUnread({
         notify: true,
         thread_id: lastEmail.thread_id,
         email_id: lastEmail.id,
-        unread: false
+        unread: false,
+        path: path,
       })
     }
-
-    console.log("111", emails);
   }, []);
 
   return (
@@ -434,10 +336,10 @@ const MailViewer: React.FC<{
             return <EmailBlock
               totalEmail={emails.emails.length}
               last={i == emails.emails.length - 1}
-              setUnreadfunc={unreadFunc}
               openBlock={e.uid == lastEmail.uid}
               panelWidth={htmlWidth}
               {...e}
+              path={path}
             />
         })}
       </div>
@@ -461,11 +363,13 @@ const MailViewer: React.FC<{
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnreadfunc: UnreadFunc, last: boolean, totalEmail: number }) => {
+const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: string, last: boolean, totalEmail: number }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10)
   const [openBlock, setOpenBlock] = useState(e.totalEmail == 1 ? true : (e.new ? false : e.openBlock))
+
+  const { setUnread } = useList()
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -520,7 +424,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
 
         if (d) {
           d.open();
-          d.write(e.b_html); 
+          d.write(e.b_html);
           d.close();
 
           observeImages(d); // Attach listeners to images for dynamic height adjustment
@@ -565,11 +469,12 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, setUnre
       )} onClick={() => {
         setOpenBlock(true)
         if (e.unread) {
-          e.setUnreadfunc({
+          setUnread({
             notify: true,
             email_id: e.id,
             thread_id: e.thread_id,
-            unread: false
+            unread: false,
+            path: e.path,
           })
         }
       }} >

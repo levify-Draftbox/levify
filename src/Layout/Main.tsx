@@ -10,11 +10,14 @@ import Composer from "@/composer";
 import useComposerStore from "@/store/composer";
 import { useProfileStore } from "@/store/profile";
 import SearchBar from "@/components/SearchBar";
-import { connectWS } from "@/lib/ws";
+import { connectWS, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
 import { Spinner } from "@/components/Spinner";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion"
 import useloadInboxModal from "@/store/loadinbox";
+import { toast } from "sonner";
+import useList from "@/store/list";
+import { Email } from "@/page/Inbox";
 
 const Main = () => {
   const mainLayout = useRef<HTMLDivElement>(null);
@@ -39,6 +42,63 @@ const Main = () => {
   }, []);
   const setLayoutSize = () =>
     setParantSize(mainLayout.current?.clientWidth || 800);
+
+
+  const { allSetting } = useProfileStore()
+  const { setUnread, appendMail } = useList()
+
+  function playSound() {
+    const notificationSound = new Audio(
+      allSetting?.notification?.notificationSound || ""
+    );
+    notificationSound.play().catch((error) => {
+      console.error("Error playing sound:", error);
+    });
+  }
+
+  useEffect(() => {
+    setUnReadFunc((d) => {
+      const { email_id, unread, thread_id } = d as { email_id: number; unread: boolean, thread_id: string };
+      setUnread({
+        notify: false,
+        thread_id: thread_id,
+        email_id: email_id,
+        unread: unread,
+        path: "inbox", // todo
+      })
+    });
+
+    setNotifyFunc((d) => {
+      const { mode, notify, mail: email } = d as {
+        mode: "append" | "remove";
+        notify: boolean;
+        mail: Email;
+      };
+
+      if (mode == "append") {
+
+        appendMail(email.path, email)
+
+        if (notify) {
+          if (document.hasFocus()) {
+            toast.success(`New message from: ${email.b_from}`, {
+              description: email.b_subject,
+            });
+          } else {
+            const n = new Notification(`From: ${email.b_from}`, {
+              body: email.b_subject,
+              icon: "/favicon.png",
+            });
+            n.onclick = () => {
+              console.log("Click");
+            };
+          }
+          playSound();
+        }
+      }
+
+    });
+  }, [])
 
   return (
     <>
@@ -108,7 +168,7 @@ const Main = () => {
                   ref={mainLayout}
                 >
                   <SearchBar />
-                  
+
                   <div className="border-l border-t border-border !rounded-tl-lg overflow-hidden flex-1 overflow bg-background-secondary">
                     <Outlet />
                   </div>

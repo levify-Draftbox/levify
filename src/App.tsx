@@ -105,7 +105,15 @@ function App() {
                   <Inbox />
                 </Suspense>
               } />
+
+              <Route path="/inbox" element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Inbox />
+                </Suspense>
+              } />
+              
               <Route path="input" element={<Inputs />} />
+              
               <Route
                 path="composer"
                 element={allowComposer ? <></> : <Navigate to="/" replace />}
