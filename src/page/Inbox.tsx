@@ -19,7 +19,15 @@ import {
   ArrowBendUpLeft,
   ArrowBendUpRight,
   EnvelopeSimple,
+  Trash,
+  FolderPlus,
   X,
+  Tag,
+  Funnel,
+  DotsThree,
+  Archive,
+  CaretDown,
+  CaretUp
 } from "@phosphor-icons/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -59,13 +67,12 @@ export type Email = {
 };
 
 export type EmailObj = {
-  thread_id: string,
-  unread: boolean,
-  subject: string,
-  latest_date: string,
-  emails: Email[]
-}
-
+  thread_id: string;
+  unread: boolean;
+  subject: string;
+  latest_date: string;
+  emails: Email[];
+};
 
 const Inbox: React.FC = () => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -108,23 +115,21 @@ const Inbox: React.FC = () => {
             console.log(e);
             setOpenEmail(e);
           }}
-
           datetime={e.latest_date}
           text={e.emails[0].b_text}
           subject={e.subject}
           count={e.emails.length}
-          fromNames={e.emails.map(e => ({
+          fromNames={e.emails.map((e) => ({
             email: e.b_from,
             name: e.b_from_name,
             profile: e.from_profile,
           }))}
-
-          unread={e.emails.find(e => e.unread)?.unread as boolean}
-
+          unread={e.emails.find((e) => e.unread)?.unread as boolean}
           className={cn(
             "hover:bg-[rgba(0,0,0,0.02)] dark:hover:bg-[rgba(255,255,255,0.025)]",
             {
-              "!bg-[rgba(0,0,0,0.04)] dark:!bg-[rgba(255,255,255,0.04)] dark:!border-[rgba(255,255,255,0.04)]": isSelected
+              "!bg-[rgba(0,0,0,0.04)] dark:!bg-[rgba(255,255,255,0.04)] dark:!border-[rgba(255,255,255,0.04)]":
+                isSelected,
             }
           )}
         />
@@ -192,7 +197,7 @@ const Inbox: React.FC = () => {
     fetchEmails(true);
   }, []);
 
-  const [htmlViewWidth, setHtmlViewWidth] = useState(50)
+  const [htmlViewWidth, setHtmlViewWidth] = useState(50);
 
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
@@ -245,7 +250,12 @@ const Inbox: React.FC = () => {
         <ResizableHandle className="bg-transparent" />
 
         {emailOpen && (
-          <ResizablePanel minSize={30} maxSize={65} defaultSize={htmlViewWidth} onResize={(e) => setHtmlViewWidth(e)}>
+          <ResizablePanel
+            minSize={30}
+            maxSize={65}
+            defaultSize={htmlViewWidth}
+            onResize={(e) => setHtmlViewWidth(e)}
+          >
             <div className="!h-full border-l border-border">
               <MailViewer
                 key={openEmail?.thread_id || ""}
@@ -290,13 +300,13 @@ const MailViewer: React.FC<{
 
   return (
     <motion.div
-      initial={{ opacity: .5 }}
+      initial={{ opacity: 0.5 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: .5 }}
-      className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background">
+      exit={{ opacity: 0.5 }}
+      className="px-6 pb-6 h-full overflow-auto scroll-bar dark:bg-background"
+    >
       <div className="flex w-full justify-between my-4 items-center">
         <div className="flex-1">
-
           <h1
             className="text-xl font-medium text-start line-clamp-2"
             title={e.b_subject}
@@ -315,9 +325,7 @@ const MailViewer: React.FC<{
                     </span>
                   ))}
                   {/* Subject */}
-                  <span className="inline">
-                    {subjectInfo.cleanSubject}
-                  </span>
+                  <span className="inline">{subjectInfo.cleanSubject}</span>
                 </span>
               );
             })()}
@@ -343,22 +351,6 @@ const MailViewer: React.FC<{
             />
         })}
       </div>
-
-      <div className="mt-4 flex gap-2">
-        <Button variant={"primary"} className="gap-2 ">
-          <ArrowBendUpLeft size={18} />
-          <p>Reply</p>
-        </Button>
-        <Button variant={"secondary"}>
-          <ArrowBendDoubleUpLeft size={18} />
-          <p>Reply All</p>
-        </Button>
-        <Button variant={"secondary"}>
-          <ArrowBendUpRight size={18} />
-          <p>Forward</p>
-        </Button>
-      </div>
-
     </motion.div>
   );
 };
@@ -366,8 +358,28 @@ const MailViewer: React.FC<{
 const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: string, last: boolean, totalEmail: number }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
-  const [emailHeight, setEmailHeight] = useState<number>(10)
-  const [openBlock, setOpenBlock] = useState(e.totalEmail == 1 ? true : (e.new ? false : e.openBlock))
+  const [emailHeight, setEmailHeight] = useState<number>(10);
+  const [openBlock, setOpenBlock] = useState(
+    e.totalEmail == 1 ? true : e.new ? false : e.openBlock
+  );
+
+  const [showFullTimestamp, setShowFullTimestamp] = useState(false);
+
+  const formatShortTimestamp = (timestamp :string) => {
+    const now = moment();
+    const emailTime = moment(timestamp);
+    
+    if (now.diff(emailTime, 'hours') < 24) {
+      return emailTime.format('h:mm A');
+    } else {
+      return emailTime.format('MMM D');
+    }
+  };
+
+  const formatFullTimestamp = (timestamp : string) => {
+    return moment(timestamp).format('MMM D, YYYY h:mm A');
+  };
+
 
   const { setUnread } = useList()
 
@@ -378,7 +390,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
         htmlView.current.contentDocument;
 
       if (d) {
-        const styleElement = d.createElement('style');
+        const styleElement = d.createElement("style");
         styleElement.innerHTML = `
             body::-webkit-scrollbar { 
               display: none; 
@@ -401,7 +413,9 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
 
       if (d) {
         const newHeight = d.body.scrollHeight || d.documentElement.scrollHeight;
-        const bodyMargin = parseFloat(getComputedStyle(d.body).marginTop) + parseFloat(getComputedStyle(d.body).marginBottom);
+        const bodyMargin =
+          parseFloat(getComputedStyle(d.body).marginTop) +
+          parseFloat(getComputedStyle(d.body).marginBottom);
         setEmailHeight(newHeight > 0 ? newHeight + bodyMargin : 300); // Fallback to 300px if height is 0
       }
     }
@@ -409,10 +423,10 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
 
   useEffect(() => {
     const observeImages = (document: Document) => {
-      const images = document.querySelectorAll('img');
+      const images = document.querySelectorAll("img");
       images.forEach((img) => {
-        img.addEventListener('load', updateHeight);
-        img.addEventListener('error', updateHeight); // Handle errors
+        img.addEventListener("load", updateHeight);
+        img.addEventListener("error", updateHeight); // Handle errors
       });
     };
 
@@ -436,10 +450,10 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
     initializeIframe();
 
     // Adjust height on window resize
-    window.addEventListener('resize', updateHeight);
+    window.addEventListener("resize", updateHeight);
 
     return () => {
-      window.removeEventListener('resize', updateHeight);
+      window.removeEventListener("resize", updateHeight);
 
       // Cleanup image load listeners
       if (htmlView.current) {
@@ -447,17 +461,17 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
           htmlView.current.contentWindow?.document ||
           htmlView.current.contentDocument;
         if (d) {
-          const images = d.querySelectorAll('img');
+          const images = d.querySelectorAll("img");
           images.forEach((img) => {
-            img.removeEventListener('load', updateHeight);
-            img.removeEventListener('error', updateHeight);
+            img.removeEventListener("load", updateHeight);
+            img.removeEventListener("error", updateHeight);
           });
         }
       }
     };
   }, [viewMode, e.panelWidth, openBlock]);
 
-  useEffect(() => injectCSS(), [])
+  useEffect(() => injectCSS(), []);
 
   if (!openBlock) {
     return (
@@ -526,21 +540,82 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
                   </div>
                 </HoverCardContent>
               </HoverCard>
-              <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-                <p className="text-sm text-start line-clamp-2">
+              <div className="flex items-center gap-2  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                <p className="text-sm text-start line-clamp-1">
                   {htmlToText(viewMode == "html" ? e.b_html : e.b_text)}
                 </p>
               </div>
             </div>
           </div>
-          <div>
-            <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
-              {moment(e.b_datetime).format("lll")}
-            </p>
+          <div className="w-[100px]">
+            <div className="w-full flex flex-col items-end">
+              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+                {formatShortTimestamp(e.b_datetime)}
+              </p>
+              <Button
+                variant={"toolbutton"}
+                size={"mail"}
+                className="!px-2 !py-1 mt-1"
+              >
+                <CaretDown size={15} />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-between py-1">
+          <div className="mt-4 flex gap-1">
+            <Tooltip tip="Archive">
+              <Button variant={"mail"} size={"mail"}>
+                <Archive size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Move to trash">
+              <Button variant={"mail"} size={"mail"}>
+                <Trash size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Move to">
+              <Button variant={"mail"} size={"mail"}>
+                <FolderPlus size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Add tag">
+              <Button variant={"mail"} size={"mail"}>
+                <Tag size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Filter">
+              <Button variant={"mail"} size={"mail"}>
+                <Funnel size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="More">
+              <Button variant={"mail"} size={"mail"}>
+                <DotsThree size={15} />
+              </Button>
+            </Tooltip>
+          </div>
+          <div className="mt-4 flex gap-1">
+            <Tooltip tip="Reply">
+              <Button variant={"mail"} size={"mail"}>
+                <ArrowBendUpLeft size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Reply all">
+              <Button variant={"mail"} size={"mail"}>
+                <ArrowBendDoubleUpLeft size={15} />
+              </Button>
+            </Tooltip>
+            <Tooltip tip="forward">
+              <Button variant={"mail"} size={"mail"}>
+                <ArrowBendUpRight size={15} />
+              </Button>
+            </Tooltip>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -549,7 +624,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
         "p-4 border border-border rounded-md bg-background-secondary"
       )}
     >
-      <div className="flex justify-between bs">
+      <div className="flex justify-between items-end">
         <div className="my-0 flex gap-3">
           <img
             className="w-12 h-12 rounded-md"
@@ -647,25 +722,99 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
             </div>
           </div>
         </div>
-        <div>
-          <p className="text-[rgba(0,0,0,0.5)] mt-3 dark:text-[rgba(255,255,255,0.5)] text-sm">
-            {moment(e.b_datetime).format("lll")}
+
+        <div className="w-[100px]">
+      <div className="w-full flex flex-col items-end">
+        <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+          {formatShortTimestamp(e.b_datetime)}
+        </p>
+        <Button
+          variant="toolbutton"
+          size="mail"
+          className="!px-2 !py-1 mt-1"
+          onClick={()=>{setShowFullTimestamp(!showFullTimestamp);}}
+        >
+          {showFullTimestamp ? <CaretUp size={15} /> : <CaretDown size={15} />}
+        </Button>
+        {showFullTimestamp && (
+          <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-xs mt-1">
+            {formatFullTimestamp(e.b_datetime)}
           </p>
+        )}
+      </div>
+    </div>
+
+
+
+      </div>
+
+      <div className="flex justify-between py-2">
+        <div className="mt-4 flex gap-1">
+          <Tooltip tip="Archive">
+            <Button variant={"mail"} size={"mail"}>
+              <Archive size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Move to trash">
+            <Button variant={"mail"} size={"mail"}>
+              <Trash size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Move to">
+            <Button variant={"mail"} size={"mail"}>
+              <FolderPlus size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Add tag">
+            <Button variant={"mail"} size={"mail"}>
+              <Tag size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Filter">
+            <Button variant={"mail"} size={"mail"}>
+              <Funnel size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="More">
+            <Button variant={"mail"} size={"mail"}>
+              <DotsThree size={15} />
+            </Button>
+          </Tooltip>
+        </div>
+        <div className="mt-4 flex gap-1">
+          <Tooltip tip="Reply">
+            <Button variant={"mail"} size={"mail"}>
+              <ArrowBendUpLeft size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Reply all">
+            <Button variant={"mail"} size={"mail"}>
+              <ArrowBendDoubleUpLeft size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip tip="forward">
+            <Button variant={"mail"} size={"mail"}>
+              <ArrowBendUpRight size={15} />
+            </Button>
+          </Tooltip>
         </div>
       </div>
 
       <div className="mt-2 shadow">
         {viewMode === "text" ? (
-          <pre className="font-sans bg-white text-black rounded-md p-4" style={{
-            whiteSpace: "pre-wrap",
-            wordWrap: "break-word",
-          }}>
+          <pre
+            className="font-sans bg-white text-black rounded-md p-4"
+            style={{
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+            }}
+          >
             {e.b_text}
           </pre>
         ) : (
           <iframe
             style={{
-              height: emailHeight
+              height: emailHeight,
             }}
             className="bg-white w-full h-[500px] rounded-md overflow-hidden"
             ref={htmlView}
@@ -673,31 +822,36 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 function htmlToText(htmlString: string): string {
-  const strippedHtml = htmlString.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-  const tempDiv = document.createElement('div');
+  const strippedHtml = htmlString.replace(
+    /<style[^>]*>[\s\S]*?<\/style>/gi,
+    ""
+  );
+  const tempDiv = document.createElement("div");
   tempDiv.innerHTML = strippedHtml;
-  const text = tempDiv.innerText || tempDiv.textContent || '';
-  return text.split(" ").slice(0, 100).join(" ")
+  const text = tempDiv.innerText || tempDiv.textContent || "";
+  return text.split(" ").slice(0, 100).join(" ");
 }
 
 export function processEmailSubject(subject: string): {
-  tags: string[] | undefined
-  cleanSubject: string
+  tags: string[] | undefined;
+  cleanSubject: string;
 } {
   const tagRegex = /^\s*(\[[^\]]+\]\s*)+/g;
   const matches = subject.match(tagRegex);
   let tags: string[] | undefined = [];
   if (matches) {
-    tags = matches[0].match(/\[([^\]]+)\]/g)?.map(tag => tag.replace(/[\[\]]/g, ''));
+    tags = matches[0]
+      .match(/\[([^\]]+)\]/g)
+      ?.map((tag) => tag.replace(/[\[\]]/g, ""));
   }
-  const cleanSubject = subject.replace(tagRegex, '').trim();
+  const cleanSubject = subject.replace(tagRegex, "").trim();
   return {
     tags,
-    cleanSubject
+    cleanSubject,
   };
 }
 
