@@ -10,7 +10,6 @@ import {
 import { useState, useCallback, useEffect } from "react";
 import { BellRinging, BellSlash, SpeakerHigh } from "@phosphor-icons/react";
 import { useProfileStore } from "@/store/profile";
-import { Spinner } from "@/components/Spinner";
 
 const sounds = [
   { name: "Bell", src: "/sounds/bell.wav" },
@@ -71,15 +70,11 @@ const NotificationSetting = () => {
 
   const handleNotificationToggle = async () => {
     if (!notiEnable) {
-      // Notification logic
       if (!("Notification" in window)) {
-        // Check if the browser supports notifications
         alert("This browser does not support desktop notifications");
       } else if (Notification.permission === "granted") {
-        // If permissions are already granted, create a notification
         new Notification("Hi there!");
       } else if (Notification.permission !== "denied") {
-        // Request permission from the user
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
           new Notification("Hi there!");
@@ -89,7 +84,7 @@ const NotificationSetting = () => {
 
     const newNotiEnable = !notiEnable;
     setNotiEnable(newNotiEnable);
-    // Update appearance settings
+
     await updateAppearance(
       { desktopNotificationSound: newNotiEnable },
       setIsNotiLoading
@@ -107,11 +102,6 @@ const NotificationSetting = () => {
             Sets the default notification sound for incoming messages.
           </p>
           <div className="flex items-center gap-2">
-            {isSoundLoading && (
-              <span className="ml-2">
-                <Spinner />
-              </span>
-            )}
             <button
               type="button"
               className="ml-2 p-2 text-gray-500 hover:text-gray-700"
@@ -153,11 +143,6 @@ const NotificationSetting = () => {
             Sets the default notification sound for incoming messages.
           </p>
           <div className="flex items-center gap-2">
-            {isNotiLoading && (
-              <span className="ml-2">
-                <Spinner />
-              </span>
-            )}
             <Button
               className="w-fit px-4"
               onClick={handleNotificationToggle}
@@ -180,11 +165,11 @@ const NotificationSetting = () => {
         </div>
       </SettingDiv>
 
-      <SettingDiv className="relative w-full !mb-0 pt-1">
+      {/* <SettingDiv className="relative w-full !mb-0 pt-1">
         <div className="w-full">
           <div className="flex gap-3 justify-end"></div>
         </div>
-      </SettingDiv>
+      </SettingDiv> */}
     </div>
   );
 };

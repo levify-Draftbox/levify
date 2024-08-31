@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useProfileStore } from "@/store/profile";
 import { SettingDiv } from "./components";
-import { Spinner } from "@/components/Spinner";
 import { ThemeColors } from "@/components/Theme";
 import {
   Select,
@@ -11,21 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  TextAlignJustify,
-  TextColumns,
-} from "@phosphor-icons/react";
+import { TextAlignJustify, TextColumns } from "@phosphor-icons/react";
 
 const Appearance = () => {
   const { allSetting, updateSettings } = useProfileStore();
-  const [isLoading, setIsLoading] = useState(false);
 
   const [options, setOptions] = useState({
     layout: allSetting?.appearance?.layout || "Columan",
     theme: allSetting?.appearance?.theme || "system",
     color: allSetting?.appearance?.color || "purple",
-    displayOrder: allSetting?.appearance?.displayOrder || "Subject First"
-  })
+    displayOrder: allSetting?.appearance?.displayOrder || "Subject First",
+  });
 
   interface AppearanceSettings extends Record<string, unknown> {
     color?: string;
@@ -35,13 +30,10 @@ const Appearance = () => {
   }
 
   const updateAppearance = async (obj: AppearanceSettings) => {
-    setIsLoading(true);
     try {
       await updateSettings("appearance", obj);
     } catch (error) {
       console.error("Error updating settings:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -96,7 +88,6 @@ const Appearance = () => {
 
   return (
     <div className="w-full h-full">
-      {isLoading && <Spinner className="absolute" />}
       <div>
         <SettingDiv>
           <h2 className="text-sm  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-whitex">
@@ -107,16 +98,19 @@ const Appearance = () => {
               Set the default visual theme for the application, including colors
               and styles.
             </p>
-            <Select onValueChange={(v) => {
-              setOptions((o) => ({
-                ...o,
-                theme: v
-              }))
-              updateAppearance({
-                ...options,
-                theme: v
-              })
-            }} value={options.theme}>
+            <Select
+              onValueChange={(v) => {
+                setOptions((o) => ({
+                  ...o,
+                  theme: v,
+                }));
+                updateAppearance({
+                  ...options,
+                  theme: v,
+                });
+              }}
+              value={options.theme}
+            >
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Select Theme" />
               </SelectTrigger>
@@ -141,16 +135,19 @@ const Appearance = () => {
             <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               Customize the color scheme to match user preferences or branding.
             </p>
-            <Select onValueChange={(v) => {
-              setOptions((o) => ({
-                ...o,
-                color: v
-              }))
-              updateAppearance({
-                ...options,
-                color: v
-              })
-            }} value={options.color}>
+            <Select
+              onValueChange={(v) => {
+                setOptions((o) => ({
+                  ...o,
+                  color: v,
+                }));
+                updateAppearance({
+                  ...options,
+                  color: v,
+                });
+              }}
+              value={options.color}
+            >
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Select Color" />
               </SelectTrigger>
@@ -182,16 +179,19 @@ const Appearance = () => {
               Adjust the arrangement and design of the application's interface
               elements.
             </p>
-            <Select onValueChange={(v) => {
-              setOptions((o) => ({
-                ...o,
-                layout: v
-              }))
-              updateAppearance({
-                ...options,
-                layout: v
-              })
-            }} value={options.layout}>
+            <Select
+              onValueChange={(v) => {
+                setOptions((o) => ({
+                  ...o,
+                  layout: v,
+                }));
+                updateAppearance({
+                  ...options,
+                  layout: v,
+                });
+              }}
+              value={options.layout}
+            >
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Select Layout" />
               </SelectTrigger>
@@ -219,12 +219,12 @@ const Appearance = () => {
                 onValueChange={(v) => {
                   setOptions((o) => ({
                     ...o,
-                    displayOrder: v
-                  }))
+                    displayOrder: v,
+                  }));
                   updateAppearance({
                     ...options,
-                    displayOrder: v
-                  })
+                    displayOrder: v,
+                  });
                 }}
                 value={options.displayOrder}
               >
