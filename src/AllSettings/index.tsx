@@ -17,8 +17,9 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import SettingsList from "./list";
 import { ModalSidebarLayout } from "@/components/ui/Modal";
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion";
 import { useProfileStore } from "@/store/profile";
+import { Spinner } from "@/components/Spinner";
 
 type SidebarNavLinkProp = {
   icon: React.ReactNode;
@@ -30,14 +31,16 @@ const AllSettings = () => {
   const [activeSetting, setActiveSetting] = useState("profile");
   const scrollChildDivRef = useRef<HTMLDivElement>(null);
   const [childTop, setChildTop] = useState(true);
-  const { settingUpdating } = useProfileStore()
+  const { settingUpdating } = useProfileStore();
 
   const SidebarNavLink = (p: SidebarNavLinkProp) => {
     return (
       <Button
         variant={"navlink"}
         active={activeSetting === p.setting}
-        className={"dark:text-gray-300/80 mt-1 !py-0 px-[10px] !h-[30px] font-[350]"}
+        className={
+          "dark:text-gray-300/80 mt-1 !py-0 px-[10px] !h-[30px] font-[350]"
+        }
         activeClass={"dark:text-white !font-[500]"}
         onClick={() => setActiveSetting(p.setting)}
       >
@@ -120,7 +123,10 @@ const AllSettings = () => {
           <SidebarNavLink icon={<Globe size={18} />} setting={"domains"}>
             Domains
           </SidebarNavLink>
-          <SidebarNavLink icon={<DownloadSimple size={18} />} setting={"GetTheApps"}>
+          <SidebarNavLink
+            icon={<DownloadSimple size={18} />}
+            setting={"GetTheApps"}
+          >
             Get The Apps
           </SidebarNavLink>
         </div>
@@ -147,15 +153,13 @@ const AllSettings = () => {
   }, [activeSetting]);
 
   return (
-    <ModalSidebarLayout
-      sidebar={<SideBar />}
-      sizebarSize={22}
-    >
+    <ModalSidebarLayout sidebar={<SideBar />} sizebarSize={22}>
       {SettingsList[activeSetting] ? (
         <div className="h-full flex flex-col">
           <div
-            className={`flex flex-col sticky top-0 bg-background-secondary py-5 px-16 gap-1 ${!childTop ? "border-b" : ""
-              } z-[9]`}
+            className={`flex flex-col sticky top-0 bg-background-secondary py-5 px-16 gap-1 ${
+              !childTop ? "border-b" : ""
+            } z-[9]`}
           >
             <h1 className="text-2xl font-[500]">
               {SettingsList[activeSetting].name}
@@ -176,25 +180,29 @@ const AllSettings = () => {
             </div>
 
             <AnimatePresence>
-              {settingUpdating &&
+              {settingUpdating && (
                 <motion.div
                   initial={{
-                    y: "99%"
+                    y: "99%",
                   }}
                   animate={{
-                    y: 0
+                    y: 0,
                   }}
                   exit={{
-                    y: "100%"
+                    y: "100%",
                   }}
                   transition={{
-                    ease: "easeInOut"
+                    ease: "easeInOut",
                   }}
-                  className="border-t border-border py-2 text-gray-300 text-center bottom-0 sticky bg-background">
-                  Setting Updating...
-                </motion.div>}
+                  className="border-t border-border py-2  text-gray-300 text-center bottom-0 sticky bg-background"
+                >
+                  <div className="flex justify-center gap-2 items-center">
+                    <Spinner size={18}/>
+                    <p>Setting Updating...</p>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
-
           </div>
         </div>
       ) : (

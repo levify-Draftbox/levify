@@ -10,7 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TextAlignJustify, TextColumns } from "@phosphor-icons/react";
+import {
+  TextAlignJustify,
+  TextColumns,
+  ArrowSquareIn,
+} from "@phosphor-icons/react";
 
 const Appearance = () => {
   const { allSetting, updateSettings } = useProfileStore();
@@ -69,12 +73,6 @@ const Appearance = () => {
       <div className="flex gap-2 items-center">
         <TextAlignJustify size={20} />
         Row
-      </div>
-    ),
-    Open: (
-      <div className="flex gap-2 !items-center">
-        <img className="h-6 mt-1" src="/new tab.svg" />
-        <p>New Tab</p>
       </div>
     ),
   };
