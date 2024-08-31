@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import {
   Select,
@@ -12,6 +12,7 @@ import {
 import { SettingDiv, SettingHr, SettingTitle } from "./components";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useProfileStore } from "@/store/profile";
 
 type TimeZone = {
   value: string;
@@ -23,24 +24,69 @@ type TimeZone = {
 
 type GroupedTimeZones = Record<string, TimeZone[]>;
 
+interface LanguageAndTimeSettings {
+  language: string;
+  setTimezoneAutomatically: boolean;
+  timeZone: string;
+}
+
 const LanguageAndTime: React.FC = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [selectedTimeZone, setSelectedTimeZone] = useState<string>("");
-  const [autoTimeZone, setAutoTimeZone] = useState<boolean>(false);
+  const { allSetting, updateSettings } = useProfileStore();
 
-  const languages: string[] = ["English / English", "हिंदी / Hindi", "中文 / Chinese", "Español / Spanish"];
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(
+    allSetting.languageandtime.language
+  );
+  const [selectedTimeZone, setSelectedTimeZone] = useState<string>(
+    allSetting.languageandtime.timeZone
+  );
+  const [autoTimeZone, setAutoTimeZone] = useState<boolean>(
+    allSetting.languageandtime.setTimezoneAutomatically
+  );
 
+  useEffect(() => {
+    if (allSetting.notification) {
+      setSelectedLanguage(allSetting.languageandtime.language || "");
+      setSelectedTimeZone(allSetting.languageandtime.timeZone || "");
+      setAutoTimeZone(
+        allSetting.languageandtime.setTimezoneAutomatically || false
+      );
+    }
+  }, [allSetting.languageandtime]);
 
-  const timeZones: TimeZone[] = moment.tz.names().map((tz) => {
-    const zone = moment.tz(tz);
-    return {
-      value: tz,
-      label: `(UTC${zone.format("Z")}) ${tz.replace(/_/g, " ")}`,
-      offset: zone.utcOffset(),
-      abbr: zone.zoneAbbr(),
-      country: tz.split("/")[0],
-    };
-  }).sort((a, b) => a.offset - b.offset);
+  const updateLanguageandTime = async (
+    obj: LanguageAndTimeSettings,
+    loadingSetter: (loading: boolean) => void
+  ) => {
+    loadingSetter(true);
+    try {
+      await updateSettings("languageandtime", obj);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+    } finally {
+      loadingSetter(false);
+    }
+  };
+
+  const languages: string[] = [
+    "English / English",
+    "हिंदी / Hindi",
+    "中文 / Chinese",
+    "Español / Spanish",
+  ];
+
+  const timeZones: TimeZone[] = moment.tz
+    .names()
+    .map((tz) => {
+      const zone = moment.tz(tz);
+      return {
+        value: tz,
+        label: `(UTC${zone.format("Z")}) ${tz.replace(/_/g, " ")}`,
+        offset: zone.utcOffset(),
+        abbr: zone.zoneAbbr(),
+        country: tz.split("/")[0],
+      };
+    })
+    .sort((a, b) => a.offset - b.offset);
 
   const groupedTimeZones: GroupedTimeZones = timeZones.reduce((acc, tz) => {
     const country = tz.value.split("/")[0];
@@ -53,21 +99,37 @@ const LanguageAndTime: React.FC = () => {
 
   const handleLanguageChange = (value: string) => {
     setSelectedLanguage(value);
+    const updatedSettings: LanguageAndTimeSettings = {
+      language: value,
+      setTimezoneAutomatically: autoTimeZone,
+      timeZone: selectedTimeZone,
+    };
+    updateLanguageandTime(updatedSettings, () => {});
   };
 
   const handleTimeZoneChange = (value: string) => {
     setSelectedTimeZone(value);
+    const updatedSettings: LanguageAndTimeSettings = {
+      language: selectedLanguage,
+      setTimezoneAutomatically: autoTimeZone,
+      timeZone: value,
+    };
+    updateLanguageandTime(updatedSettings, () => {});
   };
 
   const handleAutoTimeZoneChange = (checked: boolean) => {
     setAutoTimeZone(checked);
-    if (checked) {
-      const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      setSelectedTimeZone(localTimeZone);
-      console.log("Detected time zone from device:", localTimeZone);
-    } else {
-      console.log("Automatic time zone setting is disabled.");
-    }
+    const localTimeZone = checked
+      ? Intl.DateTimeFormat().resolvedOptions().timeZone
+      : selectedTimeZone;
+    setSelectedTimeZone(localTimeZone);
+
+    const updatedSettings: LanguageAndTimeSettings = {
+      language: selectedLanguage,
+      setTimezoneAutomatically: checked,
+      timeZone: localTimeZone,
+    };
+    updateLanguageandTime(updatedSettings, () => {});
   };
 
   return (
