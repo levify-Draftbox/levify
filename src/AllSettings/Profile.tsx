@@ -29,13 +29,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AnimatePresence, motion } from "framer-motion";
 
 const Profile = () => {
-  const [image, setImage] = useState<string | null>(null);
-  const [changePassword, setChangePassword] = useState<boolean>(false);
-  const [nickname, setNickname] = useState<string>("");
-
-  const [fullName, setFullName] = useState<string>("");
-  const [selectedEmail, setSelectedEmail] = useState<string>("");
-  const [nameInEmail, setnameInEmail] = useState(false);
   const {
     emails: userEmails,
     profile,
@@ -43,20 +36,35 @@ const Profile = () => {
     updateSettings: updateUserSettings,
     allSetting,
   } = useProfileStore();
+
+  //all elements
+  const [finalImg, setFinalImg] = useState("");
+  const [nickname, setNickname] = useState<string>(profile.nickname);
+  const [fullName, setFullName] = useState<string>(profile.full_name);
+  const [selectedEmail, setSelectedEmail] = useState<string>(profile.default_email);
+  const [nameInEmail, setnameInEmail] = useState(allSetting.profile.nameInMail);
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+
+  //password
+  const [changePassword, setChangePassword] = useState<boolean>(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error] = useState("");
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [finalImg, setFinalImg] = useState("");
-  const [fileType, setFileType] = useState<string | null>("");
-  const [isImageLoading, setIsImageLoading] = useState(false);
+
+  //image
+  const [image, setImage] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+  const [fileType, setFileType] = useState<string | null>(allSetting.profile?.image);
   const [dummyImg, setDummyImg] = useState("");
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const [, setImageChanged] = useState(false);
+
+  const [error] = useState("");
+
   const [showSaveDiscard, setshowSaveDiscard] = useState(false);
 
   const [initialValues, setInitialValues] = useState<InitialValues>({
@@ -78,12 +86,11 @@ const Profile = () => {
       setFullName(newFullName);
       setSelectedEmail(newSelectedEmail);
       setIsImageLoading(false);
-
-      setInitialValues(s => ({
+      setInitialValues((s) => ({
         ...s,
         nickname: newNickname,
         fullName: newFullName,
-        selectedEmail: newSelectedEmail
+        selectedEmail: newSelectedEmail,
       }));
     }
   }, [profile]);
@@ -95,10 +102,9 @@ const Profile = () => {
     setInitialValues((e) => ({
       ...e,
       image: allSetting.profile?.image,
-      nameInEmail: allSetting.profile.nameInMail
-    }))
-
-  }, [profile])
+      nameInEmail: allSetting.profile.nameInMail,
+    }));
+  }, [profile]);
 
   useEffect(() => {
     const hasChanges =
@@ -257,8 +263,8 @@ const Profile = () => {
         image: finalImg,
       });
 
-      setshowSaveDiscard(false)
-      
+      setshowSaveDiscard(false);
+
       setImageChanged(false);
     } catch (error) {
       console.error("Error updating profile:", error);

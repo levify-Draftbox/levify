@@ -1,17 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SettingDiv } from "./components";
 import { useProfileStore } from "@/store/profile";
 import { Switch } from "@/components/ui/switch";
 
 const Privacy = () => {
-  const [loadExternal, setLoadExternal] = useState(false);
   const { allSetting, updateSettings } = useProfileStore();
-
-  useEffect(() => {
-    if (allSetting && allSetting.privacy) {
-      setLoadExternal(allSetting.privacy.loadExternalImages);
-    }
-  }, [allSetting]);
+  const [loadExternal, setLoadExternal] = useState(
+    allSetting.privacy.loadExternalImages
+  );
 
   const handleToggle = async (checked: boolean) => {
     setLoadExternal(checked);

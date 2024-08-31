@@ -19,8 +19,8 @@ const sounds = [
 
 const NotificationSetting = () => {
   const { allSetting, updateSettings } = useProfileStore();
-  const [notiEnable, setNotiEnable] = useState(false);
-  const [selectedSound, setSelectedSound] = useState<string | null>(null);
+  const [notiEnable, setNotiEnable] = useState(allSetting.notification.desktopNotificationSound);
+  const [selectedSound, setSelectedSound] = useState<string | null>(allSetting.notification.notificationSound);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [isNotiLoading, setIsNotiLoading] = useState(false);
 
@@ -42,7 +42,7 @@ const NotificationSetting = () => {
     });
   }, []);
 
-  const updateAppearance = async (
+  const updateNotification = async (
     obj: any,
     loadingSetter: (loading: boolean) => void
   ) => {
@@ -61,7 +61,7 @@ const NotificationSetting = () => {
     if (sound) {
       setSelectedSound(sound.src);
       playSound(sound.src);
-      await updateAppearance(
+      await updateNotification(
         { notificationSound: sound.src },
         setIsSoundLoading
       );
@@ -85,7 +85,7 @@ const NotificationSetting = () => {
     const newNotiEnable = !notiEnable;
     setNotiEnable(newNotiEnable);
 
-    await updateAppearance(
+    await updateNotification(
       { desktopNotificationSound: newNotiEnable },
       setIsNotiLoading
     );
