@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone";
 import ResizeableModel from "@/components/ui/ResizeableModel";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import useloadInboxModal from "@/store/loadinbox";
+import { TextBolder, TextItalic, TextUnderline } from "@phosphor-icons/react";
 import React, { useEffect, useState } from "react";
 function Inputs(): React.ReactNode {
 
@@ -131,6 +133,20 @@ function Inputs(): React.ReactNode {
                         />
                     </div>
 
+                    <div className="mx-4 py-2 my-4">
+                        <ToggleGroup type="single">
+                            <ToggleGroupItem value="bold" aria-label="Toggle bold">
+                                <TextBolder className="h-4 w-4" />
+                            </ToggleGroupItem>
+                            <ToggleGroupItem value="italic" aria-label="Toggle italic">
+                                <TextItalic className="h-4 w-4" />
+                            </ToggleGroupItem>
+                            <ToggleGroupItem value="underline" aria-label="Toggle underline">
+                                <TextUnderline className="h-4 w-4" />
+                            </ToggleGroupItem>
+                        </ToggleGroup>
+                    </div>
+
                     <div className="flex px-4 gap-2">
                         <Button className="">Submit</Button>
                         <Button className="" variant={"secondary"}>Submit</Button>
@@ -154,7 +170,7 @@ function Inputs(): React.ReactNode {
                                     night flow of file!
                                 </div>
                                 <div className="mt-4 flex justify-end items-end">
-                                    <Button variant={"primary"} onClick={() => {}} className="w-32" >Try again</Button>
+                                    <Button variant={"primary"} onClick={() => { }} className="w-32" >Try again</Button>
                                 </div>
                             </div>
                         </ResizeableModel>

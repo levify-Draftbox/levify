@@ -9,6 +9,7 @@ import {
 import { Button } from "./ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 interface ToolBarProps extends React.HTMLAttributes<HTMLDivElement> {
   onRefresh?: () => void;
@@ -27,8 +28,8 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, .
       {...props}
     >
       <div className="flex gap-3 items-center">
-        <Button 
-          variant={"toolbutton"} 
+        <Button
+          variant={"toolbutton"}
           onClick={onRefresh}
           className="rounded-full"
           disabled={isRefreshing}
@@ -55,38 +56,21 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, .
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button
-          variant={"toolbutton"}
-          className="!py-1 !px-3"
-          size={"toolsize"}
-          to={"/inbox"}
-        >
-          All
-        </Button>
-        <Button
-          variant={"toolbutton"}
-          className="!py-1 !px-3"
-          size={"toolsize"}
-          to={"/"}
-        >
-          Read
-        </Button>
-        <Button
-          variant={"toolbutton"}
-          className="!py-1 !px-3"
-          size={"toolsize"}
-          to={"/"}
-        >
-          Unread
-        </Button>
-        <Button
-          variant={"toolbutton"}
-          className="!py-1 !px-3"
-          size={"toolsize"}
-          to={"/"}
-        >
-          Has file
-        </Button>
+        <ToggleGroup type="single" className="bg-input dark:border-none">
+          <ToggleGroupItem size={"tooltip"} value="all" aria-label="Toggle bold">
+            All
+          </ToggleGroupItem>
+          <ToggleGroupItem size={"tooltip"} value="read" aria-label="Toggle italic">
+            Read
+          </ToggleGroupItem>
+          <ToggleGroupItem size={"tooltip"} value="unread" aria-label="Toggle underline">
+            Unread
+          </ToggleGroupItem>
+          <ToggleGroupItem size={"tooltip"} value="file" aria-label="Toggle underline">
+            Has file
+          </ToggleGroupItem>
+        </ToggleGroup>
+
         <Button
           variant={"toolbutton"}
           className="!py-1 !px-3"

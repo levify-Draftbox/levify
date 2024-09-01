@@ -146,7 +146,7 @@
 
     --button-base: rgba(0, 0, 0, 0.03);
     --button-hover: rgba(0, 0, 0, 0.085);
-    --button-active: rgb(0, 0, 0, 0.1);
+    --button-active: rgb(0, 0, 0, 0.095);
     --button-border: rgba(0, 0, 0, 0.075);
     /*   
     --input-hover: rgba(0, 0, 0, 0.085);
@@ -195,7 +195,7 @@
 
     --button-base: rgba(255, 255, 255, 0.05);
     --button-hover: rgba(255, 255, 255, 0.075);
-    --button-active: rgba(255, 255, 255, 0.09);
+    --button-active: rgba(255, 255, 255, 0.13);
 
     /* --input-base: rgba(255, 255, 255, 0.08);
     --input-hover: rgba(255, 255, 255, 0.065);

@@ -12,6 +12,7 @@ import { Toaster } from "./components/ui/sonner";
 import useComposerStore from "./store/composer";
 import { useProfileStore } from "./store/profile";
 import { useEffect, lazy, Suspense } from "react";
+import Inputs from "./page/Inputs";
 
 const Login = lazy(() => import("./Auth/Login"))
 const Signup = lazy(() => import("./Auth/Signup"))
@@ -99,6 +100,12 @@ function App() {
               path="/"
               element={NotLogin ? <Home /> : <Navigate to="/login" replace />}
             >
+
+              <Route
+                path="input"
+                element={<Inputs />}
+              />
+
               <Route index element={<Navigate to="/inbox" replace />} />
 
               <Route
