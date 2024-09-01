@@ -17,7 +17,7 @@ import { motion } from "framer-motion"
 import useloadInboxModal from "@/store/loadinbox";
 import { toast } from "sonner";
 import useList from "@/store/list";
-import { Email } from "@/page/Inbox";
+import { Email } from "@/page/boxes";
 
 const Main = () => {
   const mainLayout = useRef<HTMLDivElement>(null);

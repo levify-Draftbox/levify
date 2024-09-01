@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/context-menu"
 import moment from "moment"
 import { cn } from "@/lib/utils";
-import { processEmailSubject } from '@/page/Inbox';
+import { processEmailSubject } from '@/page/boxes';
 
 export type FromName = {
   name?: string,

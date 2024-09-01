@@ -41,7 +41,7 @@ import moment from "moment";
 import { cn } from "@/lib/utils";
 
 import useList from "@/store/list";
-import useListPos from "@/store/listPos";
+import useListState from "@/store/listState";
 
 // TODO: move to type file
 export type Email = {
@@ -74,18 +74,18 @@ export type EmailObj = {
   emails: Email[];
 };
 
-const Inbox: React.FC = () => {
+const Boxes: React.FC<{ path: string }> = ({ path }) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
   const { list: emailListObjs, setList } = useList()
-  const { listPos: listPosObj, setListPos } = useListPos()
+  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, setListMore } = useListState()
 
-  let path = "inbox"
+  path = path || "inbox"
+
   const emailList = emailListObjs[path] || []
-  const listPos = listPosObj[path]
+  const listPos = listPosObj[path] || 0
+  const hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
 
-  // const [emailList, setEmailList] = useState<EmailObj[]>([]);
-  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -119,12 +119,12 @@ const Inbox: React.FC = () => {
           text={e.emails[0].b_text}
           subject={e.subject}
           count={e.emails.length}
-          fromNames={e.emails.map((e) => ({
+          fromNames={e.emails.map((e: Email) => ({
             email: e.b_from,
             name: e.b_from_name,
             profile: e.from_profile,
           }))}
-          unread={e.emails.find((e) => e.unread)?.unread as boolean}
+          unread={e.emails.find((e: Email) => e.unread)?.unread as boolean}
           className={cn(
             "hover:bg-[rgba(0,0,0,0.02)] dark:hover:bg-[rgba(255,255,255,0.025)]",
             {
@@ -143,7 +143,11 @@ const Inbox: React.FC = () => {
     estimateSize: React.useCallback(() => 100, []),
   })
 
-  useEffect(() => rowVirtualizer.scrollToIndex(listPos), [])
+  useEffect(() => {
+    if (listPos == 0) { } else {
+      rowVirtualizer.scrollToIndex(listPos)
+    }
+  }, [])
 
   // TODO: implement react query!
   const isFetchingRef = useRef(false);
@@ -156,10 +160,10 @@ const Inbox: React.FC = () => {
     try {
       const res = await api.post<{ hasMore: boolean; emails: EmailObj[] }>(
         "/listing",
-        { offset: emailList.length }
+        { offset: emailList.length, path: path }
       );
       setList(path, res.data.emails)
-      setHasMore(res.data.hasMore)
+      setListMore(path, res.data.hasMore)
       setLoadInbox();
     } catch (error) {
       console.error("Error fetching emails:", error);
@@ -171,6 +175,7 @@ const Inbox: React.FC = () => {
         setIsRefreshing(false);
       }
     }
+
   };
 
   useEffect(() => {
@@ -201,6 +206,7 @@ const Inbox: React.FC = () => {
 
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
+
       <ToolBar
         className={""}
         onRefresh={refreshEmails}
@@ -217,9 +223,9 @@ const Inbox: React.FC = () => {
               <div
                 className="h-full w-full overflow-auto scroll-bar"
                 ref={parentRef}
+                key={path}
                 onScroll={() => {
                   const firstItem = rowVirtualizer.virtualItems[0]
-                  console.log(firstItem);
                   setListPos(path, firstItem.index)
                 }}
               >
@@ -365,10 +371,10 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
 
   const [showFullTimestamp, setShowFullTimestamp] = useState(false);
 
-  const formatShortTimestamp = (timestamp :string) => {
+  const formatShortTimestamp = (timestamp: string) => {
     const now = moment();
     const emailTime = moment(timestamp);
-    
+
     if (now.diff(emailTime, 'hours') < 24) {
       return emailTime.format('h:mm A');
     } else {
@@ -376,7 +382,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
     }
   };
 
-  const formatFullTimestamp = (timestamp : string) => {
+  const formatFullTimestamp = (timestamp: string) => {
     return moment(timestamp).format('MMM D, YYYY h:mm A');
   };
 
@@ -724,27 +730,25 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: s
         </div>
 
         <div className="w-[100px]">
-      <div className="w-full flex flex-col items-end">
-        <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
-          {formatShortTimestamp(e.b_datetime)}
-        </p>
-        <Button
-          variant="toolbutton"
-          size="mail"
-          className="!px-2 !py-1 mt-1"
-          onClick={()=>{setShowFullTimestamp(!showFullTimestamp);}}
-        >
-          {showFullTimestamp ? <CaretUp size={15} /> : <CaretDown size={15} />}
-        </Button>
-        {showFullTimestamp && (
-          <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-xs mt-1">
-            {formatFullTimestamp(e.b_datetime)}
-          </p>
-        )}
-      </div>
-    </div>
-
-
+          <div className="w-full flex flex-col items-end">
+            <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+              {formatShortTimestamp(e.b_datetime)}
+            </p>
+            <Button
+              variant="toolbutton"
+              size="mail"
+              className="!px-2 !py-1 mt-1"
+              onClick={() => { setShowFullTimestamp(!showFullTimestamp); }}
+            >
+              {showFullTimestamp ? <CaretUp size={15} /> : <CaretDown size={15} />}
+            </Button>
+            {showFullTimestamp && (
+              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-xs mt-1">
+                {formatFullTimestamp(e.b_datetime)}
+              </p>
+            )}
+          </div>
+        </div>
 
       </div>
 
@@ -855,4 +859,4 @@ export function processEmailSubject(subject: string): {
   };
 }
 
-export default Inbox;
+export default Boxes;

@@ -1,5 +1,5 @@
 import { sendToWs } from '@/lib/ws'
-import { Email, EmailObj } from '@/page/Inbox'
+import { Email, EmailObj } from '@/page/boxes'
 import { create } from 'zustand'
 
 type MailList = {
@@ -50,7 +50,7 @@ const useList = create<List>()((set) => ({
             let list = s.list[path] || []
             list = list.map(eo => {
                 if (eo.thread_id == thread_id) {
-                    eo.emails = eo.emails.map(e => {
+                    eo.emails = eo.emails.map((e: Email) => {
                         if (e.id == email_id) {
                             e.unread = unread
                             e.new = false

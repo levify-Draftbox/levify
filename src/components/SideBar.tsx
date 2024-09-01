@@ -64,18 +64,18 @@ const SideBar = () => {
 
           <SidebarNavLink
             icon={<FileText size={18} />}
-            to="/inbox/draft"
+            to="/draft"
           >Draft</SidebarNavLink>
 
           <SidebarNavLink
             icon={<PaperPlaneRight size={18} />}
             unread={12}
-            to="/inbox/sent"
+            to="/sent"
           >Sent</SidebarNavLink>
 
           <SidebarNavLink
             icon={<Star size={18} />}
-            to="/inbox/star"
+            to="/star"
           >Starred</SidebarNavLink>
 
           <div
@@ -182,7 +182,7 @@ function SidebarNavLink(p: SidebarNavLinkProp) {
       </div>
       <div>
         <div className=" flex justify-center gap-2 items-center">
-         
+
           {
             p.unread && p.unread > 0 &&
             <p className="text-white text-sm px-[10px] bg-core rounded-full py-[1px] !font-bold">
