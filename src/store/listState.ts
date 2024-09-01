@@ -9,17 +9,13 @@ type MailListMore = {
     [_: string]: boolean
 }
 
-type OpenMail = {
-    [_: string]: EmailObj | undefined
-}
-
 type List = {
     setListPos: (path: string, pos: number) => void,
     setListMore: (path: string, v: boolean) => void,
-    setOpenEmail: (path: string, v: EmailObj | undefined) => void,
+    setOpenEmail: (v: EmailObj | undefined) => void,
     listPos: MailListPos,
     hasMore: MailListMore,
-    openEmail: OpenMail,
+    openEmail: EmailObj | undefined,
 }
 
 const useListState = create<List>()((set) => ({
@@ -41,18 +37,15 @@ const useListState = create<List>()((set) => ({
             }
         }))
     },
-    setOpenEmail: (path: string, v: EmailObj | undefined) => {
+    setOpenEmail: (v: EmailObj | undefined) => {
         set(s => ({
             ...s,
-            openEmail: {
-                ...s.openEmail,
-                [path]: v
-            }
+            openEmail: v
         }))
     },
     listPos: {},
     hasMore: {},
-    openEmail: {},
+    openEmail: undefined,
 }))
 
 export default useListState

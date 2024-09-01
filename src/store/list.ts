@@ -61,6 +61,14 @@ const useList = create<List>()((set) => ({
                 return eo
             })
 
+            console.log({
+                ...s,
+                list: {
+                    ...s.list,
+                    [path]: list
+                }
+            });
+
             return {
                 ...s,
                 list: {

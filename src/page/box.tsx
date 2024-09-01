@@ -4,11 +4,11 @@ import { useParams } from "react-router-dom";
 
 export default function MailboxContainer() {
     const { mailbox = 'inbox' } = useParams();
-    const [key, setKey] = useState<Key>(mailbox);
+    const [_, setKey] = useState<Key>(mailbox);
 
     useEffect(() => {
         setKey(mailbox);
     }, [mailbox]);
 
-    return <Boxes key={key} path={mailbox} />;
+    return <Boxes path={mailbox} />;
 }

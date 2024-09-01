@@ -1,7 +1,7 @@
 import ToolBar from "@/components/ToolBar";
 import api from "@/lib/api";
 import { useVirtual } from "react-virtual";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MailRow from "@/components/MailRow";
 import {
   ResizableHandle,
@@ -75,22 +75,79 @@ export type EmailObj = {
 };
 
 const Boxes: React.FC<{ path: string }> = ({ path }) => {
-  const parentRef = useRef<HTMLDivElement>(null);
+  const { openEmail, setOpenEmail } = useListState()
+
+  path = path || "inbox"
+
+  const handleClose = () => {
+    setOpenEmail(undefined)
+  };
+
+  const [htmlViewWidth, setHtmlViewWidth] = useState(50);
+
+  return (
+    <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
+
+      <ToolBar
+        className={""}
+      />
+
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="max-w-full !flex-1 !h-full"
+      >
+        <AnimatePresence>
+          <ResizablePanel className="!overflow-hidden h-full">
+
+            <ListViewer key={path} path={path} />
+
+
+          </ResizablePanel>
+        </AnimatePresence>
+
+        <ResizableHandle className="bg-transparent" />
+
+        {openEmail && (
+          <ResizablePanel
+            minSize={30}
+            maxSize={65}
+            defaultSize={htmlViewWidth}
+            onResize={(e) => setHtmlViewWidth(e)}
+          >
+            <div className="!h-full border-l border-border">
+              <MailViewer
+                key={openEmail?.thread_id || ""}
+                emails={openEmail as EmailObj}
+                onClose={handleClose}
+                width={htmlViewWidth}
+              />
+            </div>
+          </ResizablePanel>
+        )}
+
+      </ResizablePanelGroup>
+    </motion.div>
+  );
+};
+
+const ListViewer: React.FC<{
+  path: string
+}> = ({ path }) => {
 
   const { list: emailListObjs, setList } = useList()
-  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, setListMore, openEmail: openEmailObj, setOpenEmail } = useListState()
+  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, setListMore, openEmail, setOpenEmail } = useListState()
 
   path = path || "inbox"
 
   const emailList = emailListObjs[path] || []
   const listPos = listPosObj[path] || 0
   const hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
-  const openEmail = openEmailObj[path] || undefined
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const { setLoad: setLoadInbox } = useloadInboxModal();
+
+  const isFetchingRef = useRef(false);
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
@@ -106,13 +163,13 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
       >
         <MailRow
           onClick={() => {
-            setOpenEmail(path, e)
+            setOpenEmail(e)
           }}
           datetime={e.latest_date}
           text={e.emails[0].b_text}
@@ -136,22 +193,8 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
     );
   };
 
-  const rowVirtualizer = useVirtual({
-    size: hasMore ? emailList.length + 1 : emailList.length,
-    parentRef,
-    estimateSize: React.useCallback(() => 100, []),
-  })
 
-  useEffect(() => {
-    if (listPos == 0) { } else {
-      rowVirtualizer.scrollToIndex(listPos)
-    }
-  }, [])
-
-  // TODO: implement react query!
-  const isFetchingRef = useRef(false);
-
-  const fetchEmails = async (isRefresh = false) => {
+  const fetchEmails = async () => {
     if (isFetchingRef.current) return;
 
     isFetchingRef.current = true;
@@ -170,12 +213,21 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
     } finally {
       setIsLoading(false);
       isFetchingRef.current = false;
-      if (isRefresh) {
-        setIsRefreshing(false);
-      }
     }
 
   };
+
+  const rowVirtualizer = useVirtual({
+    size: hasMore ? emailList.length + 1 : emailList.length,
+    parentRef,
+    estimateSize: React.useCallback(() => 100, []),
+  })
+
+  useEffect(() => {
+    if (listPos == 0) { } else {
+      rowVirtualizer.scrollToIndex(listPos)
+    }
+  }, [])
 
   useEffect(() => {
     const [lastItem] = rowVirtualizer.virtualItems.slice(-1);
@@ -189,99 +241,49 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
     }
   }, [rowVirtualizer.virtualItems, hasMore, isLoading, emailList.length]);
 
-
-  const handleClose = () => {
-    setOpenEmail(path, undefined)
-  };
-
-  const refreshEmails = useCallback(() => {
-    setIsRefreshing(true);
-    fetchEmails(true);
-  }, []);
-
-  const [htmlViewWidth, setHtmlViewWidth] = useState(50);
-
   return (
-    <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
-
-      <ToolBar
-        className={""}
-        onRefresh={refreshEmails}
-        isRefreshing={isRefreshing}
-      />
-
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="max-w-full !flex-1 !h-full"
-      >
-        <AnimatePresence>
-          <ResizablePanel className="!overflow-hidden h-full">
-            <motion.div className="bg-inbox-bg !overflow-hidden h-full">
+    <>
+      <motion.div className="bg-inbox-bg !overflow-hidden h-full">
+        <div
+          className="h-full w-full overflow-auto scroll-bar"
+          ref={parentRef}
+          key={path}
+          onScroll={() => {
+            const firstItem = rowVirtualizer.virtualItems[0]
+            setListPos(path, firstItem.index)
+          }}
+        >
+          <div
+            className="scroll-bar w-full relative"
+            style={{
+              height: `${rowVirtualizer.totalSize}px`,
+            }}
+          >
+            {rowVirtualizer.virtualItems.map((virtualRow) => (
               <div
-                className="h-full w-full overflow-auto scroll-bar"
-                ref={parentRef}
-                key={path}
-                onScroll={() => {
-                  const firstItem = rowVirtualizer.virtualItems[0]
-                  setListPos(path, firstItem.index)
+                key={virtualRow.index}
+                ref={virtualRow.measureRef}
+                className="absolute top-0 left-0 w-full"
+                style={{
+                  transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
-                <div
-                  className="scroll-bar w-full relative"
-                  style={{
-                    height: `${rowVirtualizer.totalSize}px`,
-                  }}
-                >
-                  {rowVirtualizer.virtualItems.map((virtualRow) => (
-                    <div
-                      key={virtualRow.index}
-                      ref={virtualRow.measureRef}
-                      className="absolute top-0 left-0 w-full"
-                      style={{
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
-                    >
-                      {renderEmail(virtualRow.index)}
-                    </div>
-                  ))}
-                </div>
+                {renderEmail(virtualRow.index)}
               </div>
-            </motion.div>
-          </ResizablePanel>
-        </AnimatePresence>
-
-        <ResizableHandle className="bg-transparent" />
-
-        {openEmail && (
-          <ResizablePanel
-            minSize={30}
-            maxSize={65}
-            defaultSize={htmlViewWidth}
-            onResize={(e) => setHtmlViewWidth(e)}
-          >
-            <div className="!h-full border-l border-border">
-              <MailViewer
-                key={openEmail?.thread_id || ""}
-                emails={openEmail as EmailObj}
-                onClose={handleClose}
-                width={htmlViewWidth}
-                path={path}
-              />
-            </div>
-          </ResizablePanel>
-        )}
-      </ResizablePanelGroup>
-    </motion.div>
-  );
-};
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </>
+  )
+}
 
 const MailViewer: React.FC<{
   emails: EmailObj;
   key: number | string;
   onClose: () => void;
   width: number;
-  path: string
-}> = ({ emails, onClose, width: htmlWidth, path }) => {
+}> = ({ emails, onClose, width: htmlWidth }) => {
 
   const { setUnread } = useList()
 
@@ -296,7 +298,7 @@ const MailViewer: React.FC<{
         thread_id: lastEmail.thread_id,
         email_id: lastEmail.id,
         unread: false,
-        path: path,
+        path: emails.emails.slice(-1)[0].path,
       })
     }
   }, []);
@@ -350,7 +352,6 @@ const MailViewer: React.FC<{
               openBlock={e.uid == lastEmail.uid}
               panelWidth={htmlWidth}
               {...e}
-              path={path}
             />
         })}
       </div>
@@ -358,7 +359,7 @@ const MailViewer: React.FC<{
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, path: string, last: boolean, totalEmail: number }) => {
+const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: boolean, totalEmail: number }) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10);
