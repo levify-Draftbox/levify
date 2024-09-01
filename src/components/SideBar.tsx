@@ -34,8 +34,8 @@ const SideBar = () => {
     <div className="flex flex-col justify-between h-full dark:bg-transparent selection:select-none">
       <div className="p-2">
         <div className="w-full flex flex-col mt-1">
-          <Link to="/inbox" className="cursor-pointer my-1 mx-2">
-            <img className="w-full" alt="DraftBox Mail" src={
+          <Link to="/inbox" className="cursor-pointer mx-2">
+            <img className="max-h-[28px]" alt="DraftBox Mail" src={
               allSetting?.appearance?.theme === "system" ?
                 !window.matchMedia("(prefers-color-scheme: dark)")
                   .matches

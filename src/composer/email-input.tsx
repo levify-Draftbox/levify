@@ -166,9 +166,7 @@ const EmailSelector = React.forwardRef<MultipleSelectorRef, EmailSelectorProps>(
                 let l = s.pop()
                 s.map(v => {
                     if (v == "") return
-                    console.log(v);
-
-                    old.push({ email: v, name: v })
+                    old.push({ email: v.trim(), name: v })
                 })
                 setSelected(old)
                 setInputValue(l as string)
