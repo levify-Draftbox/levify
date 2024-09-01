@@ -78,13 +78,14 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
   const { list: emailListObjs, setList } = useList()
-  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, setListMore } = useListState()
+  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, setListMore, openEmail: openEmailObj, setOpenEmail } = useListState()
 
   path = path || "inbox"
 
   const emailList = emailListObjs[path] || []
   const listPos = listPosObj[path] || 0
   const hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
+  const openEmail = openEmailObj[path] || undefined
 
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -111,9 +112,7 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
       >
         <MailRow
           onClick={() => {
-            setEmailOpen(true);
-            console.log(e);
-            setOpenEmail(e);
+            setOpenEmail(path, e)
           }}
           datetime={e.latest_date}
           text={e.emails[0].b_text}
@@ -190,11 +189,9 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
     }
   }, [rowVirtualizer.virtualItems, hasMore, isLoading, emailList.length]);
 
-  const [emailOpen, setEmailOpen] = useState(false);
-  const [openEmail, setOpenEmail] = useState<EmailObj | undefined>();
 
   const handleClose = () => {
-    setEmailOpen(!emailOpen);
+    setOpenEmail(path, undefined)
   };
 
   const refreshEmails = useCallback(() => {
@@ -255,7 +252,7 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
 
         <ResizableHandle className="bg-transparent" />
 
-        {emailOpen && (
+        {openEmail && (
           <ResizablePanel
             minSize={30}
             maxSize={65}

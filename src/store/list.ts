@@ -17,7 +17,7 @@ type List = {
 
 const useList = create<List>()((set) => ({
     setList: (path: string, list: EmailObj[]) => {
-        console.log("Set list");
+        // console.log("Set list");
 
         set((s) => ({
             ...s,
@@ -105,7 +105,7 @@ const useList = create<List>()((set) => ({
             emailObj.subject = mail.b_subject
             emailObj.unread = mail.unread
 
-            console.log("new emails", emailObj);
+            // console.log("new emails", emailObj);
 
             list = [emailObj, ...oldMailList]
 
