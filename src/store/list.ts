@@ -65,10 +65,7 @@ const useList = create<List>()((set) => ({
                 ...s,
                 list: {
                     ...s.list,
-                    [path]: [
-                        ...s.list[path] || [],
-                        ...list
-                    ]
+                    [path]: list
                 }
             }
         })
