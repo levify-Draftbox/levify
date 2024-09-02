@@ -1,5 +1,4 @@
 import ToolBar from "@/components/ToolBar";
-import api from "@/lib/api";
 import { useVirtual } from "react-virtual";
 import React, { useEffect, useRef, useState } from "react";
 import MailRow from "@/components/MailRow";
@@ -9,7 +8,6 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Spinner } from "@/components/Spinner";
 import useloadInboxModal from "@/store/loadinbox";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,7 +25,9 @@ import {
   DotsThree,
   Archive,
   CaretDown,
-  CaretUp
+  CaretUp,
+  Tray,
+  Star,
 } from "@phosphor-icons/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -75,24 +75,19 @@ export type EmailObj = {
 };
 
 const Boxes: React.FC<{ path: string }> = ({ path }) => {
-  const { openEmail, setOpenEmail } = useListState()
+  const { openEmail, setOpenEmail } = useListState();
 
-  path = path || "inbox"
+  path = path || "inbox";
 
   const handleClose = () => {
-    setOpenEmail(undefined)
+    setOpenEmail(undefined);
   };
 
   const [htmlViewWidth, setHtmlViewWidth] = useState(65);
 
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
-
-      <ToolBar
-        path={path}
-        className={""}
-        key={path}
-      />
+      <ToolBar path={path} className={""} key={path} />
 
       <ResizablePanelGroup
         direction="horizontal"
@@ -100,10 +95,7 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
       >
         <AnimatePresence>
           <ResizablePanel className="!overflow-hidden h-full">
-
             <ListViewer key={path} path={path} />
-
-
           </ResizablePanel>
         </AnimatePresence>
 
@@ -126,24 +118,28 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
             </div>
           </ResizablePanel>
         )}
-
       </ResizablePanelGroup>
     </motion.div>
   );
 };
 
 const ListViewer: React.FC<{
-  path: string
+  path: string;
 }> = ({ path }) => {
+  const { list: emailListObjs, loadMore } = useList();
+  const {
+    listPos: listPosObj,
+    hasMore: hasMoreObj,
+    setListPos,
+    openEmail,
+    setOpenEmail,
+  } = useListState();
 
-  const { list: emailListObjs, loadMore } = useList()
-  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, openEmail, setOpenEmail } = useListState()
+  path = path || "inbox";
 
-  path = path || "inbox"
-
-  const emailList = emailListObjs[path] || []
-  const listPos = listPosObj[path] || 0
-  const hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
+  const emailList = emailListObjs[path] || [];
+  const listPos = listPosObj[path] || 0;
+  const hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path];
 
   const [isLoading, setIsLoading] = useState(false);
   const { setLoad: setLoadInbox } = useloadInboxModal();
@@ -171,7 +167,7 @@ const ListViewer: React.FC<{
       >
         <MailRow
           onClick={() => {
-            setOpenEmail(e)
+            setOpenEmail(e);
           }}
           datetime={e.latest_date}
           text={e.emails[0].b_text}
@@ -195,7 +191,6 @@ const ListViewer: React.FC<{
     );
   };
 
-
   const fetchEmails = async () => {
     if (isFetchingRef.current) return;
 
@@ -208,20 +203,20 @@ const ListViewer: React.FC<{
       if (!err) {
         isFetchingRef.current = false;
       }
-    })
+    });
   };
 
   const rowVirtualizer = useVirtual({
     size: hasMore ? emailList.length + 1 : emailList.length,
     parentRef,
     estimateSize: React.useCallback(() => 100, []),
-  })
+  });
 
   useEffect(() => {
-    if (listPos == 0) { } else {
-      rowVirtualizer.scrollToIndex(listPos)
+    if (listPos == 0) { /* empty */ } else {
+      rowVirtualizer.scrollToIndex(listPos);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const [lastItem] = rowVirtualizer.virtualItems.slice(-1);
@@ -243,8 +238,8 @@ const ListViewer: React.FC<{
           ref={parentRef}
           key={path}
           onScroll={() => {
-            const firstItem = rowVirtualizer.virtualItems[0]
-            setListPos(path, firstItem.index)
+            const firstItem = rowVirtualizer.virtualItems[0];
+            setListPos(path, firstItem.index);
           }}
         >
           <div
@@ -269,8 +264,8 @@ const ListViewer: React.FC<{
         </div>
       </motion.div>
     </>
-  )
-}
+  );
+};
 
 const MailViewer: React.FC<{
   emails: EmailObj;
@@ -278,12 +273,11 @@ const MailViewer: React.FC<{
   onClose: () => void;
   width: number;
 }> = ({ emails, onClose, width: htmlWidth }) => {
+  const { setUnread } = useList();
 
-  const { setUnread } = useList()
-
-  let e = emails.emails[0]
-  let revArray = emails.emails.slice().reverse()
-  let lastEmail = revArray.find((e) => e.new == false || !e.new) || revArray[0]
+  let e = emails.emails[0];
+  let revArray = emails.emails.slice().reverse();
+  let lastEmail = revArray.find((e) => e.new == false || !e.new) || revArray[0];
 
   useEffect(() => {
     if (lastEmail.unread) {
@@ -293,7 +287,7 @@ const MailViewer: React.FC<{
         email_id: lastEmail.id,
         unread: false,
         path: emails.emails.slice(-1)[0].path,
-      })
+      });
     }
   }, []);
 
@@ -340,21 +334,30 @@ const MailViewer: React.FC<{
       <div className="flex flex-col gap-4">
         {emails.emails.map((e, i) => {
           if (true)
-            return <EmailBlock
-              totalEmail={emails.emails.length}
-              last={i == emails.emails.length - 1}
-              openBlock={e.uid == lastEmail.uid}
-              panelWidth={htmlWidth}
-              {...e}
-            />
+            return (
+              <EmailBlock
+                totalEmail={emails.emails.length}
+                last={i == emails.emails.length - 1}
+                openBlock={e.uid == lastEmail.uid}
+                panelWidth={htmlWidth}
+                {...e}
+              />
+            );
         })}
       </div>
     </motion.div>
   );
 };
 
-const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: boolean, totalEmail: number }) => {
-  const viewMode = e.b_html && e.b_html !== "" ? "html" : "text"
+const EmailBlock = (
+  e: Email & {
+    panelWidth: number;
+    openBlock: boolean;
+    last: boolean;
+    totalEmail: number;
+  }
+) => {
+  const viewMode = e.b_html && e.b_html !== "" ? "html" : "text";
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10);
   const [openBlock, setOpenBlock] = useState(
@@ -367,19 +370,18 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
     const now = moment();
     const emailTime = moment(timestamp);
 
-    if (now.diff(emailTime, 'hours') < 24) {
-      return emailTime.format('h:mm A');
+    if (now.diff(emailTime, "hours") < 24) {
+      return emailTime.format("h:mm A");
     } else {
-      return emailTime.format('MMM D');
+      return emailTime.format("MMM D");
     }
   };
 
   const formatFullTimestamp = (timestamp: string) => {
-    return moment(timestamp).format('MMM D, YYYY h:mm A');
+    return moment(timestamp).format("MMM D, YYYY h:mm A");
   };
 
-
-  const { setUnread } = useList()
+  const { setUnread } = useList();
 
   const injectCSS = () => {
     if (htmlView.current) {
@@ -473,25 +475,30 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
 
   if (!openBlock) {
     return (
-      <div className={cn(
-        "p-4 border border-border rounded-md bg-background-secondary cursor-pointer",
-        {
-          "border-core": e.unread
-        }
-      )} onClick={() => {
-        setOpenBlock(true)
-        if (e.unread) {
-          setUnread({
-            notify: true,
-            email_id: e.id,
-            thread_id: e.thread_id,
-            unread: false,
-            path: e.path,
-          })
-        }
-      }} >
+      <div
+        className={cn(
+          "p-4 border border-border rounded-md bg-background-secondary cursor-pointer",
+          {
+            "border-core": e.unread,
+          }
+        )}
+      >
         <div className="flex justify-between">
-          <div className="my-0 flex gap-3">
+          <div
+            className="my-0 flex gap-3 w-[90%]"
+            onClick={() => {
+              setOpenBlock(true);
+              if (e.unread) {
+                setUnread({
+                  notify: true,
+                  email_id: e.id,
+                  thread_id: e.thread_id,
+                  unread: false,
+                  path: e.path,
+                });
+              }
+            }}
+          >
             <img
               className="w-12 h-12 rounded-md"
               src={e.from_profile}
@@ -545,11 +552,20 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
               </div>
             </div>
           </div>
-          <div className="w-[100px]">
+          <div className="w-[150px]">
             <div className="w-full flex flex-col items-end">
-              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
-                {formatShortTimestamp(e.b_datetime)}
-              </p>
+              <div className="flex gap-1 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                <Tooltip tip="Star message">
+                  <Star size={16} />
+                </Tooltip>
+
+                <Tooltip tip="Inbox">
+                  <Tray size={16} />
+                </Tooltip>
+                <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+                  {formatShortTimestamp(e.b_datetime)}
+                </p>
+              </div>
               <Button
                 variant={"ghost"}
                 size={"mail"}
@@ -558,58 +574,6 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
                 <CaretDown size={15} />
               </Button>
             </div>
-          </div>
-        </div>
-
-        <div className="flex justify-between py-1">
-          <div className="mt-4 flex gap-1">
-            <Tooltip tip="Archive">
-              <Button variant={"mail"} size={"mail"}>
-                <Archive size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="Move to trash">
-              <Button variant={"mail"} size={"mail"}>
-                <Trash size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="Move to">
-              <Button variant={"mail"} size={"mail"}>
-                <FolderPlus size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="Add tag">
-              <Button variant={"mail"} size={"mail"}>
-                <Tag size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="Filter">
-              <Button variant={"mail"} size={"mail"}>
-                <Funnel size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="More">
-              <Button variant={"mail"} size={"mail"}>
-                <DotsThree size={15} />
-              </Button>
-            </Tooltip>
-          </div>
-          <div className="mt-4 flex gap-1">
-            <Tooltip tip="Reply">
-              <Button variant={"mail"} size={"mail"}>
-                <ArrowBendUpLeft size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="Reply all">
-              <Button variant={"mail"} size={"mail"}>
-                <ArrowBendDoubleUpLeft size={15} />
-              </Button>
-            </Tooltip>
-            <Tooltip tip="forward">
-              <Button variant={"mail"} size={"mail"}>
-                <ArrowBendUpRight size={15} />
-              </Button>
-            </Tooltip>
           </div>
         </div>
       </div>
@@ -723,28 +687,51 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
 
         <div className="w-[100px]">
           <div className="w-full flex flex-col items-end">
-            <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
-              {formatShortTimestamp(e.b_datetime)}
-            </p>
+            <div className="flex gap-1 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+              <Tooltip tip="Star message">
+                <Star size={16} />
+              </Tooltip>
+
+              <Tooltip tip="Inbox">
+                <Tray size={16} />
+              </Tooltip>
+              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+                {formatShortTimestamp(e.b_datetime)}
+              </p>
+            </div>
             <Button
               variant="ghost"
               size="mail"
               className="!px-2 !py-1 mt-1"
-              onClick={() => { setShowFullTimestamp(!showFullTimestamp); }}
+              onClick={() => {
+                setShowFullTimestamp(!showFullTimestamp);
+              }}
             >
-              {showFullTimestamp ? <CaretUp size={15} /> : <CaretDown size={15} />}
+              {showFullTimestamp ? (
+                <CaretUp size={15} />
+              ) : (
+                <CaretDown size={15} />
+              )}
             </Button>
-            {showFullTimestamp && (
-              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-xs mt-1">
-                {formatFullTimestamp(e.b_datetime)}
-              </p>
-            )}
           </div>
         </div>
-
+      </div>
+      <div className="mt-3">
+        {showFullTimestamp && (
+          <AnimatePresence>
+            <motion.div
+              className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm mt-1"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {formatFullTimestamp(e.b_datetime)}
+            </motion.div>
+          </AnimatePresence>
+        )}
       </div>
 
-      <div className="flex justify-between py-2">
+      <div className="flex justify-between py-1">
         <div className="mt-4 flex gap-1">
           <Tooltip tip="Archive">
             <Button variant={"mail"} size={"mail"}>
