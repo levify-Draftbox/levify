@@ -182,7 +182,7 @@ const ListViewer: React.FC<{
             name: e.b_from_name,
             profile: e.from_profile,
           }))}
-          unread={e.emails.find((e: Email) => e.unread)?.unread as boolean}
+          unread={e.emails.find((e: Email) => e.path == path && e.unread)?.unread as boolean}
           className={cn(
             "hover:bg-[rgba(0,0,0,0.02)] dark:hover:bg-[rgba(255,255,255,0.025)]",
             {
