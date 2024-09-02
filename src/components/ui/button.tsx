@@ -16,12 +16,10 @@ const button = cva(
           "w-full gap-2 justify-center items-center bg-background-secondary dark:bg-button border-input-border hover:border-input-border-hover dark:hover:bg-button-hover dark:hover:bg-button-hover dark:active:bg-button-active active:bg-button dark:active:bg-button-active border shadow-sm",
         destructive:
           "w-full gap-2 justify-center items-center bg-input bg-red-500/90 hover:bg-red-500 active:bg-red-500/90 dark:bg-red-500/50 drak:hover:bg-red-500/60 dark:active:bg-red-500/50 border border-red-500/30 text-white",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-button-hover active:bg-button-active",
         link: "text-core text-xs underline-offset-4 hover:underline",
         navlink:
           "group !w-full gap-2 px-3 items-center text-normal justify-between hover:bg-button dark:hover:bg-button-hover active:!bg-button-active",
-        toolbutton:
-          "w-fit !py-2 !px-2 items-center hover:bg-button-hover active:bg-button-active",
         star: "hover:text-yellow-500",
         mail: "w-full gap-2 justify-center items-center bg-background-secondary dark:bg-button border-input-border hover:border-input-border-hover dark:hover:bg-button-hover dark:hover:bg-button-hover dark:active:bg-button-active active:bg-button dark:active:bg-button-active border shadow-sm",
         whiteButton:

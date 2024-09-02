@@ -1,6 +1,9 @@
+import api from '@/lib/api'
 import { sendToWs } from '@/lib/ws'
 import { Email, EmailObj } from '@/page/boxes'
+import { toast } from 'sonner'
 import { create } from 'zustand'
+import useListState from './listState'
 
 type MailList = {
     [_: string]: EmailObj[]
@@ -12,10 +15,12 @@ type List = {
     setList: (log: string, list: EmailObj[]) => void,
     setUnread: UnreadFunc,
     appendMail: (path: string, mail: Email) => void,
+    loadMore: (path: string, cd: (err: any) => void) => void,
+    clearList: (path: string) => void,
     list: MailList
 }
 
-const useList = create<List>()((set) => ({
+const useList = create<List>()((set, get) => ({
     setList: (path: string, list: EmailObj[]) => {
         // console.log("Set list");
 
@@ -79,24 +84,31 @@ const useList = create<List>()((set) => ({
         })
     },
     appendMail: (path: string, mail: Email) => {
-        set(s => {
+        const { openEmail, setOpenEmail, reverse: reverseObj, hasMore: hasMoreObj } = useListState.getState()
+        let reverse = reverseObj[path] || false
+        let hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
 
+        if (reverse && hasMore) {
+            // TODO: add unread count
+            return
+        }
+
+        set(s => {
             let list = (s.list[path] || []).slice()
 
             const emailObj = list?.find(eo => eo.thread_id == mail.thread_id);
             mail.new = true;
 
             if (!emailObj) {
-                list = [{
+
+                let newMailObj = {
                     emails: [mail],
                     latest_date: mail.dateandtime,
                     subject: mail.b_subject,
                     thread_id: mail.thread_id,
                     unread: mail.unread
-                }, ...list] as EmailObj[]
-
-                console.log("new mail");
-
+                }
+                list = !reverse ? [newMailObj, ...list] : [...list, newMailObj] as EmailObj[]
 
                 return {
                     ...s,
@@ -113,9 +125,13 @@ const useList = create<List>()((set) => ({
             emailObj.subject = mail.b_subject
             emailObj.unread = mail.unread
 
-            // console.log("new emails", emailObj);
+            list = !reverse ? [emailObj, ...oldMailList] : [...oldMailList, emailObj]
 
-            list = [emailObj, ...oldMailList]
+            if (emailObj.thread_id == openEmail?.thread_id) {
+                // if open mail and incoming new mail thread id 
+                // same than set email obj into here
+                setOpenEmail(emailObj)
+            }
 
             return {
                 ...s,
@@ -126,9 +142,44 @@ const useList = create<List>()((set) => ({
             }
         })
     },
-    list: {
+    loadMore: async (path: string, cd: Function) => {
+        let { list: emailListObj, setList } = get()
+        let emailList = emailListObj[path] || []
+        let { setListMore, reverse: reverseObj } = useListState.getState()
+        let reverse = reverseObj[path] || false
 
-    }
+        try {
+            const res = await api.post<{ hasMore: boolean; emails: EmailObj[] }>(
+                "/listing",
+                {
+                    offset: emailList.length,
+                    path: path,
+                    reverse: reverse,
+                }
+            );
+            setList(path, res.data.emails)
+            setListMore(path, res.data.hasMore)
+
+            cd(false);
+        } catch (error) {
+            console.error("Error fetching emails:", error);
+            toast.error("Failed to fetch emails. Please try again.");
+
+            cd(error)
+        }
+    },
+    clearList: (path: string) => {
+        set(s => {
+            return {
+                ...s,
+                list: {
+                    ...s.list,
+                    [path]: []
+                }
+            }
+        })
+    },
+    list: {}
 }))
 
 export default useList

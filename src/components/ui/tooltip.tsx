@@ -23,12 +23,13 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 const Tooltip: React.FC<{
   tip: string,
-  children: React.ReactNode
-}> = ({ children, tip }) => {
+  children: React.ReactNode,
+  className?: string,
+}> = ({ children, tip, className }) => {
   return (
     <>
       <TooltipPrimitive.Root>
-        <TooltipPrimitive.Trigger>
+        <TooltipPrimitive.Trigger className={className}>
           {children}
         </TooltipPrimitive.Trigger>
         <TooltipContent>

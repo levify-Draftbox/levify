@@ -83,13 +83,15 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
     setOpenEmail(undefined)
   };
 
-  const [htmlViewWidth, setHtmlViewWidth] = useState(50);
+  const [htmlViewWidth, setHtmlViewWidth] = useState(65);
 
   return (
     <motion.div className="w-full flex flex-col flex-1 overflow-hidden h-full">
 
       <ToolBar
+        path={path}
         className={""}
+        key={path}
       />
 
       <ResizablePanelGroup
@@ -109,8 +111,8 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
 
         {openEmail && (
           <ResizablePanel
-            minSize={30}
-            maxSize={65}
+            minSize={50}
+            maxSize={70}
             defaultSize={htmlViewWidth}
             onResize={(e) => setHtmlViewWidth(e)}
           >
@@ -134,8 +136,8 @@ const ListViewer: React.FC<{
   path: string
 }> = ({ path }) => {
 
-  const { list: emailListObjs, setList } = useList()
-  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, setListMore, openEmail, setOpenEmail } = useListState()
+  const { list: emailListObjs, loadMore } = useList()
+  const { listPos: listPosObj, hasMore: hasMoreObj, setListPos, openEmail, setOpenEmail } = useListState()
 
   path = path || "inbox"
 
@@ -199,22 +201,14 @@ const ListViewer: React.FC<{
 
     isFetchingRef.current = true;
     setIsLoading(true);
-    try {
-      const res = await api.post<{ hasMore: boolean; emails: EmailObj[] }>(
-        "/listing",
-        { offset: emailList.length, path: path }
-      );
-      setList(path, res.data.emails)
-      setListMore(path, res.data.hasMore)
-      setLoadInbox();
-    } catch (error) {
-      console.error("Error fetching emails:", error);
-      toast.error("Failed to fetch emails. Please try again.");
-    } finally {
-      setIsLoading(false);
-      isFetchingRef.current = false;
-    }
 
+    loadMore(path, (err) => {
+      setIsLoading(false);
+      setLoadInbox();
+      if (!err) {
+        isFetchingRef.current = false;
+      }
+    })
   };
 
   const rowVirtualizer = useVirtual({
@@ -337,7 +331,7 @@ const MailViewer: React.FC<{
           </h1>
         </div>
         <div>
-          <Button variant={"toolbutton"} onClick={onClose}>
+          <Button variant={"ghost"} className="p-2" onClick={onClose}>
             <X size={18} />
           </Button>
         </div>
@@ -557,7 +551,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
                 {formatShortTimestamp(e.b_datetime)}
               </p>
               <Button
-                variant={"toolbutton"}
+                variant={"ghost"}
                 size={"mail"}
                 className="!px-2 !py-1 mt-1"
               >
@@ -733,7 +727,7 @@ const EmailBlock = (e: Email & { panelWidth: number, openBlock: boolean, last: b
               {formatShortTimestamp(e.b_datetime)}
             </p>
             <Button
-              variant="toolbutton"
+              variant="ghost"
               size="mail"
               className="!px-2 !py-1 mt-1"
               onClick={() => { setShowFullTimestamp(!showFullTimestamp); }}

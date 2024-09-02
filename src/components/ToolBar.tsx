@@ -10,14 +10,25 @@ import { Button } from "./ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import { Tooltip } from "./ui/tooltip";
+import useListState from "@/store/listState";
+import { SortDescending } from "@phosphor-icons/react/dist/ssr";
+import useList from "@/store/list";
 
 interface ToolBarProps extends React.HTMLAttributes<HTMLDivElement> {
   onRefresh?: () => void;
   isRefreshing?: boolean;
+  path: string;
 }
 
-const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, ...props }) => {
+const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, path, ...props }) => {
   const [UpDown, setUpDown] = useState(false);
+  const { reverse: reverseObj, setReverse, setListMore } = useListState()
+  const { clearList } = useList()
+
+  const hasReverse = reverseObj[path] || false
+
+  const [filter, setFilter] = useState("all")
 
   return (
     <div
@@ -29,7 +40,7 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, .
     >
       <div className="flex gap-3 items-center">
         <Button
-          variant={"toolbutton"}
+          variant={"ghost"}
           onClick={onRefresh}
           className="rounded-full"
           disabled={isRefreshing}
@@ -56,7 +67,18 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, .
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <ToggleGroup type="single" className="bg-input dark:border-none">
+
+        <ToggleGroup
+          type="single"
+          defaultValue="all"
+          className="bg-input dark:border-none m-auto"
+          value={filter}
+          onValueChange={(v) => {
+            if (v) {
+              setFilter(v)
+            }
+          }}
+        >
           <ToggleGroupItem size={"tooltip"} value="all" aria-label="Toggle bold">
             All
           </ToggleGroupItem>
@@ -71,13 +93,29 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, .
           </ToggleGroupItem>
         </ToggleGroup>
 
-        <Button
-          variant={"toolbutton"}
-          className="!py-1 !px-3"
-          size={"toolsize"}
-        >
-          <SortAscending size={20} />
-        </Button>
+        <Tooltip tip={hasReverse ? "Newest First" : "Older First"} className="h-[28px]">
+          <Button
+            variant={"ghost"}
+            className={cn(
+              "!py-1 !px-2 !h-[28px]",
+              {
+                "!bg-button-active": hasReverse
+              }
+            )}
+            size={"toolsize"}
+            onClick={() => {
+              setReverse(path, !hasReverse)
+              clearList(path)
+              setListMore(path, true)
+            }}
+          >
+            {hasReverse ?
+              <SortAscending size={20} /> :
+              <SortDescending size={20} />
+            }
+          </Button>
+        </Tooltip>
+
       </div>
     </div>
   );
