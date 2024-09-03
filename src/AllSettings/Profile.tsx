@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AnimatePresence, motion } from "framer-motion";
+import zxcvbn from 'zxcvbn';
+import { useToast } from "@/components/ui/use-toast";
 
 const Profile = () => {
   const {
@@ -43,7 +45,6 @@ const Profile = () => {
   const [fullName, setFullName] = useState<string>(profile.full_name);
   const [selectedEmail, setSelectedEmail] = useState<string>(profile.default_email);
   const [nameInEmail, setnameInEmail] = useState(allSetting.profile.nameInMail);
-  const [isDisabled, setIsDisabled] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +53,14 @@ const Profile = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [passwordFeedback, setPasswordFeedback] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [currentPasswordError, setCurrentPasswordError] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [isDataValid, setIsDataValid] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   //image
   const [image, setImage] = useState<string | null>(null);
@@ -63,7 +72,6 @@ const Profile = () => {
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [, setImageChanged] = useState(false);
 
-  const [error] = useState("");
 
   const [showSaveDiscard, setshowSaveDiscard] = useState(false);
 
@@ -74,6 +82,8 @@ const Profile = () => {
     nameInEmail: false,
     image: "",
   });
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (profile) {
@@ -287,26 +297,105 @@ const Profile = () => {
     window.location.reload();
   };
 
-  const passwordData = {
-    currentPassword,
-    confirmPassword,
+  const checkPasswordStrength = (password: string) => {
+    const result = zxcvbn(password);
+    setPasswordStrength(result.score);
+    setPasswordFeedback(result.feedback.warning || result.feedback.suggestions[0] || '');
   };
 
-  const handleChengePassword = async () => {
-    setIsDisabled(true);
-    setIsLoading(true);
-
-    try {
-      const response = await api.post("/profile/reset-password", passwordData);
-      console.log(response.data.error);
-    } catch (error: unknown) {
-      // setError(error.response.data.error);
-      // setError("An error occurred while changing the password.");
-    } finally {
-      setIsDisabled(false);
-      setIsLoading(false);
+  const getPasswordStrengthColor = () => {
+    switch (passwordStrength) {
+      case 0: return 'bg-red-500';
+      case 1: return 'bg-orange-500';
+      case 2: return 'bg-yellow-500';
+      case 3: return 'bg-blue-500';
+      case 4: return 'bg-green-500';
+      default: return 'bg-gray-300';
     }
   };
+
+  const getPasswordStrengthText = () => {
+    switch (passwordStrength) {
+      case 0: return 'Very Weak';
+      case 1: return 'Weak';
+      case 2: return 'Fair';
+      case 3: return 'Strong';
+      case 4: return 'Very Strong';
+      default: return '';
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    switch (field) {
+      case 'currentPassword':
+        setCurrentPassword(value);
+        setCurrentPasswordError('');
+        break;
+      case 'newPassword':
+        setNewPassword(value);
+        setNewPasswordError('');
+        checkPasswordStrength(value);
+
+        break;
+      case 'confirmPassword':
+        setConfirmPassword(value);
+        setConfirmPasswordError('');
+        if (value !== newPassword) {
+          setConfirmPasswordError('Passwords do not match');
+        }
+        break;
+    }
+  };
+
+  const handleChangePassword = () => {
+    if (isDataValid) {
+      setShowConfirmationModal(true);
+    }
+  };
+
+  const confirmPasswordChange = async () => {
+    setIsChangingPassword(true);
+    try {
+      const response = await api.post("/profile/reset-password", {
+        currentPassword,
+        newPassword,
+        confirmPassword
+      });
+
+      if (response.data.success) {
+        setChangePassword(false);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setShowConfirmationModal(false);
+      } else {
+        throw new Error(response.data.error || "Failed to change password");
+      }
+    } catch (error: unknown) {
+      console.error("Error changing password:", error);
+      if (error instanceof Error && 'response' in error) {
+        const apiError = error as { response?: { data?: { error?: string } } };
+        setCurrentPasswordError(apiError.response?.data?.error || 'An error occurred');
+      } else {
+        setCurrentPasswordError('An unexpected error occurred');
+      }
+    } finally {
+      setIsChangingPassword(false);
+      setShowConfirmationModal(false);
+    }
+    setChangePassword(!changePassword)
+    toast({
+      title: "Password Changed",
+      description: "Your password has been successfully updated.",
+    });
+
+  };
+
+  useEffect(() => {
+    const isValid = Boolean(currentPassword && newPassword && confirmPassword &&
+      !currentPasswordError && !newPasswordError && !confirmPasswordError);
+    setIsDataValid(isValid);
+  }, [currentPassword, newPassword, confirmPassword, currentPasswordError, newPasswordError, confirmPasswordError]);
 
   useEffect(() => {
     if (nickname && !finalImg) {
@@ -512,57 +601,114 @@ const Profile = () => {
             key="password"
             modalKey="password"
           >
-            <div className=" py-6 px-6">
-              <div className=" ">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium">Change password</h3>
-                </div>
-                <p className="text-xs text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] mt-1">
-                  Password must contain at least one uppercase letter, one
-                  special character, one number, and be at least 6 characters
-                  long
-                </p>
-              </div>
-              <div className="mt-4">
+            <div className="py-6 px-6">
+              <h3 className="text-lg font-medium mb-4">Change Password</h3>
+              <div className="">
                 <Input
                   type="password"
-                  error={error}
-                  label="Enter your current password"
+                  label="Current Password"
                   value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  disabled={isDisabled}
+                  onChange={(e) => handleInputChange('currentPassword', e.target.value)}
+                  disabled={isChangingPassword}
+                  error={currentPasswordError}
                 />
 
-                <div className="mt-1">
+                <div className="mt-2">
                   <Input
                     type="password"
-                    label="Enter a new password"
+                    label="New Password"
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    disabled={isDisabled}
+                    onChange={(e) => handleInputChange('newPassword', e.target.value)}
+                    disabled={isChangingPassword}
+                    error={newPasswordError}
                   />
+                  <AnimatePresence>
+                    {newPassword && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-2"
+                      >
+                        <div className="flex items-center">
+                          <motion.div
+                            className={`h-2 rounded-full ${getPasswordStrengthColor()}`}
+                            initial={{ width: '0%' }}
+                            animate={{ width: `${(passwordStrength + 1) * 20}%` }}
+                            transition={{ duration: 0.5 }}
+                          />
+                          <span className="ml-2 w-32 text-sm font-medium">{getPasswordStrengthText()}</span>
+                        </div>
+                        {passwordFeedback && (
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-sm text-gray-600 mt-1 "
+                          >
+                            {passwordFeedback}
+                          </motion.p>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-                <div className="mt-1">
+
+                <div className="mt-2">
                   <Input
                     type="password"
-                    label="Confirm your new password"
+                    label="Confirm New Password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    disabled={isDisabled}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    disabled={isChangingPassword}
+                    error={confirmPasswordError}
                   />
                 </div>
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                <div className="mt-4 w-full flex justify-end">
+
+                <div className="flex justify-end mt-6">
                   <Button
-                    className="w-40"
-                    onClick={() => {
-                      handleChengePassword();
-                    }}
+                    className="w-full sm:w-auto"
+                    onClick={handleChangePassword}
                     variant="primary"
+                    disabled={!isDataValid || isChangingPassword}
                   >
-                    {!isLoading ? `Chenge password` : <Spinner />}
+                    Change Password
                   </Button>
                 </div>
+              </div>
+            </div>
+          </ResizeableModel>
+        )}
+
+        {showConfirmationModal && (
+          <ResizeableModel
+            size={{ width: "400px" }}
+            onClose={() => setShowConfirmationModal(false)}
+            key="confirmPassword"
+            modalKey="confirmPassword"
+          >
+            <div className="py-6 px-6">
+              <h3 className="text-lg font-medium mb-4">Confirm Password Change</h3>
+              <p className="mb-4">Are you sure you want to change your password? This action cannot be undone.</p>
+              <div className="flex justify-end gap-4">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowConfirmationModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={confirmPasswordChange}
+                >
+
+                  {isChangingPassword ? (
+                    <Spinner size={20} />
+                  ) : (
+                    'Confirm Change'
+                  )}
+
+                </Button>
               </div>
             </div>
           </ResizeableModel>
