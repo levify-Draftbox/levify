@@ -732,51 +732,51 @@ const EmailBlock = (
       </div>
 
       <div className="flex justify-between py-1">
-        <div className="mt-4 flex gap-1">
+        <div className="mt-4 flex  border-[1px] rounded-md">
           <Tooltip tip="Archive">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="border-0 rounded-none rounded-l-md">
               <Archive size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Move to trash">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0">
               <Trash size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Move to">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none  border-0">
               <FolderPlus size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Add tag">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0">
               <Tag size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Filter">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0" >
               <Funnel size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="More">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0 !rounded-r-md">
               <DotsThree size={15} />
             </Button>
           </Tooltip>
         </div>
-        <div className="mt-4 flex gap-1">
+        <div className="mt-4 flex rounded-md border-[1px]">
           <Tooltip tip="Reply">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="border-0 rounded-none rounded-l-md">
               <ArrowBendUpLeft size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Reply all">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0">
               <ArrowBendDoubleUpLeft size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="forward">
-            <Button variant={"mail"} size={"mail"}>
+            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0 !rounded-r-md">
               <ArrowBendUpRight size={15} />
             </Button>
           </Tooltip>
