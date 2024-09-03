@@ -36,7 +36,7 @@ const Setting = ({ onSettingToggle }: SearchBarProp) => {
             <div className={`h-[51px] flex justify-between sticky top-0 px-3 z-[9999] bg-background-secondary`} >
               <h1 className="my-auto">Settings</h1>
               <Button
-                variant={"toolbutton"}
+                variant={"secondary"}
                 size={"toolsize"}
                 className="my-auto"
                 onClick={() => onSettingToggle()}

@@ -870,7 +870,7 @@ export function processEmailSubject(subject: string): {
   if (matches) {
     tags = matches[0]
       .match(/\[([^\]]+)\]/g)
-      ?.map((tag) => tag.replace(/[\[\]]/g, ""));
+      ?.map((tag) => tag.replace(/[[\]]/g, ""));
   }
   const cleanSubject = subject.replace(tagRegex, "").trim();
   return {

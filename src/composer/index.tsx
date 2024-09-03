@@ -452,7 +452,7 @@ const ComposerModal: React.FC<{
               {!loading && <PaperPlaneTilt size={16} />}
               Send
             </Button>
-            <Button variant={"toolbutton"} disabled={loading}>
+            <Button variant={"secondary"} disabled={loading}>
               <Tooltip tip="Schedule Email">
                 <ClockCountdown size={20} />
               </Tooltip>
