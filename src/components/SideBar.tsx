@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import React, { lazy, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 
 import { Link } from "react-router-dom";
 import ScrollArea from "./ui/ScrollArea";
@@ -27,14 +28,20 @@ const SideBar = () => {
   const [settingOpen, setSettingOpen] = useState(false);
 
   const [sidebarItems, setSidebarItems] = useState([
-    { icon: <Tray size={18} />, label: "Inbox", to: "/inbox", unread: 4 },
-    { icon: <FileText size={18} />, label: "Draft", to: "/draft" },
-    { icon: <PaperPlaneRight size={18} />, label: "Sent", to: "/sent", unread: 12 },
-    { icon: <Star size={18} />, label: "Starred", to: "/star" },
+    { id: 1, icon: <Tray size={18} />, label: "Inbox", to: "/inbox", unread: 4 },
+    { id: 2, icon: <FileText size={18} />, label: "Draft", to: "/draft" },
+    { id: 3, icon: <PaperPlaneRight size={18} />, label: "Sent", to: "/sent", unread: 12 },
+    { id: 4, icon: <Star size={18} />, label: "Starred", to: "/star" },
   ]);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     e.dataTransfer.setData('text/plain', index.toString());
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -48,6 +55,9 @@ const SideBar = () => {
     const [reorderedItem] = newItems.splice(dragIndex, 1);
     newItems.splice(dropIndex, 0, reorderedItem);
     setSidebarItems(newItems);
+
+    // Log the new order to the console
+    console.log("New sidebar order:", newItems.map(item => ({ id: item.id, label: item.label })));
   };
 
   return (
@@ -86,17 +96,24 @@ const SideBar = () => {
       <div className="flex-1 overflow-hidden py-2">
         <ScrollArea border className="flex flex-col gap-1 scroll-hide px-2">
           {sidebarItems.map((item, index) => (
-            <div
-              key={item.label}
+            <motion.div
+              key={item.id}
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              animate={{
+                scale: draggedIndex === index ? 1.05 : 1,
+                opacity: draggedIndex === index ? 0.8 : 1,
+              }}
+              transition={{ duration: 0.2 }}
+              className={`cursor-move ${draggedIndex === index ? 'shadow-lg' : ''}`}
             >
               <SidebarNavLink icon={item.icon} unread={item.unread} to={item.to}>
                 {item.label}
               </SidebarNavLink>
-            </div>
+            </motion.div>
           ))}
           <div
             onClick={() => {
