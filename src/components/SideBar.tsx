@@ -99,7 +99,7 @@ const SideBar = () => {
             <motion.div
               key={item.id}
               draggable
-              onDragStart={(e) => handleDragStart(e, index)}
+              onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent<HTMLDivElement>, index)}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index)}
               onDragEnd={handleDragEnd}
