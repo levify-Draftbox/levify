@@ -35,7 +35,7 @@ const SideBar = () => {
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  const handleDragStart = (e: React.DragEvent, index: number) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.dataTransfer.setData('text/plain', index.toString());
     setDraggedIndex(index);
   };
@@ -99,7 +99,10 @@ const SideBar = () => {
             <motion.div
               key={item.id}
               draggable
-              onDragStart={(e) => handleDragStart(e, index)}
+              onDragStart={(e) => {
+                // @ts-ignore
+                handleDragStart(e, index)
+              }}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index)}
               onDragEnd={handleDragEnd}
