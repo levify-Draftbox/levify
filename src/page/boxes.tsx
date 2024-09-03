@@ -103,7 +103,7 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
 
         {openEmail && (
           <ResizablePanel
-            minSize={50}
+            minSize={35}
             maxSize={70}
             defaultSize={htmlViewWidth}
             onResize={(e) => setHtmlViewWidth(e)}
@@ -641,7 +641,8 @@ const EmailBlock = (
             </HoverCard>
             <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               <p className="text-sm">To:</p>
-              {e.b_to.map((recipient, index) => (
+              {e.b_to.map((recipient, index) => recipient && (
+                
                 <HoverCard key={index}>
                   <HoverCardTrigger>
                     <Badge
@@ -655,7 +656,7 @@ const EmailBlock = (
                     <div className="flex gap-3  items-center">
                       <Avatar className="w-14 h-14">
                         <AvatarImage src={`/api/placeholder/32/32`} />
-                        <AvatarFallback>{recipient.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{recipient?.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
                         <p className="text-sm font-medium">
