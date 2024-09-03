@@ -178,7 +178,10 @@ const ListViewer: React.FC<{
             name: e.b_from_name,
             profile: e.from_profile,
           }))}
-          unread={e.emails.find((e: Email) => e.path == path && e.unread)?.unread as boolean}
+          unread={
+            e.emails.find((e: Email) => e.path == path && e.unread)
+              ?.unread as boolean
+          }
           className={cn(
             "hover:bg-[rgba(0,0,0,0.02)] dark:hover:bg-[rgba(255,255,255,0.025)]",
             {
@@ -213,7 +216,9 @@ const ListViewer: React.FC<{
   });
 
   useEffect(() => {
-    if (listPos == 0) { /* empty */ } else {
+    if (listPos == 0) {
+      /* empty */
+    } else {
       rowVirtualizer.scrollToIndex(listPos);
     }
   }, []);
@@ -685,9 +690,9 @@ const EmailBlock = (
           </div>
         </div>
 
-        <div className="w-[100px]">
+        <div className="w-[130px]">
           <div className="w-full flex flex-col items-end">
-            <div className="flex gap-1 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+            <div className="flex justify-end w-full gap-1 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               <Tooltip tip="Star message">
                 <Star size={16} />
               </Tooltip>
@@ -695,7 +700,7 @@ const EmailBlock = (
               <Tooltip tip="Inbox">
                 <Tray size={16} />
               </Tooltip>
-              <p className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm">
+              <p className="text-[rgba(0,0,0,0.5)] flex dark:text-[rgba(255,255,255,0.5)] text-sm">
                 {formatShortTimestamp(e.b_datetime)}
               </p>
             </div>
@@ -734,49 +739,85 @@ const EmailBlock = (
       <div className="flex justify-between py-1">
         <div className="mt-4 flex  border-[1px] rounded-md">
           <Tooltip tip="Archive">
-            <Button variant={"mail"} size={"mail"} className="border-0 rounded-none rounded-l-md">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="border-0 rounded-none rounded-l-md"
+            >
               <Archive size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Move to trash">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none border-0"
+            >
               <Trash size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Move to">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none  border-0">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none  border-0"
+            >
               <FolderPlus size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Add tag">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none border-0"
+            >
               <Tag size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Filter">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0" >
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none border-0"
+            >
               <Funnel size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="More">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0 !rounded-r-md">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none border-0 !rounded-r-md"
+            >
               <DotsThree size={15} />
             </Button>
           </Tooltip>
         </div>
         <div className="mt-4 flex rounded-md border-[1px]">
           <Tooltip tip="Reply">
-            <Button variant={"mail"} size={"mail"} className="border-0 rounded-none rounded-l-md">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="border-0 rounded-none rounded-l-md"
+            >
               <ArrowBendUpLeft size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="Reply all">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none border-0"
+            >
               <ArrowBendDoubleUpLeft size={15} />
             </Button>
           </Tooltip>
           <Tooltip tip="forward">
-            <Button variant={"mail"} size={"mail"} className="!rounded-none border-0 !rounded-r-md">
+            <Button
+              variant={"mail"}
+              size={"mail"}
+              className="!rounded-none border-0 !rounded-r-md"
+            >
               <ArrowBendUpRight size={15} />
             </Button>
           </Tooltip>
