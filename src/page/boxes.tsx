@@ -54,7 +54,9 @@ export type Email = {
   b_from: string;
   b_from_name: string;
   b_to: string[];
+  b_to_name: string[];
   b_cc: string[];
+  b_cc_name: string[];
   b_subject: string;
   b_text: string;
   b_html: string;
@@ -111,7 +113,7 @@ const Boxes: React.FC<{ path: string }> = ({ path }) => {
             <div className="!h-full border-l border-border">
               <MailViewer
                 key={openEmail?.thread_id || ""}
-                emails={openEmail as EmailObj}
+                eo={openEmail as EmailObj}
                 onClose={handleClose}
                 width={htmlViewWidth}
               />
@@ -273,25 +275,23 @@ const ListViewer: React.FC<{
 };
 
 const MailViewer: React.FC<{
-  emails: EmailObj;
+  eo: EmailObj;
   key: number | string;
   onClose: () => void;
   width: number;
-}> = ({ emails, onClose, width: htmlWidth }) => {
+}> = ({ eo, onClose, width: htmlWidth }) => {
   const { setUnread } = useList();
 
-  let e = emails.emails[0];
-  let revArray = emails.emails.slice().reverse();
-  let lastEmail = revArray.find((e) => e.new == false || !e.new) || revArray[0];
+  let e = eo.emails[0];
 
   useEffect(() => {
-    if (lastEmail.unread) {
+    if (eo.emails.length == 1) {
       setUnread({
         notify: true,
-        thread_id: lastEmail.thread_id,
-        email_id: lastEmail.id,
+        thread_id: e.thread_id,
+        email_id: e.id,
         unread: false,
-        path: emails.emails.slice(-1)[0].path,
+        path: eo.emails.slice(-1)[0].path,
       });
     }
   }, []);
@@ -337,13 +337,13 @@ const MailViewer: React.FC<{
       </div>
 
       <div className="flex flex-col gap-4">
-        {emails.emails.map((e, i) => {
+        {eo.emails.map((e, i) => {
           if (true)
             return (
               <EmailBlock
-                totalEmail={emails.emails.length}
-                last={i == emails.emails.length - 1}
-                openBlock={e.uid == lastEmail.uid}
+                totalEmail={eo.emails.length}
+                last={i == eo.emails.length - 1}
+                // openBlock={e.uid == e.uid}
                 panelWidth={htmlWidth}
                 {...e}
               />
@@ -357,7 +357,7 @@ const MailViewer: React.FC<{
 const EmailBlock = (
   e: Email & {
     panelWidth: number;
-    openBlock: boolean;
+    // openBlock: boolean;
     last: boolean;
     totalEmail: number;
   }
@@ -366,7 +366,7 @@ const EmailBlock = (
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10);
   const [openBlock, setOpenBlock] = useState(
-    e.totalEmail == 1 ? true : e.new ? false : e.openBlock
+    e.totalEmail == 1 ? true : false
   );
 
   const [showFullTimestamp, setShowFullTimestamp] = useState(false);
@@ -642,7 +642,7 @@ const EmailBlock = (
             <div className="flex items-center gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
               <p className="text-sm">To:</p>
               {e.b_to.map((recipient, index) => recipient && (
-                
+
                 <HoverCard key={index}>
                   <HoverCardTrigger>
                     <Badge
