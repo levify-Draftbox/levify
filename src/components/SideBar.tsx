@@ -1,16 +1,12 @@
 import { Button } from "./ui/button";
 import {
-  Archive,
-  CalendarBlank,
   CaretDown,
   CaretRight,
   FileText,
   Gear,
   PaperPlaneRight,
   Star,
-  TrashSimple,
   Tray,
-  WarningOctagon,
 } from "@phosphor-icons/react";
 import React, { lazy, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
@@ -27,57 +23,81 @@ const SideBar = () => {
   const { allSetting } = useProfileStore();
   const [moreLess, setmoreLess] = useState(false);
 
-  const { newComposer } = useComposerStore()
-  const [settingOpen, setSettingOpen] = useState(false)
+  const { newComposer } = useComposerStore();
+  const [settingOpen, setSettingOpen] = useState(false);
+
+  const [sidebarItems, setSidebarItems] = useState([
+    { icon: <Tray size={18} />, label: "Inbox", to: "/inbox", unread: 4 },
+    { icon: <FileText size={18} />, label: "Draft", to: "/draft" },
+    { icon: <PaperPlaneRight size={18} />, label: "Sent", to: "/sent", unread: 12 },
+    { icon: <Star size={18} />, label: "Starred", to: "/star" },
+  ]);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.dataTransfer.setData('text/plain', index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    const dragIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+    const newItems = [...sidebarItems];
+    const [reorderedItem] = newItems.splice(dragIndex, 1);
+    newItems.splice(dropIndex, 0, reorderedItem);
+    setSidebarItems(newItems);
+  };
 
   return (
     <div className="flex flex-col justify-between h-full dark:bg-transparent selection:select-none">
       <div className="p-2">
         <div className="w-full flex flex-col mt-1">
           <Link to="/inbox" className="cursor-pointer mx-2">
-            <img className="max-h-[28px]" alt="DraftBox Mail" src={
-              allSetting?.appearance?.theme === "system" ?
-                !window.matchMedia("(prefers-color-scheme: dark)")
-                  .matches
-                  ? "/logo-light.svg" : "/logo-dark.svg"
-                :
-                allSetting?.appearance?.theme === "light" ? "/logo-light.svg" : "/logo-dark.svg"
-            } />
+            <img
+              className="max-h-[28px]"
+              alt="DraftBox Mail"
+              src={
+                allSetting?.appearance?.theme === "system"
+                  ? !window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "/logo-light.svg"
+                    : "/logo-dark.svg"
+                  : allSetting?.appearance?.theme === "light"
+                  ? "/logo-light.svg"
+                  : "/logo-dark.svg"
+              }
+            />
           </Link>
 
           <div className="mt-3">
-            <Button onClick={() => newComposer()} variant={"primary"} size={"sm"}>
+            <Button
+              onClick={() => newComposer()}
+              variant={"primary"}
+              size={"sm"}
+            >
               New Message
             </Button>
-          </div>
 
+          </div>
         </div>
       </div>
 
       <div className="flex-1 overflow-hidden py-2">
         <ScrollArea border className="flex flex-col gap-1 scroll-hide px-2">
-          <SidebarNavLink
-            icon={<Tray size={18} />}
-            unread={4}
-            to="/inbox"
-          >Inbox</SidebarNavLink>
-
-          <SidebarNavLink
-            icon={<FileText size={18} />}
-            to="/draft"
-          >Draft</SidebarNavLink>
-
-          <SidebarNavLink
-            icon={<PaperPlaneRight size={18} />}
-            unread={12}
-            to="/sent"
-          >Sent</SidebarNavLink>
-
-          <SidebarNavLink
-            icon={<Star size={18} />}
-            to="/star"
-          >Starred</SidebarNavLink>
-
+          {sidebarItems.map((item, index) => (
+            <div
+              key={item.label}
+              draggable
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, index)}
+            >
+              <SidebarNavLink icon={item.icon} unread={item.unread} to={item.to}>
+                {item.label}
+              </SidebarNavLink>
+            </div>
+          ))}
           <div
             onClick={() => {
               setmoreLess(!moreLess);
@@ -98,35 +118,6 @@ const SideBar = () => {
               </div>
             )}
           </div>
-          {
-            [0, 0, 0, 0, 0, 0].map(_ =>
-              moreLess && (
-                <div className="flex flex-col gap-1">
-
-                  <SidebarNavLink
-                    icon={<CalendarBlank size={18} />}
-                    to="/inbox/later"
-                  >Send later</SidebarNavLink>
-
-                  <SidebarNavLink
-                    icon={<WarningOctagon size={18} />}
-                    unread={3}
-                    to="/inbox/spam"
-                  >Spam</SidebarNavLink>
-
-                  <SidebarNavLink
-                    icon={<Archive size={18} />}
-                    to="/inbox/archive"
-                  >Archive</SidebarNavLink>
-
-                  <SidebarNavLink
-                    icon={<TrashSimple size={18} />}
-                    to="/inbox/trash"
-                  >Trash</SidebarNavLink>
-
-                </div>
-              ))
-          }
         </ScrollArea>
       </div>
 
@@ -152,27 +143,33 @@ const SideBar = () => {
       </div>
 
       {settingOpen && (
-        <Modal width={"58%"} key="full-settings" modalKey="full-settings" onClose={() => setSettingOpen(false)}>
-          <Suspense fallback={
-            <div className="flex items-center justify-center h-full w-full">
-              <Spinner size={50} borderWidth={4} />
-            </div>
-          }>
+        <Modal
+          width={"58%"}
+          key="full-settings"
+          modalKey="full-settings"
+          onClose={() => setSettingOpen(false)}
+        >
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full w-full">
+                <Spinner size={50} borderWidth={4} />
+              </div>
+            }
+          >
             <AllSettings />
           </Suspense>
         </Modal>
       )}
-
     </div>
   );
 };
 
 type SidebarNavLinkProp = {
-  icon: React.ReactNode
-  children: React.ReactNode
-  to?: string
-  unread?: number
-}
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  to?: string;
+  unread?: number;
+};
 function SidebarNavLink(p: SidebarNavLinkProp) {
   return (
     <Button variant={"navlink"} to={p.to || "/"}>
@@ -182,17 +179,15 @@ function SidebarNavLink(p: SidebarNavLinkProp) {
       </div>
       <div>
         <div className=" flex justify-center gap-2 items-center">
-
-          {
-            p.unread && p.unread > 0 &&
+          {p.unread && p.unread > 0 && (
             <p className="text-white text-sm px-[10px] bg-core rounded-full py-[1px] !font-bold">
               {p.unread}
             </p>
-          }
+          )}
         </div>
       </div>
     </Button>
-  )
+  );
 }
 
 export default SideBar;
