@@ -81,12 +81,22 @@ const useList = create<List>()((set, get) => ({
             let reverse = reverseObj[path] || false
             let hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
 
+            let lastEmail = emails[emails.length - 1]
+
             if (reverse && hasMore) {
                 // TODO: add unread count
+                if (openEmail && openEmail.thread_id == lastEmail.thread_id) {
+                    setOpenEmail({
+                        emails: emails,
+                        latest_date: lastEmail.dateandtime,
+                        subject: lastEmail.b_subject,
+                        thread_id: lastEmail.thread_id,
+                        unread: lastEmail.unread,
+                        updated: true,
+                    })
+                }
                 return
             }
-
-            let lastEmail = emails[emails.length - 1]
 
             set(s => {
                 let list = (s.list[path] || []).slice()
@@ -96,12 +106,13 @@ const useList = create<List>()((set, get) => ({
 
                 if (!emailObj) {
 
-                    let newMailObj = {
+                    let newMailObj: EmailObj = {
                         emails: emails,
                         latest_date: lastEmail.dateandtime,
                         subject: lastEmail.b_subject,
                         thread_id: lastEmail.thread_id,
-                        unread: lastEmail.unread
+                        unread: lastEmail.unread,
+                        updated: false,
                     }
                     list = !reverse ? [newMailObj, ...list] : [...list, newMailObj] as EmailObj[]
 
@@ -125,7 +136,7 @@ const useList = create<List>()((set, get) => ({
                 if (emailObj.thread_id == openEmail?.thread_id) {
                     // if open mail and incoming new mail thread id 
                     // same than set email obj into here
-                    setOpenEmail(emailObj)
+                    setOpenEmail({ ...emailObj, updated: true })
                 }
 
                 return {

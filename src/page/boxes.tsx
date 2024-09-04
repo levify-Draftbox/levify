@@ -73,6 +73,7 @@ export type EmailObj = {
   subject: string;
   latest_date: string;
   emails: Email[];
+  updated: boolean; // update by ws or appendMail/setOpenEmail 
 };
 
 const Boxes: React.FC<{ path: string }> = ({ path }) => {
@@ -277,18 +278,16 @@ const MailViewer: React.FC<{
 }> = ({ eo, onClose, width: htmlWidth }) => {
   const { setUnread } = useList();
 
-  let e = eo.emails[0];
+  let e = eo.emails[eo.emails.length - 1];
 
   useEffect(() => {
-    if (eo.emails.length == 1) {
-      setUnread({
-        notify: true,
-        thread_id: e.thread_id,
-        email_id: e.id,
-        unread: false,
-        path: eo.emails.slice(-1)[0].path,
-      });
-    }
+    setUnread({
+      notify: true,
+      thread_id: e.thread_id,
+      email_id: e.id,
+      unread: false,
+      path: e.path,
+    });
   }, []);
 
   return (
@@ -337,8 +336,7 @@ const MailViewer: React.FC<{
             return (
               <EmailBlock
                 totalEmail={eo.emails.length}
-                last={i == eo.emails.length - 1}
-                // openBlock={e.uid == e.uid}
+                openBlock={eo.emails.length == 1 || (!eo.updated && eo.emails.length == i + 1)}
                 panelWidth={htmlWidth}
                 {...e}
               />
@@ -352,17 +350,14 @@ const MailViewer: React.FC<{
 const EmailBlock = (
   e: Email & {
     panelWidth: number;
-    // openBlock: boolean;
-    last: boolean;
+    openBlock: boolean;
     totalEmail: number;
   }
 ) => {
   const viewMode = e.b_html && e.b_html !== "" ? "html" : "text";
   const htmlView = useRef<HTMLIFrameElement>(null);
   const [emailHeight, setEmailHeight] = useState<number>(10);
-  const [openBlock, setOpenBlock] = useState(
-    e.totalEmail == 1 ? true : false
-  );
+  const [openBlock, setOpenBlock] = useState(e.openBlock);
 
   const [showFullTimestamp, setShowFullTimestamp] = useState(false);
 

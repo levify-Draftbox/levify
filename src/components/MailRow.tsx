@@ -185,7 +185,7 @@ export function EmailRowSkeleton() {
     <div
       className={cn(
         "group",
-        "w-full h-[50px] border-b px-4 py-[6px] justify-between items-center cursor-pointer text-[15px] font-[350]",
+        "w-full h-[50px] border-b px-2 py-[6px] justify-between items-center cursor-pointer text-[15px] font-[350]",
       )}
     >
       <Skeleton className="w-full h-[38px] rounded-md" />
