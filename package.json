@@ -24,6 +24,7 @@
     "@editorjs/raw": "^2.5.0",
     "@editorjs/simple-image": "^1.6.0",
     "@editorjs/table": "^2.3.0",
+    "@million/lint": "^1.0.0-rc.84",
     "@phosphor-icons/react": "^2.1.6",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.0",

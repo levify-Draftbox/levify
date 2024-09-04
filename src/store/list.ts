@@ -14,7 +14,7 @@ export type UnreadFunc = (_: { unread: boolean, email_id: number, thread_id: str
 type List = {
     setList: (log: string, list: EmailObj[]) => void,
     setUnread: UnreadFunc,
-    appendMail: (path: string, mail: Email) => void,
+    appendMail: (paths: string[], emails: Email[], threadId: string) => void,
     loadMore: (path: string, cd: (err: any) => void) => void,
     clearList: (path: string) => void,
     list: MailList
@@ -66,14 +66,6 @@ const useList = create<List>()((set, get) => ({
                 return eo
             })
 
-            console.log({
-                ...s,
-                list: {
-                    ...s.list,
-                    [path]: list
-                }
-            });
-
             return {
                 ...s,
                 list: {
@@ -83,32 +75,69 @@ const useList = create<List>()((set, get) => ({
             }
         })
     },
-    appendMail: (path: string, mail: Email) => {
+    appendMail: (paths: string[], emails: Email[], threadId: string) => {
         const { openEmail, setOpenEmail, reverse: reverseObj, hasMore: hasMoreObj } = useListState.getState()
-        let reverse = reverseObj[path] || false
-        let hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
+        for (let path of paths) {
+            let reverse = reverseObj[path] || false
+            let hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
 
-        if (reverse && hasMore) {
-            // TODO: add unread count
-            return
-        }
+            let lastEmail = emails[emails.length - 1]
 
-        set(s => {
-            let list = (s.list[path] || []).slice()
-
-            const emailObj = list?.find(eo => eo.thread_id == mail.thread_id);
-            mail.new = true;
-
-            if (!emailObj) {
-
-                let newMailObj = {
-                    emails: [mail],
-                    latest_date: mail.dateandtime,
-                    subject: mail.b_subject,
-                    thread_id: mail.thread_id,
-                    unread: mail.unread
+            if (reverse && hasMore) {
+                // TODO: add unread count
+                if (openEmail && openEmail.thread_id == lastEmail.thread_id) {
+                    setOpenEmail({
+                        emails: emails,
+                        latest_date: lastEmail.dateandtime,
+                        subject: lastEmail.b_subject,
+                        thread_id: lastEmail.thread_id,
+                        unread: lastEmail.unread,
+                        updated: true,
+                    })
                 }
-                list = !reverse ? [newMailObj, ...list] : [...list, newMailObj] as EmailObj[]
+                return
+            }
+
+            set(s => {
+                let list = (s.list[path] || []).slice()
+
+                const emailObj = list?.find(eo => eo.thread_id == threadId);
+                lastEmail.new = true;
+
+                if (!emailObj) {
+
+                    let newMailObj: EmailObj = {
+                        emails: emails,
+                        latest_date: lastEmail.dateandtime,
+                        subject: lastEmail.b_subject,
+                        thread_id: lastEmail.thread_id,
+                        unread: lastEmail.unread,
+                        updated: false,
+                    }
+                    list = !reverse ? [newMailObj, ...list] : [...list, newMailObj] as EmailObj[]
+
+                    return {
+                        ...s,
+                        list: {
+                            ...s.list,
+                            [path]: list
+                        }
+                    }
+                }
+
+                let oldMailList = list.filter(eo => eo.thread_id != threadId)
+                emailObj.emails = emails
+                emailObj.latest_date = lastEmail.dateandtime
+                emailObj.subject = lastEmail.b_subject
+                emailObj.unread = lastEmail.unread
+
+                list = !reverse ? [emailObj, ...oldMailList] : [...oldMailList, emailObj]
+
+                if (emailObj.thread_id == openEmail?.thread_id) {
+                    // if open mail and incoming new mail thread id 
+                    // same than set email obj into here
+                    setOpenEmail({ ...emailObj, updated: true })
+                }
 
                 return {
                     ...s,
@@ -117,30 +146,8 @@ const useList = create<List>()((set, get) => ({
                         [path]: list
                     }
                 }
-            }
-
-            let oldMailList = list.filter(eo => eo.thread_id != mail.thread_id)
-            emailObj.emails.push(mail)
-            emailObj.latest_date = mail.dateandtime
-            emailObj.subject = mail.b_subject
-            emailObj.unread = mail.unread
-
-            list = !reverse ? [emailObj, ...oldMailList] : [...oldMailList, emailObj]
-
-            if (emailObj.thread_id == openEmail?.thread_id) {
-                // if open mail and incoming new mail thread id 
-                // same than set email obj into here
-                setOpenEmail(emailObj)
-            }
-
-            return {
-                ...s,
-                list: {
-                    ...s.list,
-                    [path]: list
-                }
-            }
-        })
+            })
+        }
     },
     loadMore: async (path: string, cd: Function) => {
         let { list: emailListObj, setList } = get()

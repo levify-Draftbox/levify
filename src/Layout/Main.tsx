@@ -69,15 +69,18 @@ const Main = () => {
     });
 
     setNotifyFunc((d) => {
-      const { mode, notify, mail: email } = d as {
+      const { mode, notify, email_t: emails, paths, thread_id: threadId } = d as {
         mode: "append" | "remove";
         notify: boolean;
-        mail: Email;
+        email_t: Email[];
+        paths: string[];
+        thread_id: string;
       };
 
       if (mode == "append") {
 
-        appendMail(email.path, email)
+        appendMail(paths, emails, threadId)
+        let [email] = emails.slice(-1)
 
         if (notify) {
           if (document.hasFocus()) {
