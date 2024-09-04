@@ -1,14 +1,13 @@
 import ToolBar from "@/components/ToolBar";
 import { useVirtual } from "react-virtual";
 import React, { useEffect, useRef, useState } from "react";
-import MailRow from "@/components/MailRow";
+import MailRow, { EmailRowSkeleton } from "@/components/MailRow";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/Spinner";
 import useloadInboxModal from "@/store/loadinbox";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -151,11 +150,7 @@ const ListViewer: React.FC<{
 
   const renderEmail = (index: number) => {
     if (index >= emailList.length) {
-      return (
-        <div className="my-6 flex justify-center w-full">
-          <Spinner size={30} />
-        </div>
-      );
+      return new Array(20).fill("").map(() => <EmailRowSkeleton />)
     }
 
     const e = emailList[index];
@@ -198,8 +193,8 @@ const ListViewer: React.FC<{
 
   const fetchEmails = async () => {
     if (isFetchingRef.current) return;
-
     isFetchingRef.current = true;
+
     setIsLoading(true);
 
     loadMore(path, (err) => {
