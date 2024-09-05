@@ -58,13 +58,17 @@ const Main = () => {
 
   useEffect(() => {
     setUnReadFunc((d) => {
-      const { email_id, unread, thread_id } = d as { email_id: number; unread: boolean, thread_id: string };
+      const { id, unread, thread_id, path } = d as Email;
+
       setUnread({
         notify: false,
-        thread_id: thread_id,
-        email_id: email_id,
-        unread: unread,
-        path: "inbox", // todo
+        unread: unread || false,
+        email: {
+          path: path,
+          id: id,
+          thread_id: thread_id,
+          unread: !unread,
+        } as Email
       })
     });
 
@@ -78,8 +82,8 @@ const Main = () => {
       };
 
       if (mode == "append") {
-
         appendMail(paths, emails, threadId)
+
         let [email] = emails.slice(-1)
 
         if (notify) {
