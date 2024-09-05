@@ -18,6 +18,8 @@ const Login = lazy(() => import("./Auth/Login"))
 const Signup = lazy(() => import("./Auth/Signup"))
 const MailboxContainer = lazy(() => import("./page/box"))
 const LazyCalendar = lazy(() => import("./calendar/Main"));
+const LazyNotes = lazy(() => import("./notes/Main"));
+
 
 function App() {
   const { open, toggleModal } = useInterServerModal();
@@ -129,6 +131,15 @@ function App() {
               element={
                 <Suspense fallback={<div>Loading...</div>}>
                   <LazyCalendar />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path="/notes/home"
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <LazyNotes />
                 </Suspense>
               }
             />

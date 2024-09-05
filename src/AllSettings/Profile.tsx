@@ -28,8 +28,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AnimatePresence, motion } from "framer-motion";
 import zxcvbn from 'zxcvbn';
-import { toast } from "sonner";
-
 
 
 const Profile = () => {
@@ -364,12 +362,12 @@ const Profile = () => {
       });
 
       if (response.data.success) {
+        alert("Password changed successfully");
         setChangePassword(false);
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
         setShowConfirmationModal(false);
-        toast.success("Password changed successfully");
 
 
       } else {
@@ -379,7 +377,7 @@ const Profile = () => {
       console.error("Error changing password:", error);
       if (error instanceof Error && 'response' in error) {
         const apiError = error as { response?: { data?: { error?: string } } };
-        setCurrentPasswordError(apiError.response?.data?.error);
+        setCurrentPasswordError(apiError.response?.data?.error || "");
       }
     } finally {
       setIsChangingPassword(false);
