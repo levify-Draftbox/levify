@@ -279,15 +279,16 @@ const MailViewer: React.FC<{
   const { setUnread } = useList();
 
   let e = eo.emails[eo.emails.length - 1];
+  let useEffectCallRef = useRef<boolean>(false)
 
   useEffect(() => {
+    if (useEffectCallRef.current) return
     setUnread({
       notify: true,
-      thread_id: e.thread_id,
-      email_id: e.id,
+      email: e,
       unread: false,
-      path: e.path,
     });
+    useEffectCallRef.current = true
   }, []);
 
   return (
@@ -485,15 +486,11 @@ const EmailBlock = (
             className="my-0 flex gap-3 w-[90%]"
             onClick={() => {
               setOpenBlock(true);
-              if (e.unread) {
-                setUnread({
-                  notify: true,
-                  email_id: e.id,
-                  thread_id: e.thread_id,
-                  unread: false,
-                  path: e.path,
-                });
-              }
+              setUnread({
+                notify: true,
+                email: e,
+                unread: false,
+              });
             }}
           >
             <img

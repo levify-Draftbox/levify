@@ -9,7 +9,7 @@ type MailList = {
     [_: string]: EmailObj[]
 }
 
-export type UnreadFunc = (_: { unread: boolean, email_id: number, thread_id: string, notify: boolean, path: string }) => void
+export type UnreadFunc = (_: { unread: boolean, notify: boolean, email: Email }) => void
 
 type List = {
     setList: (log: string, list: EmailObj[]) => void,
@@ -35,16 +35,23 @@ const useList = create<List>()((set, get) => ({
             }
         }))
     },
-    setUnread: ({ notify, email_id, thread_id, unread, path }) => {
+    setUnread: ({ notify, email, unread }) => {
+        if (email.unread == unread) return
+
+        const { unreadCount, setUnreadCount } = useListState.getState()
+        const unreadMsgs = unreadCount[email.path] || 0
+
+        setUnreadCount(email.path, unreadMsgs + (unread ? 1 : -1))
+
         if (notify) {
             sendToWs(
                 JSON.stringify({
                     event: "unread",
                     data: {
-                        thread_id: thread_id,
-                        email_id: email_id,
+                        thread_id: email.thread_id,
+                        email_id: email.id,
                         unread: unread,
-                        path: path,
+                        path: email.path,
                     },
                 })
             );
@@ -52,11 +59,11 @@ const useList = create<List>()((set, get) => ({
 
         set(s => {
 
-            let list = s.list[path] || []
+            let list = s.list[email.path] || []
             list = list.map(eo => {
-                if (eo.thread_id == thread_id) {
+                if (eo.thread_id == email.thread_id) {
                     eo.emails = eo.emails.map((e: Email) => {
-                        if (e.id == email_id) {
+                        if (e.id == email.id) {
                             e.unread = unread
                             e.new = false
                         }
@@ -70,18 +77,20 @@ const useList = create<List>()((set, get) => ({
                 ...s,
                 list: {
                     ...s.list,
-                    [path]: list
+                    [email.path]: list
                 }
             }
         })
     },
     appendMail: (paths: string[], emails: Email[], threadId: string) => {
-        const { openEmail, setOpenEmail, reverse: reverseObj, hasMore: hasMoreObj } = useListState.getState()
+        const { openEmail, setOpenEmail, reverse: reverseObj, hasMore: hasMoreObj, unreadCount, setUnreadCount } = useListState.getState()
+        let lastEmail = emails[emails.length - 1]
+        let unreadMsgs = unreadCount[lastEmail.path] || 0
+        setUnreadCount(lastEmail.path, unreadMsgs + 1)
+
         for (let path of paths) {
             let reverse = reverseObj[path] || false
             let hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
-
-            let lastEmail = emails[emails.length - 1]
 
             if (reverse && hasMore) {
                 // TODO: add unread count

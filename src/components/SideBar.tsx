@@ -18,7 +18,10 @@ import useComposerStore from "@/store/composer";
 import { useProfileStore } from "@/store/profile";
 import Modal from "./ui/Modal";
 import { Spinner } from "./Spinner";
+import useListState from "@/store/listState";
 const AllSettings = lazy(() => import("@/AllSettings"));
+
+type SidebarList = { id: number, icon: React.ReactNode, label: string, path: string }
 
 const SideBar = () => {
   const { allSetting } = useProfileStore();
@@ -27,12 +30,13 @@ const SideBar = () => {
   const { newComposer } = useComposerStore();
   const [settingOpen, setSettingOpen] = useState(false);
 
-  const [sidebarItems, setSidebarItems] = useState([
-    { id: 1, icon: <Tray size={18} />, label: "Inbox", to: "/inbox", unread: 4 },
-    { id: 2, icon: <FileText size={18} />, label: "Draft", to: "/draft" },
-    { id: 3, icon: <PaperPlaneRight size={18} />, label: "Sent", to: "/sent", unread: 12 },
-    { id: 4, icon: <Star size={18} />, label: "Starred", to: "/star" },
+  const [sidebarItems, setSidebarItems] = useState<SidebarList[]>([
+    { id: 1, icon: <Tray size={18} />, label: "Inbox", path: "inbox" },
+    { id: 2, icon: <FileText size={18} />, label: "Draft", path: "draft" },
+    { id: 3, icon: <PaperPlaneRight size={18} />, label: "Sent", path: "sent" },
+    { id: 4, icon: <Star size={18} />, label: "Starred", path: "star" },
   ]);
+
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
@@ -74,8 +78,8 @@ const SideBar = () => {
                     ? "/logo-light.svg"
                     : "/logo-dark.svg"
                   : allSetting?.appearance?.theme === "light"
-                  ? "/logo-light.svg"
-                  : "/logo-dark.svg"
+                    ? "/logo-light.svg"
+                    : "/logo-dark.svg"
               }
             />
           </Link>
@@ -113,7 +117,7 @@ const SideBar = () => {
               transition={{ duration: 0.2 }}
               className={`cursor-move ${draggedIndex === index ? 'shadow-lg' : ''}`}
             >
-              <SidebarNavLink icon={item.icon} unread={item.unread} to={item.to}>
+              <SidebarNavLink {...item}>
                 {item.label}
               </SidebarNavLink>
             </motion.div>
@@ -184,26 +188,22 @@ const SideBar = () => {
   );
 };
 
-type SidebarNavLinkProp = {
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  to?: string;
-  unread?: number;
-};
-function SidebarNavLink(p: SidebarNavLinkProp) {
+function SidebarNavLink(p: SidebarList) {
+  const { unreadCount } = useListState()
+  const unreadMsg = unreadCount[p.path]
+
   return (
-    <Button variant={"navlink"} to={p.to || "/"}>
+    <Button variant={"navlink"} to={`/${p.path}` || "/"}>
       <div className="flex gap-2">
         {p.icon}
-        <p className="text-sm">{p.children}</p>
+        <p className="text-sm">{p.label}</p>
       </div>
       <div>
         <div className=" flex justify-center gap-2 items-center">
-          {p.unread && p.unread > 0 && (
+          {(unreadMsg && unreadMsg != 0) ? (
             <p className="text-white text-sm px-[10px] bg-core rounded-full py-[1px] !font-bold">
-              {p.unread}
-            </p>
-          )}
+              {unreadMsg}
+            </p>) : <></>}
         </div>
       </div>
     </Button>

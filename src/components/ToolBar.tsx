@@ -15,6 +15,17 @@ import useListState from "@/store/listState";
 import { SortDescending } from "@phosphor-icons/react/dist/ssr";
 import useList from "@/store/list";
 
+const nameOfBox: { [path: string]: string } = {
+  inbox: "Inbox",
+  sent: "Sent",
+  spam: "Spam",
+  all: "All Mails"
+}
+
+const otherName: { [path: string]: string } = {
+  draft: "Dummy"
+}
+
 interface ToolBarProps extends React.HTMLAttributes<HTMLDivElement> {
   onRefresh?: () => void;
   isRefreshing?: boolean;
@@ -22,13 +33,12 @@ interface ToolBarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, path, ...props }) => {
-  const [UpDown, setUpDown] = useState(false);
   const { reverse: reverseObj, setReverse, setListMore } = useListState()
   const { clearList } = useList()
-
   const hasReverse = reverseObj[path] || false
-
+  const { unreadCount } = useListState()
   const [filter, setFilter] = useState("all")
+  const unreadMsgs = unreadCount[path] || 0
 
   return (
     <div
@@ -39,33 +49,22 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, p
       {...props}
     >
       <div className="flex gap-3 items-center">
-        <Button
-          variant={"ghost"}
-          onClick={onRefresh}
-          className="rounded-full"
-          disabled={isRefreshing}
-        >
-          <ArrowClockwise size={16} className={isRefreshing ? "animate-spin" : ""} />
-        </Button>
         <div className="flex items-center p-1 rounded-lg gap-1 hover:bg-[rgba(0,0,0,0.06)]">
           <Checkbox />
-          <div
-            onClick={() => {
-              setUpDown(!UpDown);
-            }}
-          >
-            {UpDown ? (
-              <CaretUp weight="fill" size={12} />
-            ) : (
-              <CaretDown weight="fill" size={12} />
-            )}
-          </div>
         </div>
-        <h2 className="font-semibold text-lg">Inbox</h2>
-        <div className="py-1 px-1 rounded-md hover:bg-[rgba(0,0,0,0.07)] ">
-          <DotsThree weight="bold" size={18} />
-        </div>
+        <h2 className="text-md">
+          {nameOfBox[path] || otherName[path] || "Other"}
+        </h2>
+        {unreadMsgs ?
+          <h2>
+            <Tooltip tip={`${unreadMsgs} Unread Messages`} className="h-[20px] pt-[2px]">
+              <span className="text-core font-semibold cursor-pointer " onClick={() => setFilter("unread")}>{unreadMsgs}</span>
+            </Tooltip>
+          </h2>
+          : <></>
+        }
       </div>
+
       <div className="flex items-center gap-2">
 
         <ToggleGroup
