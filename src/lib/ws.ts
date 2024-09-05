@@ -8,6 +8,7 @@ export function connectWS() {
     if (ws) return
     try {
         const token = localStorage.getItem("token") as string;
+        const { setAllUnreadCount } = useListState.getState()
 
         ws = new WebSocket(WsUrl, token)
         ws.onopen = () => {
@@ -24,6 +25,9 @@ export function connectWS() {
                     break
                 case "notify":
                     notifyFunc(e.data)
+                    break
+                case "unread_count":
+                    setAllUnreadCount(e.data);
                     break
                 default:
                     break
