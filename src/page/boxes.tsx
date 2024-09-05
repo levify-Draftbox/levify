@@ -359,7 +359,6 @@ const EmailBlock = (
   const [emailHeight, setEmailHeight] = useState<number>(10);
   const [openBlock, setOpenBlock] = useState(e.openBlock);
 
-  const [showFullTimestamp] = useState(false);
   const [showAllRecipients, setShowAllRecipients] = useState(false);
 
   const formatShortTimestamp = (timestamp: string) => {
@@ -733,7 +732,7 @@ const EmailBlock = (
                 setShowAllRecipients(!showAllRecipients);
               }}
             >
-              {showFullTimestamp ? (
+              {showAllRecipients ? (
                 <CaretUp size={15} />
               ) : (
                 <CaretDown size={15} />
