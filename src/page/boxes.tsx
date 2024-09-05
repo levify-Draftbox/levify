@@ -466,6 +466,8 @@ const EmailBlock = (
     };
   }, [viewMode, e.panelWidth, openBlock]);
 
+
+
   useEffect(() => injectCSS(), []);
 
   if (!openBlock) {
@@ -606,7 +608,7 @@ const EmailBlock = (
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">
-                      {e.b_from_name || e.b_from.split("@")[0]}
+                      {e.b_from_name ? e.b_from_name : e.b_from.split("@")[0]}
                     </p>
                     <p className="text-sm">{e.b_from || "unknown"}</p>
                   </div>
@@ -651,7 +653,7 @@ const EmailBlock = (
                         </Avatar>
                         <div className="flex flex-col">
                           <p className="text-sm font-medium">
-                            {recipient.split("@")[0]}
+                            {e.b_to_name ? e.b_to_name : recipient.split("@")[0]}
                           </p>
                           <p className="text-sm ">{recipient}</p>
                         </div>
