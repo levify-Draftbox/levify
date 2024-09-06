@@ -54,7 +54,13 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, p
         {unreadMsgs ?
           <h2>
             <Tooltip tip={`${unreadMsgs} Unread Messages`} className="h-[20px] pt-[2px]">
-              <span className="text-core font-semibold cursor-pointer " onClick={() => setListCategory(path, "unread")}>{unreadMsgs}</span>
+              <span className="text-core font-semibold cursor-pointer"
+                onClick={() => {
+                  setListCategory(path, "unread")
+                  clearList(path)
+                  setListMore(path, true)
+                }}
+              >{unreadMsgs}</span>
             </Tooltip>
           </h2>
           : <></>
@@ -71,6 +77,8 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, p
           onValueChange={(v) => {
             if (v) {
               setListCategory(path, v as ListCategoryType)
+              clearList(path)
+              setListMore(path, true)
             }
           }}
         >

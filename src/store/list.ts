@@ -83,17 +83,17 @@ const useList = create<List>()((set, get) => ({
         })
     },
     appendMail: (paths: string[], emails: Email[], threadId: string) => {
-        const { openEmail, setOpenEmail, reverse: reverseObj, hasMore: hasMoreObj, unreadCount, setUnreadCount } = useListState.getState()
+        const { openEmail, setOpenEmail, reverse: reverseObj, hasMore: hasMoreObj, unreadCount, setUnreadCount, listCategory } = useListState.getState()
         let lastEmail = emails[emails.length - 1]
         let unreadMsgs = unreadCount[lastEmail.path] || 0
         setUnreadCount(lastEmail.path, unreadMsgs + 1)
 
         for (let path of paths) {
+            let category = listCategory[path]
             let reverse = reverseObj[path] || false
             let hasMore = hasMoreObj[path] == undefined ? true : hasMoreObj[path]
 
             if (reverse && hasMore) {
-                // TODO: add unread count
                 if (openEmail && openEmail.thread_id == lastEmail.thread_id) {
                     setOpenEmail({
                         emails: emails,
@@ -113,25 +113,31 @@ const useList = create<List>()((set, get) => ({
                 const emailObj = list?.find(eo => eo.thread_id == threadId);
                 lastEmail.new = true;
 
+                let unread = emails.filter(e => e.unread == true).length != 0
+                let has_attach = emails.filter(e => e.has_attach == true).length != 0
+
                 if (!emailObj) {
+                    if (category == "all" || (category == "unread" && unread) || (category == "read" && !unread) || (category == "file" && has_attach)) {
+                        let newMailObj: EmailObj = {
+                            emails: emails,
+                            latest_date: lastEmail.dateandtime,
+                            subject: lastEmail.b_subject,
+                            thread_id: lastEmail.thread_id,
+                            unread: lastEmail.unread,
+                            updated: false,
+                        }
+                        list = !reverse ? [newMailObj, ...list] : [...list, newMailObj] as EmailObj[]
 
-                    let newMailObj: EmailObj = {
-                        emails: emails,
-                        latest_date: lastEmail.dateandtime,
-                        subject: lastEmail.b_subject,
-                        thread_id: lastEmail.thread_id,
-                        unread: lastEmail.unread,
-                        updated: false,
-                    }
-                    list = !reverse ? [newMailObj, ...list] : [...list, newMailObj] as EmailObj[]
-
-                    return {
-                        ...s,
-                        list: {
-                            ...s.list,
-                            [path]: list
+                        return {
+                            ...s,
+                            list: {
+                                ...s.list,
+                                [path]: list
+                            }
                         }
                     }
+
+                    return s
                 }
 
                 let oldMailList = list.filter(eo => eo.thread_id != threadId)
@@ -161,8 +167,9 @@ const useList = create<List>()((set, get) => ({
     loadMore: async (path: string, cd: Function) => {
         let { list: emailListObj, setList } = get()
         let emailList = emailListObj[path] || []
-        let { setListMore, reverse: reverseObj } = useListState.getState()
+        let { setListMore, reverse: reverseObj, listCategory } = useListState.getState()
         let reverse = reverseObj[path] || false
+        let category = listCategory[path] || "all"
 
         try {
             const res = await api.post<{ hasMore: boolean; emails: EmailObj[] }>(
@@ -171,6 +178,7 @@ const useList = create<List>()((set, get) => ({
                     offset: emailList.length,
                     path: path,
                     reverse: reverse,
+                    category: category
                 }
             );
             setList(path, res.data.emails)

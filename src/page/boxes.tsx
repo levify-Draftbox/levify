@@ -65,6 +65,7 @@ export type Email = {
   from_profile: string;
   thread_id: string;
   new: boolean;
+  has_attach: boolean;
 };
 
 export type EmailObj = {
