@@ -28,7 +28,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AnimatePresence, motion } from "framer-motion";
 import zxcvbn from 'zxcvbn';
-
+import md5 from 'md5';
 
 const Profile = () => {
   const {
@@ -225,7 +225,9 @@ const Profile = () => {
   const handleGravatar = async () => {
     try {
       setIsImageLoading(true);
-      const gravatarUrl = `https://www.gravatar.com/avatar/${selectedEmail}`;
+      const email = selectedEmail || userEmails[0];
+      const hash = md5(email.trim().toLowerCase());
+      const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?`;
       setFinalImg(gravatarUrl);
       await updateSettings({ image: gravatarUrl });
       setImageChanged(true);
@@ -235,6 +237,7 @@ const Profile = () => {
       setIsImageLoading(false);
     }
   };
+
   const handleRemovePhoto = async () => {
     try {
       setIsImageLoading(true);
