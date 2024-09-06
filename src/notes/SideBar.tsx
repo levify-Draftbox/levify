@@ -30,7 +30,17 @@ const SideBar = () => {
             />
           </Link>
 
-          <div className="mt-4 flex flex-col gap-1">
+          <div className="mt-3">
+            <Button
+              variant={"primary"}
+              size={"sm"}
+            >
+              New Note
+            </Button>
+
+          </div>
+
+          <div className="mt-3 flex flex-col gap-1">
             <SidebarNavLink icon={<House size={18} />} to="/notes/home">
               Home
             </SidebarNavLink>
@@ -60,7 +70,7 @@ const SideBar = () => {
             )}
           </div>
 
-         
+
 
           <div>
 
