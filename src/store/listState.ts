@@ -17,6 +17,11 @@ type UnreadCount = {
     [path: string]: number
 }
 
+export type ListCategoryType = "all" | "read" | "unread" | "file"
+type ListCategory = {
+    [path: string]: ListCategoryType
+}
+
 type List = {
     setListPos: (path: string, pos: number) => void,
     setListMore: (path: string, v: boolean) => void,
@@ -24,11 +29,13 @@ type List = {
     setReverse: (path: string, v: boolean) => void,
     setUnreadCount: (path: string, v: number) => void,
     setAllUnreadCount: (counts: UnreadCount) => void,
+    setListCategory: (path: string, catogory: ListCategoryType) => void,
     listPos: EmailListPos,
     hasMore: EmailListMore,
     openEmail: EmailObj | undefined,
     reverse: EmailListReverse,
     unreadCount: UnreadCount,
+    listCategory: ListCategory,
 }
 
 const useListState = create<List>()((set) => ({
@@ -81,11 +88,21 @@ const useListState = create<List>()((set) => ({
             unreadCount: counts,
         }))
     },
+    setListCategory: (path, category) => {
+        set(s => ({
+            ...s,
+            listCategory: {
+                ...s.listCategory,
+                [path]: category,
+            }
+        }))
+    },
     listPos: {},
     hasMore: {},
     openEmail: undefined,
     reverse: {},
     unreadCount: {},
+    listCategory: {},
 }))
 
 export default useListState

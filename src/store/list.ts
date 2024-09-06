@@ -49,7 +49,7 @@ const useList = create<List>()((set, get) => ({
                     event: "unread",
                     data: {
                         thread_id: email.thread_id,
-                        email_id: email.id,
+                        id: email.id,
                         unread: unread,
                         path: email.path,
                     },

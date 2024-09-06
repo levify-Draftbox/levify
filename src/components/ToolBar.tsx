@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   SortAscending,
 } from "@phosphor-icons/react";
@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { Tooltip } from "./ui/tooltip";
-import useListState from "@/store/listState";
+import useListState, { ListCategoryType } from "@/store/listState";
 import { SortDescending } from "@phosphor-icons/react/dist/ssr";
 import useList from "@/store/list";
 
@@ -29,12 +29,12 @@ interface ToolBarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, path, ...props }) => {
-  const { reverse: reverseObj, setReverse, setListMore } = useListState()
+  const { reverse: reverseObj, setReverse, setListMore, listCategory: listCategoryObj, setListCategory } = useListState()
   const { clearList } = useList()
   const hasReverse = reverseObj[path] || false
   const { unreadCount } = useListState()
-  const [filter, setFilter] = useState("all")
   const unreadMsgs = unreadCount[path] || 0
+  const listCategory = listCategoryObj[path] || "all"
 
   return (
     <div
@@ -54,7 +54,7 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, p
         {unreadMsgs ?
           <h2>
             <Tooltip tip={`${unreadMsgs} Unread Messages`} className="h-[20px] pt-[2px]">
-              <span className="text-core font-semibold cursor-pointer " onClick={() => setFilter("unread")}>{unreadMsgs}</span>
+              <span className="text-core font-semibold cursor-pointer " onClick={() => setListCategory(path, "unread")}>{unreadMsgs}</span>
             </Tooltip>
           </h2>
           : <></>
@@ -67,24 +67,24 @@ const ToolBar: React.FC<ToolBarProps> = ({ className, onRefresh, isRefreshing, p
           type="single"
           defaultValue="all"
           className="bg-input dark:border-none m-auto"
-          value={filter}
+          value={listCategory}
           onValueChange={(v) => {
             if (v) {
-              setFilter(v)
+              setListCategory(path, v as ListCategoryType)
             }
           }}
         >
           <ToggleGroupItem size={"tooltip"} value="all" aria-label="Toggle bold">
             All
           </ToggleGroupItem>
-          <ToggleGroupItem size={"tooltip"} value="read" aria-label="Toggle italic">
-            Read
-          </ToggleGroupItem>
           <ToggleGroupItem size={"tooltip"} value="unread" aria-label="Toggle underline">
             Unread
           </ToggleGroupItem>
+          <ToggleGroupItem size={"tooltip"} value="read" aria-label="Toggle italic">
+            Read
+          </ToggleGroupItem>
           <ToggleGroupItem size={"tooltip"} value="file" aria-label="Toggle underline">
-            Has file
+            Has File
           </ToggleGroupItem>
         </ToggleGroup>
 
