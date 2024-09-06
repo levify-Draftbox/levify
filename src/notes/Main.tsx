@@ -4,12 +4,12 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import SideBar from "./SideBar";
-import { Outlet } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import { useEffect, useRef } from "react";
 import useComposerStore from "@/store/composer";
 import { useProfileStore } from "@/store/profile";
 import { cn } from "@/lib/utils";
+import BlockEditor from "./BlockEditer";
 
 const Main = () => {
   const mainLayout = useRef<HTMLDivElement>(null)
@@ -60,7 +60,7 @@ const Main = () => {
             <SearchBar />
 
             <div className="border-l border-t border-border !rounded-tl-lg overflow-hidden flex-1 overflow bg-background-secondary">
-              <Outlet />
+              <BlockEditor />
             </div>
 
           </div>

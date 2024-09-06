@@ -20,7 +20,6 @@ const MailboxContainer = lazy(() => import("./page/box"))
 const LazyCalendar = lazy(() => import("./calendar/Main"));
 const LazyNotes = lazy(() => import("./notes/Main"));
 
-
 function App() {
   const { open, toggleModal } = useInterServerModal();
   const NotLogin = !!localStorage.getItem("token");

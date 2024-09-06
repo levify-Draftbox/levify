@@ -758,8 +758,8 @@ const EmailBlock = (
                   </div>
                 )}
 
-                <div className="flex gap-2 mt-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-                  <p className="text-sm mt-[2px]">Subject:</p>
+                <div className="flex items-center gap-1 mt-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                  <p className="text-sm">Subject:</p>
                   <p className="text-sm font-medium">{e.b_subject}</p>
                 </div>
 
