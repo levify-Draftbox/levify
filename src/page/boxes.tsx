@@ -468,7 +468,7 @@ const EmailBlock = (
   }, [viewMode, e.panelWidth, openBlock]);
 
   console.log(e.b_to_name);
-  
+
 
 
 
@@ -631,84 +631,146 @@ const EmailBlock = (
                 </div>
               </HoverCardContent>
             </HoverCard>
-            <div className="flex  gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
-              <p className="text-sm mt-[2px]">To:</p>
-              <div className="flex flex-wrap gap-2">
-
-                {(showAllRecipients ? e.b_to : e.b_to.slice(0, 2)).map((recipient, index) => recipient && (
-                  <HoverCard key={index}>
-                    <HoverCardTrigger>
-                      <Badge
-                        variant="secondary"
-                        className="text-sm cursor-pointer"
-                      >
-                        {recipient}
-                      </Badge>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-fit">
-                      <div className="flex gap-3  items-center">
-                        <Avatar className="w-14 h-14">
-                          <AvatarImage src={`/api/placeholder/32/32`} />
-                          <AvatarFallback>{recipient?.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <p className="text-sm font-medium">
-                            {e.b_to_name[index] ? e.b_to_name[index] : recipient.split("@")[0]}
-                          </p>
-                          <p className="text-sm ">{recipient}</p>
+            <div className="flex flex-col gap-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+              <div className="flex gap-2">
+                <p className="text-sm mt-[2px]">To:</p>
+                <div className="flex flex-wrap gap-2">
+                  {(showAllRecipients ? e.b_to : e.b_to.slice(0, 2)).map((recipient, index) => recipient && (
+                    <HoverCard key={index}>
+                      <HoverCardTrigger>
+                        <Badge
+                          variant="secondary"
+                          className="text-sm cursor-pointer"
+                        >
+                          {recipient}
+                        </Badge>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-fit">
+                        <div className="flex gap-3 items-center">
+                          <Avatar className="w-14 h-14">
+                            <AvatarImage src={`/api/placeholder/32/32`} />
+                            <AvatarFallback>{recipient?.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <p className="text-sm font-medium">
+                              {e.b_to_name[index] ? e.b_to_name[index] : recipient.split("@")[0]}
+                            </p>
+                            <p className="text-sm">{recipient}</p>
+                          </div>
                         </div>
-                      </div>
-
-                      <div className="mt-3 flex gap-2">
-                        <div className="flex items-center gap-2 mt-3">
-                          <Button variant="primary" className="gap-2  w-full ">
-                            <ArrowBendUpLeft size={18} />
-                            <p>Reply</p>
-                          </Button>
-                          <Tooltip tip="Send mail">
-                            <Button variant={"secondary"}>
-                              <EnvelopeSimple size={18} />
+                        <div className="mt-3 flex gap-2">
+                          <div className="flex items-center gap-2 mt-3">
+                            <Button variant="primary" className="gap-2 w-full">
+                              <ArrowBendUpLeft size={18} />
+                              <p>Reply</p>
                             </Button>
-                          </Tooltip>
-                          <Tooltip tip="Add to contact">
-                            <Button variant={"secondary"}>
-                              <AddressBookTabs size={18} />
-                            </Button>
-                          </Tooltip>
+                            <Tooltip tip="Send mail">
+                              <Button variant={"secondary"}>
+                                <EnvelopeSimple size={18} />
+                              </Button>
+                            </Tooltip>
+                            <Tooltip tip="Add to contact">
+                              <Button variant={"secondary"}>
+                                <AddressBookTabs size={18} />
+                              </Button>
+                            </Tooltip>
+                          </div>
                         </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                ))}
+                      </HoverCardContent>
+                    </HoverCard>
+                  ))}
+                  {!showAllRecipients && e.b_to.length > 2 && (
+                    <Badge
+                      variant="secondary"
+                      className="text-sm cursor-pointer"
+                      onClick={() => setShowAllRecipients(true)}
+                    >
+                      +{e.b_to.length - 2}
+                    </Badge>
+                  )}
+                </div>
               </div>
-              {!showAllRecipients && e.b_to.length > 2 && (
-                <Badge
-                  variant="secondary"
-                  className="text-sm cursor-pointer"
-                  onClick={() => setShowAllRecipients(true)}
-                >
-                  +{e.b_to.length - 2}
-                </Badge>
-              )}
+
+
             </div>
 
-            {
-              showAllRecipients && (
+            {showAllRecipients && (
+              <div className="mt-2">
 
-                <div className="mt-3">
-                  <AnimatePresence>
-                    <motion.div
-                      className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm mt-1"
-                      initial={{ y: -20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                    >
-                      {formatFullTimestamp(e.b_datetime)}
-                    </motion.div>
-                  </AnimatePresence>
+                {e.b_cc && e.b_cc.length > 0 && (
+                  <div className="flex gap-2">
+                    <p className="text-sm mt-[2px] text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">CC:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(showAllRecipients ? e.b_cc : e.b_cc.slice(0, 2)).map((recipient, index) => recipient && (
+                        <HoverCard key={index}>
+                          <HoverCardTrigger>
+                            <Badge
+                              variant="secondary"
+                              className="text-sm cursor-pointer"
+                            >
+                              {recipient}
+                            </Badge>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-fit">
+                            <div className="flex gap-3 items-center">
+                              <Avatar className="w-14 h-14">
+                                <AvatarImage src={`/api/placeholder/32/32`} />
+                                <AvatarFallback>{recipient?.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="flex flex-col">
+                                <p className="text-sm font-medium">
+                                  {e.b_cc_name[index] || recipient.split("@")[0]}
+                                </p>
+                                <p className="text-sm">{recipient}</p>
+                              </div>
+                            </div>
+                            <div className="mt-3 flex gap-2">
+                              <div className="flex items-center gap-2 mt-3">
+                                <Button variant="primary" className="gap-2 w-full">
+                                  <ArrowBendUpLeft size={18} />
+                                  <p>Reply</p>
+                                </Button>
+                                <Tooltip tip="Send mail">
+                                  <Button variant={"secondary"}>
+                                    <EnvelopeSimple size={18} />
+                                  </Button>
+                                </Tooltip>
+                                <Tooltip tip="Add to contact">
+                                  <Button variant={"secondary"}>
+                                    <AddressBookTabs size={18} />
+                                  </Button>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                      ))}
+                      {!showAllRecipients && e.b_cc.length > 2 && (
+                        <Badge
+                          variant="secondary"
+                          className="text-sm cursor-pointer"
+                          onClick={() => setShowAllRecipients(true)}
+                        >
+                          +{e.b_cc.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2 mt-2 text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">
+                  <p className="text-sm mt-[2px]">Subject:</p>
+                  <p className="text-sm font-medium">{e.b_subject}</p>
                 </div>
-              )
-            }
+
+
+                <div
+                  className="text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)] text-sm mt-2"
+                >
+                  {formatFullTimestamp(e.b_datetime)}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
