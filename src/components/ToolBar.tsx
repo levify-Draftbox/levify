@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import {
-  ArrowClockwise,
-  CaretDown,
-  CaretUp,
-  DotsThree,
   SortAscending,
 } from "@phosphor-icons/react";
 import { Button } from "./ui/button";

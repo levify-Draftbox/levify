@@ -467,6 +467,9 @@ const EmailBlock = (
     };
   }, [viewMode, e.panelWidth, openBlock]);
 
+  console.log(e.b_to_name);
+  
+
 
 
   useEffect(() => injectCSS(), []);
@@ -650,7 +653,7 @@ const EmailBlock = (
                         </Avatar>
                         <div className="flex flex-col">
                           <p className="text-sm font-medium">
-                            {e.b_to_name ? e.b_to_name : recipient.split("@")[0]}
+                            {e.b_to_name[index] ? e.b_to_name[index] : recipient.split("@")[0]}
                           </p>
                           <p className="text-sm ">{recipient}</p>
                         </div>
