@@ -117,7 +117,7 @@ const useList = create<List>()((set, get) => ({
                 let has_attach = emails.filter(e => e.has_attach == true).length != 0
 
                 if (!emailObj) {
-                    if (category == "all" || (category == "unread" && unread) || (category == "read" && !unread) || (category == "file" && has_attach)) {
+                    if (!category || category == "all" || (category == "unread" && unread) || (category == "read" && !unread) || (category == "file" && has_attach)) {
                         let newMailObj: EmailObj = {
                             emails: emails,
                             latest_date: lastEmail.dateandtime,
