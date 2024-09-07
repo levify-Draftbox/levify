@@ -7,6 +7,7 @@ import {
   PaperPlaneRight,
   Star,
   Tray,
+  MagnifyingGlass
 } from "@phosphor-icons/react";
 import React, { lazy, Suspense, useState } from "react";
 import { Progress } from "@/components/ui/progress";
@@ -99,6 +100,35 @@ const SideBar = () => {
 
       <div className="flex-1 overflow-hidden py-2">
         <ScrollArea border className="flex flex-col gap-1 scroll-hide px-2">
+
+          <div className="flex flex-col gap-1">
+            <Button
+              variant={"navlink"}
+              onClick={() => setSettingOpen(true)}
+              className="w-full items-center "
+            >
+              <div className="flex items-center gap-2">
+                <MagnifyingGlass size={18} />
+                <p className="text-sm">Search</p>
+              </div>
+            </Button>
+
+            <Button
+              variant={"navlink"}
+              onClick={() => setSettingOpen(true)}
+              className="w-full items-center"
+            >
+              <div className="flex items-center gap-2">
+                <Gear size={18} />
+                <p className="text-sm">Setting</p>
+              </div>
+            </Button>
+          </div>
+
+
+          <div className="mt-6  ">
+            <p className="text-sm  text-[rgba(0,0,0,0.5)] dark:text-[rgba(255,255,255,0.5)]">MAIL</p>
+          </div>
           {sidebarItems.map((item, index) => (
             <motion.div
               key={item.id}
@@ -143,17 +173,10 @@ const SideBar = () => {
             )}
           </div>
         </ScrollArea>
-      </div>
+      </div >
 
       <div className="w-full flex flex-col p-1 pb-4">
-        <Button
-          variant={"secondary"}
-          onClick={() => setSettingOpen(true)}
-          className="w-full"
-        >
-          <Gear />
-          Setting
-        </Button>
+
         <div className="w-full pt-3 px-1">
           <Progress value={10} />
           <div className="text-xs flex justify-between  mt-2">
@@ -166,25 +189,27 @@ const SideBar = () => {
         </div>
       </div>
 
-      {settingOpen && (
-        <Modal
-          width={"58%"}
-          key="full-settings"
-          modalKey="full-settings"
-          onClose={() => setSettingOpen(false)}
-        >
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center h-full w-full">
-                <Spinner size={50} borderWidth={4} />
-              </div>
-            }
+      {
+        settingOpen && (
+          <Modal
+            width={"58%"}
+            key="full-settings"
+            modalKey="full-settings"
+            onClose={() => setSettingOpen(false)}
           >
-            <AllSettings />
-          </Suspense>
-        </Modal>
-      )}
-    </div>
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-full w-full">
+                  <Spinner size={50} borderWidth={4} />
+                </div>
+              }
+            >
+              <AllSettings />
+            </Suspense>
+          </Modal>
+        )
+      }
+    </div >
   );
 };
 

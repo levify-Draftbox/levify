@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
 import Composer from "@/composer";
 import useComposerStore from "@/store/composer";
 import { useProfileStore } from "@/store/profile";
-import SearchBar from "@/components/SearchBar";
+// import SearchBar from "@/components/SearchBar";
 import { connectWS, setNotifyFunc, setUnReadFunc } from "@/lib/ws";
 import { Spinner } from "@/components/Spinner";
 import { cn } from "@/lib/utils";
@@ -174,7 +174,7 @@ const Main = () => {
                   className="w-full h-full bg-background flex flex-col relative"
                   ref={mainLayout}
                 >
-                  <SearchBar />
+                  {/* <SearchBar /> */}
 
                   <div className="border-l border-t border-border !rounded-tl-lg overflow-hidden flex-1 overflow bg-background-secondary">
                     <Outlet />

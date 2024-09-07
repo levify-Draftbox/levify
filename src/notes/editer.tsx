@@ -10,10 +10,11 @@ type BlockEditorProps = {
 }
 export default function BlockEditor({ onChange, theme }: BlockEditorProps) {
 
-    const onEditorChange = async () => {
-        const html = await editor.blocksToFullHTML(editor.document);
-        onChange(html);
+    const onEditorChange = () => {
+        const blocks = editor.topLevelBlocks;
+        onChange(JSON.stringify(blocks));
     };
+    
 
     const handleUpload = async (file: File) => {
         return new Promise<string>((resolve) => {
@@ -95,7 +96,7 @@ export default function BlockEditor({ onChange, theme }: BlockEditorProps) {
 
     return (
         <div className="w-full h-full mt-20">
-
+          
             <BlockNoteView
                 editor={editor}
                 onChange={onEditorChange}
