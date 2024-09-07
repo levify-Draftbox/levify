@@ -1,7 +1,8 @@
 import BlockEditor from "./editer"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useProfileStore } from "@/store/profile"
 import { DotsThree, Star } from "@phosphor-icons/react"
+import api from "@/lib/api"
 
 const BlockEditer = () => {
     const [content, setContent] = useState("")
@@ -9,9 +10,21 @@ const BlockEditer = () => {
 
     const theme = allSetting?.appearance?.theme || "system"
 
+    // Debounced save function
+    const debouncedSave = useCallback(
+        debounce((content: string) => {
+            api.post("/notes/note", { content })
+                .then(response => console.log("Note saved:", response.data))
+                .catch(error => console.error("Error saving note:", error));
+        }, 4000),
+        []
+    );
+
     const handleChange = (html: string) => {
         setContent(html)
+        debouncedSave(html)
     }
+
 
     console.log(content);
 
@@ -32,6 +45,19 @@ const BlockEditer = () => {
             </div>
         </div>
     )
+}
+
+// Debounce helper function
+function debounce(func: Function, wait: number) {
+    let timeout: NodeJS.Timeout;
+    return function executedFunction(...args: any[]) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 export default BlockEditer
