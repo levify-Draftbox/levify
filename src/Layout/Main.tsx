@@ -171,12 +171,12 @@ const Main = () => {
 
               <ResizablePanel defaultSize={87} onResize={setLayoutSize}>
                 <div
-                  className="w-full h-full bg-background flex flex-col relative"
+                  className="w-full h-full bg-background flex flex-col relative p-[6px]"
                   ref={mainLayout}
                 >
                   {/* <SearchBar /> */}
 
-                  <div className="border-l border-t border-border !rounded-tl-lg overflow-hidden flex-1 overflow bg-background-secondary">
+                  <div className="border border-border rounded-md overflow-hidden flex-1 overflow bg-background-secondary">
                     <Outlet />
                   </div>
 
