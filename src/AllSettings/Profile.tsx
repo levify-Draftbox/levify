@@ -44,7 +44,7 @@ const Profile = () => {
   const [nickname, setNickname] = useState<string>(profile.nickname);
   const [fullName, setFullName] = useState<string>(profile.full_name);
   const [selectedEmail, setSelectedEmail] = useState<string>(profile.default_email);
-  const [nameInEmail, setnameInEmail] = useState(allSetting.profile.nameInMail);
+  const [nameInEmail, setnameInEmail] = useState(allSetting.profile?.nameInMail || false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -106,12 +106,12 @@ const Profile = () => {
 
   useEffect(() => {
     setFinalImg(allSetting.profile?.image || "");
-    setnameInEmail(allSetting.profile.nameInMail || false);
+    setnameInEmail(allSetting.profile?.nameInMail || false);
 
     setInitialValues((e) => ({
       ...e,
       image: allSetting.profile?.image,
-      nameInEmail: allSetting.profile.nameInMail,
+      nameInEmail: allSetting.profile?.nameInMail,
     }));
   }, [profile]);
 

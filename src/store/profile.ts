@@ -31,7 +31,7 @@ export const useProfileStore = create<SettingsState>()((set, get) => ({
   fetchAllProfiles: async () => {
     try {
       const response = await api.get("/profile/all");
-      console.log("database image", response.data.setting.profile.image);
+      // console.log("database image", response.data.setting.profile.image);
 
       set((s) => ({
         ...s,
